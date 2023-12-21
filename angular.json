@@ -71,7 +71,8 @@
             },
             "development": {
               "buildTarget": "chatbot-app:build:development"
-            }
+            },
+
           },
           "defaultConfiguration": "development"
         },
@@ -102,5 +103,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "d925979d-3c89-4e2c-85f2-c310173a36b2"
   }
 }

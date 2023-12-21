@@ -1,0 +1,12 @@
+<div *ngIf="messages">
+  <div *ngFor="let message of messages">
+    <div *ngIf="message">
+      <div>
+        {{message.role}}
+      </div>
+      <div>
+        {{ message.content[0].text.value }}
+      </div>
+    </div>
+  </div>
+</div>

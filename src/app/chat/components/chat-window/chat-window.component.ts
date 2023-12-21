@@ -4,12 +4,11 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { Thread } from '../../models/thread.model';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { BrowserModule } from '@angular/platform-browser';
-import { response } from 'express';
 import { Message } from '../../models/message.model';
 import { StorageService } from '../../services/storage.service';
 import { MessageListComponent } from '../message-list/message-list.component';
-
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { cssAirplane } from '@ng-icons/css.gg';
 
 @Component({
   selector: 'app-chat-window',
@@ -17,9 +16,11 @@ import { MessageListComponent } from '../message-list/message-list.component';
   imports: [
     CommonModule,
     HttpClientModule,
-    MessageListComponent
+    MessageListComponent,
+    NgIconComponent
   ],
   providers:[HttpClientModule],
+  viewProviders: [provideIcons({ cssAirplane })],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.sass'
 })

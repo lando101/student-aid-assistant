@@ -4,7 +4,8 @@
   <!-- ... other thread details ... -->
   <app-message-list [messages]="messages"></app-message-list>
   <input #inputbox type="text">
+  <ng-icon name="cssAirplane"></ng-icon>
   <button (click)="createMessage(inputbox.value)">send</button>
-  <button (click)="deleteThread()">delete thread</button>
+  <button class="text-3xl bg-blue-500" (click)="deleteThread()">delete thread</button>
 </div>
 <ng-template #loading>Loading...</ng-template>

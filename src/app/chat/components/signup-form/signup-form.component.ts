@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
+import { Auth, signInAnonymously, createUserWithEmailAndPassword } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-signup-form',
@@ -14,7 +15,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 export class SignupFormComponent {
   signupForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService) { }
+  constructor(private formBuilder: FormBuilder, private auth: Auth) { }
 
   ngOnInit(): void {
     this.signupForm = this.formBuilder.group({
@@ -41,8 +42,14 @@ export class SignupFormComponent {
   }
 
   onSubmit(): void {
+    const email: string = this.signupForm.get('email')!.value.trim();
+    const password: string = this.signupForm.get('password')!.value.trim();
     if (this.signupForm.valid) {
       console.log(this.signupForm.value);
+      createUserWithEmailAndPassword(this.auth, email, password).then((data)=> {
+        // console.log('signup', data);
+        // console.log('email', this.auth.currentUser?.email);
+      })
       // Handle the form submission
       // this.authService.SignUp(this.signupForm.get('email')?.value, this.signupForm.get('password')?.value);
     }

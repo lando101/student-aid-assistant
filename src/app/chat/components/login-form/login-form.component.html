@@ -17,6 +17,6 @@
       <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
     </div>
   </div>
-
+  <button (click)="logout()">log out</button>
   <button type="submit" [disabled]="!loginForm.valid">Login</button>
 </form>

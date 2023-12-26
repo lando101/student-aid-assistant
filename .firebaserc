@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "federal-student-aid-assistant"
+  },
+  "targets": {
+    "federal-student-aid-assistant": {
+      "hosting": {
+        "chatbot-app": [
+          "federal-student-aid-assistant"
+        ]
+      }
+    }
   }
 }

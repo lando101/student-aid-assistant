@@ -14,22 +14,27 @@ import { HomeComponent } from './pages/home/home.component';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { environment } from '../environments/environment'
+import { provideFirebaseApp } from '@angular/fire/app';
+import { initializeApp } from 'firebase/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
 
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
-    // RouterOutlet,
-    RouterModule.forRoot([]),
-    // HomeComponent,
     HeaderComponent,
-    AngularFireAuthModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFirestoreModule,
-    AngularFireStorageModule,
-    AngularFireDatabaseModule,
-    AppComponent
+    // AngularFireAuthModule,
+    // RouterOutlet,
+    // RouterModule.forRoot([]),
+    // HomeComponent,
+    // AngularFireModule.initializeApp(environment.firebaseConfig),
+    // AngularFirestoreModule,
+    // AngularFireStorageModule,
+    // AngularFireDatabaseModule,
+    // AppComponent,
+    // provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    // provideAuth(() => getAuth()),
   ],
   providers: [AuthService],
   bootstrap: [],

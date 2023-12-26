@@ -1,2 +1,22 @@
-<p>header works!</p>
-<button *ngIf="currentUser" (click)="logOut()">Sign Out</button>
+
+<div class="h-20 bg-neutral-100 w-full flex justify-center items-center border-b-2 border-black">
+  <div class="flex-nowrap justify-between w-full flex items-center container">
+    <div class=" flex flex-nowrap gap-3 items-center">
+      <span class="text-md logo bg-neutral-950 text-neutral-100 p-2">
+        &#123; federal student aid assistant &#125;
+      </span>
+      <ul class="flex-nowrap flex gap-4 -mb-1">
+        <li class="nav-item">
+          <a class="nav-link opacity-70 !font-bold" [routerLink]="'/home'" [routerLinkActive]="'active'">Assistant</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link opacity-70 !font-bold" [routerLink]="'/about'" routerLinkActive="active">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link opacity-70 !font-bold" [routerLink]="'/contact'" routerLinkActive="active">Contact</a>
+        </li>
+      </ul>
+    </div>
+    <button *ngIf="currentUser" (click)="logOut()">Sign Out</button>
+  </div>
+</div>

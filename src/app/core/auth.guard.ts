@@ -9,7 +9,14 @@ import { CredentialsService } from './auth/credentials.service';
 })
 export class AuthGuard implements CanActivate{
 
-  constructor(private router: Router, private auth: Auth, private credentialService: CredentialsService) {}
+  private _authState: boolean = false;
+
+  constructor(private router: Router, private auth: Auth, private credentialService: CredentialsService) {
+    authState(this.auth).subscribe((state) => {
+      this._authState = !!state;
+      console.log('auth state guard', this._authState)
+    })
+  }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     // return authState(this.auth).pipe(
@@ -22,6 +29,13 @@ export class AuthGuard implements CanActivate{
     //     }
     //   }
     // ))
+    // if (this._authState) {
+    //   return true;
+    // } else {
+    //   this.router.navigate(['/auth']);
+    //   return false
+    // }
+
     if (this.credentialService.isAuthenticated()) {
       return true;
     } else {

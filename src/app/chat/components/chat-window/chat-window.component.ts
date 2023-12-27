@@ -8,7 +8,9 @@ import { Message } from '../../models/message.model';
 import { StorageService } from '../../services/storage.service';
 import { MessageListComponent } from '../message-list/message-list.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { cssAirplane } from '@ng-icons/css.gg';
+import { cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee, cssAdd } from '@ng-icons/css.gg';
+
+import { ExamplePromptsComponent } from '../example-prompts/example-prompts.component';
 
 @Component({
   selector: 'app-chat-window',
@@ -17,10 +19,11 @@ import { cssAirplane } from '@ng-icons/css.gg';
     CommonModule,
     HttpClientModule,
     MessageListComponent,
-    NgIconComponent
+    NgIconComponent,
+    ExamplePromptsComponent
   ],
   providers:[HttpClientModule],
-  viewProviders: [provideIcons({ cssAirplane })],
+  viewProviders: [provideIcons({ cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee, cssAdd })],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.sass'
 })

@@ -13,11 +13,23 @@
 
 
 ///import css-variables from
-button
-  @apply bg-white h-11 px-3 border-solid border-black border-2 font-semibold transition-colors duration-100
+.primary-button
+  @apply bg-white text-black h-11 px-2 border-solid border-black border-1 font-semibold transition-colors duration-100
   &:hover
-    @apply bg-neutral-900 text-neutral-50
+    @apply bg-neutral-900 text-gray-50
 
+.action-button
+  @apply bg-neutral-900 h-11 px-2 font-semibold transition-colors duration-100 text-gray-100
+  &:hover
+    @apply bg-neutral-800 text-gray-50
+
+.icon-button
+  @apply bg-transparent transition-transform
+  &:hover
+    @apply scale-125
+
+// button
+//   @apply rounded-lg
 
 .logo
   font-family: 'DM Mono', monospace

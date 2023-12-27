@@ -1,15 +1,35 @@
 <div class="container flex items-center justify-center py-9">
   <div class="w-full max-w-5xl">
-    <div *ngIf="thread$ | async as thread; else loading">
+    <div *ngIf="thread$ | async as thread; else loading" class="flex flex-col gap-20 justify-start items-center">
       <!-- Display thread details -->
-      <p class="text-xs text-neutral-700 font-semibold">THREAD ID</p>
-      <p class="text-sm text-neutral-700 font-semibold">{{ thread.id }}</p>
-      <!-- ... other thread details ... -->
-      <app-message-list [messages]="messages"></app-message-list>
-      <input #inputbox type="text">
-      <ng-icon name="cssAirplane"></ng-icon>
-      <button (click)="createMessage(inputbox.value)">send</button>
-      <button class="text-3xl bg-blue-500" (click)="deleteThread()">delete thread</button>
+      <div class="flex justify-between items-start w-full">
+        <div class="w-full">
+          <p class="text-xs text-gray-600 font-semibold mb-1">THREAD ID</p>
+          <div class="text-sm text-gray-700 font-semibold uppercase mb-0 flex items-center gap-2 ">
+            <div class="truncate w-48">{{ thread.id }}</div>
+            <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="flex items-center justify-center gap-2 primary-button min-w-44"><ng-icon [size]="'18px'" name="cssAdd"></ng-icon>New Thread</button>
+          <button class="flex items-center justify-center gap-2 primary-button min-w-44"><ng-icon [size]="'18px'" name="cssTrashEmpty"></ng-icon>Delete Thread</button>
+        </div>
+      </div>
+      <div class="flex flex-col gap-8 max-w-3xl">
+        <app-example-prompts></app-example-prompts>
+        <!-- ... other thread details ... -->
+        <app-message-list [messages]="messages"></app-message-list>
+        <div>
+          <div class="flex items-center gap-1">
+            <input placeholder="Enter a prompt here..." class="bg-white h-12 px-3 border border-solid border-black  w-full" #inputbox type="text">
+            <button class="bg-blue-700 h-12 px-3 font-black text-gray-200" (click)="createMessage(inputbox.value)">Send</button>
+          </div>
+          <div class="text-xs font-semibold py-3 w-full text-center text-gray-500 flex items-center justify-center gap-1">Built using ChatGPT Assistant Beta // Developed and designed by Landon C. Messmer <ng-icon name="cssCoffee"></ng-icon></div>
+        </div>
+
+      </div>
+
+      <!-- <button class="text-3xl bg-blue-500" (click)="deleteThread()">delete thread</button> -->
     </div>
     <ng-template #loading>Loading...</ng-template>
   </div>

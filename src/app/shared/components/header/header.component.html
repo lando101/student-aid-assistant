@@ -1,5 +1,5 @@
 
-<div class="h-20 bg-gray-50 w-full flex justify-center items-center border-b-2 border-gray-950">
+<div class="h-20 bg-gray-50 dark:bg-gray-800 w-full flex justify-center items-center border-b-2 border-gray-950">
   <div class="flex-nowrap justify-between w-full flex items-center container">
     <div class=" flex flex-nowrap gap-3 items-center">
       <span class="text-sm logo bg-neutral-950 text-gray-100 p-2">
@@ -17,6 +17,9 @@
         </li>
       </ul>
     </div>
-    <button class="primary-button" *ngIf="currentUser" (click)="logOut()">Sign Out</button>
+    <div *ngIf="currentUser" class="flex gap-2">
+      <button (click)="toggleTheme()">theme: {{theme}}</button>
+      <button class="primary-button" (click)="logOut()">Sign Out</button>
+    </div>
   </div>
 </div>

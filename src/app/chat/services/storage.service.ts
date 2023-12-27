@@ -15,10 +15,15 @@ export class StorageService {
   }
 
   getItem(key: string): string | null {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem(key);
+    try {
+      if (isPlatformBrowser(this.platformId)) {
+        return localStorage.getItem(key);
+      }
+      return null;
+    } catch (error) {
+      return null
     }
-    return null;
+
   }
 
   removeItem(key: string) {

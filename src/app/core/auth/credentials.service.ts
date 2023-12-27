@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { User } from 'firebase/auth';
 import { AuthService } from './auth.service';
 import { UserService } from './user.service';
+import { isPlatformBrowser } from '@angular/common';
 
 export interface Credentials {
   // Customize received credentials here
@@ -19,7 +20,7 @@ export class CredentialsService {
   private _credentials: Credentials | null = null;
   private _user: User | null = null
 
-  constructor( private userService: UserService) {
+  constructor( private userService: UserService, @Inject(PLATFORM_ID) private platformId: Object) {
     try {
       const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
       const savedUser = sessionStorage.getItem(userKey) || localStorage.getItem(userKey);
@@ -65,17 +66,20 @@ export class CredentialsService {
      * @param remember True to remember credentials across sessions.
      */
     setCredentials(credentials?: Credentials, remember?: boolean, user?: User) {
-      this._credentials = credentials || null;
+      if (isPlatformBrowser(this.platformId)){
+        this._credentials = credentials || null;
 
-      if (credentials) {
-        const storage = remember ? localStorage : sessionStorage;
-        storage.setItem(credentialsKey, JSON.stringify(credentials));
-        storage.setItem(userKey, JSON.stringify(user));
-      } else {
-        sessionStorage.removeItem(credentialsKey);
-        localStorage.removeItem(credentialsKey);
-        sessionStorage.removeItem(userKey);
-        localStorage.removeItem(userKey);
+        if (credentials) {
+          const storage = remember ? localStorage : sessionStorage;
+          storage.setItem(credentialsKey, JSON.stringify(credentials));
+          storage.setItem(userKey, JSON.stringify(user));
+        } else {
+          sessionStorage.removeItem(credentialsKey);
+          localStorage.removeItem(credentialsKey);
+          sessionStorage.removeItem(userKey);
+          localStorage.removeItem(userKey);
+        }
       }
+
     }
 }

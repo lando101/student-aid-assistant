@@ -6,17 +6,22 @@ import { User } from 'firebase/auth';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../core/auth/user.service';
 import { ThemeService } from '../../../chat/services/theme.service';
+import { ButtonModule } from 'primeng/button';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { RatingModule } from 'primeng/rating';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule ],
+  imports: [CommonModule, RouterModule, ButtonModule, SplitButtonModule, RatingModule, FormsModule ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.sass'
 })
 export class HeaderComponent {
   theme: string = 'light';
   currentUser: User | null = null;
+  value!: number;
 
   constructor(private auth: AuthService, private userService: UserService, private themeService: ThemeService) {
     this.userService.$user.subscribe((user)=>{

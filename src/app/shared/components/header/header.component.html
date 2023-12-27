@@ -20,6 +20,7 @@
     <div *ngIf="currentUser" class="flex gap-2">
       <button (click)="toggleTheme()">theme: {{theme}}</button>
       <button class="primary-button" (click)="logOut()">Sign Out</button>
+      <p-rating [(ngModel)]="value" [cancel]="false"></p-rating>
     </div>
   </div>
 </div>

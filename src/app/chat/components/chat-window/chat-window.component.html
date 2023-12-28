@@ -20,7 +20,7 @@
         <!-- ... other thread details ... -->
         <app-message-list *ngIf="messages.length > 0" [messages]="messages"></app-message-list>
         <div class="relative w-full">
-          <div class="max-w-3xl bottom-0 absolute w-full">
+          <div class="max-w-3xl bottom-0 absolute w-full prompt-box">
             <app-prompts-carousel *ngIf="messages.length === 0"></app-prompts-carousel>
             <div class="flex items-center gap-1 w-full">
               <input placeholder="Enter a prompt here..." class="bg-white dark:!bg-neutral-900 h-12 px-3 border border-solid !border-neutral-800 dark:!border-neutral-600 w-full" #inputbox type="text">

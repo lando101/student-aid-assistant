@@ -10,15 +10,26 @@ import { ButtonModule } from 'primeng/button';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { cssSun, cssMoon, cssMenu } from '@ng-icons/css.gg';
+import { MenuModule } from 'primeng/menu';
+import { MenuItem } from 'primeng/api/menuitem';
+import { SidebarModule } from 'primeng/sidebar';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, SplitButtonModule, RatingModule, FormsModule ],
+  imports: [CommonModule, RouterModule, ButtonModule, SplitButtonModule, RatingModule, FormsModule, SelectButtonModule, NgIconComponent, MenuModule, SidebarModule ],
+  viewProviders: [provideIcons({ cssSun, cssMoon, cssMenu })],
   templateUrl: './header.component.html',
   styleUrl: './header.component.sass'
 })
 export class HeaderComponent {
+  stateOptions: any[] = [{label: '', value: 'off'}, {label: 'On', value: 'on'}];
+  items: MenuItem[] | undefined;
+  sidebarVisible: boolean = false;
+
   theme: string = 'light';
   currentUser: User | null = null;
   value!: number;
@@ -38,7 +49,42 @@ export class HeaderComponent {
       this.theme = 'light'
     }
 
-
+    this.items = [
+      {
+          label: 'Navigation',
+          items: [
+              {
+                  label: 'Update',
+                  icon: 'pi pi-refresh',
+                  command: () => {
+                      this.toggleTheme();
+                  }
+              },
+              {
+                  label: 'Delete',
+                  icon: 'pi pi-times',
+                  command: () => {
+                      this.logOut();
+                  }
+              }
+          ]
+      },
+      {
+          label: 'Navigate',
+          items: [
+              {
+                  label: 'Angular',
+                  icon: 'pi pi-external-link',
+                  url: 'http://angular.io'
+              },
+              {
+                  label: 'Router',
+                  icon: 'pi pi-upload',
+                  routerLink: '/fileupload'
+              }
+          ]
+      }
+  ];
   }
 
   toggleTheme(){

@@ -1,0 +1,12 @@
+<p class="text-sm font-medium dark:text-neutral-500 mb-1">Try out a common question</p>
+<p-carousel [value]="prompts" [numVisible]="3" [numScroll]="3" [circular]="false" [responsiveOptions]="responsiveOptions">
+  <ng-template let-prompts pTemplate="item">
+      <button class="prompt-button m-2">
+          <div class="text-left">
+              <p class="mb-1 text-xs font-semibold opacity-65">{{ prompts.title }}</p>
+              <p class="mb-1 text-sm font-semibold">{{ prompts.prompt }}</p>
+              <!-- <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product.inventoryStatus)"></p-tag> -->
+          </div>
+        </button>
+  </ng-template>
+</p-carousel>

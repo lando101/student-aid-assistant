@@ -25,7 +25,7 @@ export class ChatService {
     if (existingThread) {
       this.thread = JSON.parse(existingThread) as Thread;
        // Deserialize the thread JSON string to an object
-       console.log('saved thread', JSON.stringify(existingThread))
+       console.log('saved thread', existingThread)
        return of(JSON.parse(existingThread) as Thread);
     } else {
       return this.http.get<Thread>(`${this.apiUrl}/createthread`).pipe(

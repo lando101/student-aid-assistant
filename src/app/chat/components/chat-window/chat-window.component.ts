@@ -11,6 +11,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee, cssAdd } from '@ng-icons/css.gg';
 
 import { ExamplePromptsComponent } from '../example-prompts/example-prompts.component';
+import { PromptsCarouselComponent } from '../prompts-carousel/prompts-carousel.component';
 
 @Component({
   selector: 'app-chat-window',
@@ -20,7 +21,8 @@ import { ExamplePromptsComponent } from '../example-prompts/example-prompts.comp
     HttpClientModule,
     MessageListComponent,
     NgIconComponent,
-    ExamplePromptsComponent
+    ExamplePromptsComponent,
+    PromptsCarouselComponent
   ],
   providers:[HttpClientModule],
   viewProviders: [provideIcons({ cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee, cssAdd })],
@@ -46,6 +48,12 @@ export class ChatWindowComponent implements OnInit{
 
     this.thread$.pipe(takeUntil(this.destroy$)).subscribe(thread => {
       this.threadId = thread.id || '';
+      if(thread.id){
+        this.chatService.listMessages().pipe(takeUntil(this.destroy$)).subscribe(messages =>{
+          console.log('messages', messages);
+          this.messages = messages ? messages:[];
+        })
+      }
     });
   }
   // creating message

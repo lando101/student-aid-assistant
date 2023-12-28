@@ -21,10 +21,11 @@ import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { getPerformance, providePerformance } from '@angular/fire/performance';
 import { getStorage, provideStorage } from '@angular/fire/storage';
+import { provideAnimations } from '@angular/platform-browser/animations';
 // import { Capacitor } from '@capacitor/core'
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideClientHydration(), provideHttpClient(withFetch()),
+  providers: [provideRouter(routes), provideClientHydration(), provideHttpClient(withFetch()), provideAnimations(),
     importProvidersFrom([
       provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
       provideAnalytics(() => getAnalytics()),

@@ -1,12 +1,18 @@
 <div *ngIf="messages">
-  <div *ngFor="let message of messages">
-    <div *ngIf="message">
-      <div>
-        {{message.role}}
-      </div>
-      <div>
-        {{ message.content[0].text.value }}
+  <div class="mb-3">
+    <p class="dark:text-neutral-400 text-gray-700 font-semibold mb-0">Current Thread</p>
+    <p class="dark:text-neutral-400 text-sm text-gray-600 font-semibold mb-0 flex items-center">Showing last {{messages.length}} messages <ng-icon class="ml-1" [size]="'16px'" name="cssInfo"></ng-icon></p>
+  </div>
+  <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 425px)' }">
+    <div *ngFor="let message of messages">
+      <div *ngIf="message">
+        <div>
+          {{message.role}}
+        </div>
+        <div>
+          {{ message.content[0].text.value }}
+        </div>
       </div>
     </div>
-  </div>
+  </p-scrollPanel>
 </div>

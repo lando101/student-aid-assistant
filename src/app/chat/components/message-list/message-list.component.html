@@ -19,6 +19,25 @@
             </div>
           </div>
         </div>
+        <div>
+          <div *ngIf="messageLoading" class="message-container">
+            <div class="message">
+              <div class="flex gap-1 items-center capitalize font-bold">
+                <ng-icon class="ml-1" [size]="'20px'" name="cssBot"></ng-icon>assistant
+              </div>
+              <div class="w-24 ml-7">
+                <div class="rounded-tl-none bg-gray-300 p-3 rounded-xl">
+                  <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                  </div>
+                </div>
+                <!-- <p class="mb-0 text-gray-600 font-bold text-xs py-2 w-full text-end">{{(message.created_at! * 1000) | date:'short'}}</p> -->
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   <!-- <p-scrollPanel #sp [style]="{ width: '100%', height: 'calc(100vh - 381px)' }">
@@ -43,3 +62,18 @@
 <ng-template #user>
   <ng-icon class="ml-1" [size]="'20px'" name="cssUser"></ng-icon>
 </ng-template>
+
+<!-- <ng-template #messageLoading>
+  <div class="message-container">
+    <div class="message">
+      <div class="flex gap-1 items-center capitalize font-bold">
+        <ng-icon class="ml-1" [size]="'20px'" name="cssBot"></ng-icon>assistant
+      </div>
+      <div class="message-width ml-7">
+        <div class="rounded-tl-none bg-white border border-gray-300 p-6 rounded-xl">
+          Thinking!
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template> -->

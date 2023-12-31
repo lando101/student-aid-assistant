@@ -13,13 +13,15 @@ import { ChatService } from '../../services/chat.service';
   standalone: true,
   imports: [CommonModule, ScrollPanelModule, NgIconComponent],
   viewProviders: [provideIcons({ cssInfo, cssBot, cssUser })],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.sass'
 })
 export class MessageListComponent implements OnInit {
   @ViewChild('sp') messageList!: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
+
+  @Input() messageLoading: boolean = false;
 
   messages: Message[] = [];
   constructor(private chatService: ChatService){
@@ -29,6 +31,7 @@ export class MessageListComponent implements OnInit {
     this.chatService.$messages.subscribe((messages: Message[]) =>{
       if (messages.length > 0) {
         this.messages = messages;
+        console.log('message list component', this.messages)
         setTimeout(() => {
           // this.messageList.scrollTop(this.getMessageContainerHeight());
         }, 2000);

@@ -19,20 +19,30 @@ export class ChatService {
   public _messages: BehaviorSubject<any> = new BehaviorSubject<Message[]>([]);
   public $messages: Observable<any> = this._messages.asObservable();
 
+  public _threadLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public $threadLoading: Observable<boolean> = this._threadLoading.asObservable();
+
+  public _messageLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public $messageLoading: Observable<boolean> = this._messageLoading.asObservable();
+
+
   constructor(private http: HttpClient, private storage: StorageService) { }
 
 
   // create thread
   createThread(): Observable<Thread> {
     const existingThread = this.storage.getItem('thread');
+    this._threadLoading.next(true);
     if (existingThread) {
       this.thread = JSON.parse(existingThread) as Thread;
        // Deserialize the thread JSON string to an object
        console.log('saved thread', existingThread)
+      this._threadLoading.next(false);
        return of(JSON.parse(existingThread) as Thread);
     } else {
       return this.http.get<Thread>(`${this.apiUrl}/createthread`).pipe(
-        tap(thread => {this.storage.setItem('thread', JSON.stringify(thread)), this.thread = thread}),
+
+      tap(thread => {this.storage.setItem('thread', JSON.stringify(thread)), this.thread = thread, this._threadLoading.next(false)}),
         catchError(error => {
           console.error('There was an error!', error);
           return throwError(error);
@@ -60,6 +70,7 @@ export class ChatService {
   // add messages
   createMessage(content?: string): Observable<any> {
     let url = '';
+    this._messageLoading.next(true);
     if(this.thread){
       url = `${this.apiUrl}/createmessage/${this.thread.id}`;
       return this.http.post(url, { content });
@@ -101,6 +112,7 @@ export class ChatService {
     if(this.thread){
       url = `${this.apiUrl}/list-messages/${this.thread.id}`;
     }
+    this._messageLoading.next(false);
     return this.http.get<Message[]>(url);
   }
 

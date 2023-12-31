@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { Thread } from '../../models/thread.model';
@@ -30,17 +30,32 @@ import { PromptsCarouselComponent } from '../prompts-carousel/prompts-carousel.c
   styleUrl: './chat-window.component.sass'
 })
 export class ChatWindowComponent implements OnInit{
+  @ViewChild('chatbox') chatbox: ElementRef | null = null;
 
   thread$?: Observable<Thread>;
   private destroy$ = new Subject<void>();
 
   threadId: string = '';
   messages: Message[] = [];
+
+  messageLoading: boolean = false;
+  threadLoading: boolean = false;
+
   constructor(private chatService: ChatService, private storageService: StorageService){
 
   }
   ngOnInit(): void {
     this.createThread();
+
+    this.chatService.$messageLoading.subscribe(loading =>{
+      this.messageLoading = loading;
+      // alert('message loading'+loading)
+      console.log('message loading:', loading)
+    });
+
+    this.chatService.$threadLoading.subscribe(loading =>{
+      this.threadLoading = loading;
+    })
   }
 
   // create thread
@@ -73,6 +88,9 @@ export class ChatWindowComponent implements OnInit{
         run_id: undefined,
         thread_id: this.threadId
     };
+    if(this.chatbox){
+      this.chatbox.nativeElement.value = '';
+    }
 
     this.messages.push(userMessage);
     this.chatService._messages.next(this.messages);

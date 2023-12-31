@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { Thread } from '../../models/thread.model';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -30,6 +30,7 @@ import { PromptsCarouselComponent } from '../prompts-carousel/prompts-carousel.c
   styleUrl: './chat-window.component.sass'
 })
 export class ChatWindowComponent implements OnInit{
+
   thread$?: Observable<Thread>;
   private destroy$ = new Subject<void>();
 
@@ -51,7 +52,9 @@ export class ChatWindowComponent implements OnInit{
       if(thread.id){
         this.chatService.listMessages().pipe(takeUntil(this.destroy$)).subscribe(messages =>{
           console.log('messages', messages);
+          messages = messages.sort((a, b) => a.created_at! - b.created_at!);
           this.messages = messages ? messages:[];
+          this.chatService._messages.next(this.messages);
         })
       }
     });
@@ -61,7 +64,7 @@ export class ChatWindowComponent implements OnInit{
     const userMessage: Message = {
         assistant_id: undefined,
         content:[{text:{value:message, annotations:[]}}],
-        created_at: undefined,
+        created_at: this.createUnixTime(),
         file_ids: [],
         id: undefined,
         metadata: {},
@@ -71,7 +74,8 @@ export class ChatWindowComponent implements OnInit{
         thread_id: this.threadId
     };
 
-    this.messages.unshift(userMessage);
+    this.messages.push(userMessage);
+    this.chatService._messages.next(this.messages);
 
     this.chatService.createMessage(message).subscribe(
       response => {
@@ -142,15 +146,20 @@ export class ChatWindowComponent implements OnInit{
   updateMessages(newMessages: Message[]): void {
     if(this.messages.length === 0){
       this.messages = newMessages
+      this.chatService._messages.next(this.messages);
     }else {
       // Assuming newMessages are sorted with the newest first
-      for (const message of newMessages) {
-        if (!this.messages.some(m => m.id === message.id)) {
-          this.messages.unshift(message); // Prepend new messages
-        }
+      this.messages[this.messages.length - 1] = newMessages[1]; // replacing locally created message with open ai message
+      // for (const message of newMessages) {
+      //   if (!this.messages.some(m => m.id === message.id)) {
+      //     this.messages.unshift(message); // Prepend new messages
+      //     this.messages.sort((a, b) => a.created_at! - b.created_at!);
+      //   }
+      this.messages.push(newMessages[0]);
+      this.chatService._messages.next(this.messages);
       }
-    }
     console.log('messages list:', this.messages)
+
   }
 
   // delete thread
@@ -160,11 +169,22 @@ export class ChatWindowComponent implements OnInit{
         this.storageService.removeItem('thread') // removing thread from local storage
         this.createThread()
         this.messages = [];
+        this.chatService._messages.next(this.messages);
       },
       error=>{
         alert('Error deleting thread')
       }
     )
+  }
+
+  createUnixTime(): number{
+    // Get the current date and time
+    const now = new Date();
+
+    // Convert to Unix timestamp
+    const unixTime = Math.floor(now.getTime()/1000);
+
+    return unixTime
   }
 
   ngOnDestroy(): void {

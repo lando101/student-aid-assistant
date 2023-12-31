@@ -18,7 +18,7 @@
       <div class="flex flex-col gap-8 max-w-3xl justify-between h-full w-full">
         <app-example-prompts *ngIf="messages.length === 0"></app-example-prompts>
         <!-- ... other thread details ... -->
-        <app-message-list *ngIf="messages.length > 0" [messages]="messages"></app-message-list>
+        <app-message-list *ngIf="messages.length > 0"></app-message-list>
         <div class="relative w-full">
           <div class="max-w-3xl bottom-0 absolute w-full prompt-box">
             <app-prompts-carousel *ngIf="messages.length === 0"></app-prompts-carousel>

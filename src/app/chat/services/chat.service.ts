@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { Observable, catchError, interval, of, switchMap, takeWhile, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, interval, of, switchMap, takeWhile, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Thread } from '../models/thread.model';
 import { StorageService } from './storage.service';
@@ -15,6 +15,9 @@ export class ChatService {
   private apiUrl = environment.openaiApiUrl; // use environment variable
   assistantId: any = "asst_FdAZP7oZJczaj4FDcQGiK4pi" // fsa assistant id
   thread: Thread = {}; // thread id
+
+  public _messages: BehaviorSubject<any> = new BehaviorSubject<Message[]>([]);
+  public $messages: Observable<any> = this._messages.asObservable();
 
   constructor(private http: HttpClient, private storage: StorageService) { }
 

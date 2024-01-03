@@ -1,7 +1,7 @@
 <mat-drawer-container class="example-container bg-transparent h-full" autosize>
   <mat-drawer #drawer class="example-sidenav py-9 px-3 bg-transparent border-0" mode="side">
     <div *ngIf="userProfile">
-      <p class="text-gray-600 text-lg font-black">THREADS ({{userProfile.threads?.length ?? 0}})</p>
+      <p class="text-gray-600 font-black">THREADS ({{userProfile.threads?.length ?? 0}})</p>
       <div class="flex flex-col gap-4 justify-center" *ngIf="userProfile">
         <div *ngFor="let thread of userProfile.threads?.reverse()">
           <div class="flex flex-nowrap gap-1 transition-colors hover:bg-gray-200" [ngClass]="{'!bg-white !border-gray-400 border-2': threadId === thread.thread_id, 'border-gray-500 border bg-gray-50': threadId !== thread.thread_id}">

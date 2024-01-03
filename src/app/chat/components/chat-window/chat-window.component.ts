@@ -1,17 +1,51 @@
+// Angular Core Modules
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ChatService } from '../../services/chat.service';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
-import { Thread } from '../../models/thread.model';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Message } from '../../models/message.model';
-import { StorageService } from '../../services/storage.service';
-import { MessageListComponent } from '../message-list/message-list.component';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee, cssAdd } from '@ng-icons/css.gg';
 
+// RxJS Imports
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+
+// Angular Material Modules
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+
+// PrimeNG Modules
+import { MenuModule } from 'primeng/menu';
+import { ConfirmationService, MenuItem } from 'primeng/api';
+
+
+// Third-Party Libraries
+import moment from 'moment';
+
+// Local Services
+import { ChatService } from '../../services/chat.service';
+import { StorageService } from '../../services/storage.service';
+import { UserService } from '../../../core/auth/user.service';
+
+// Local Models
+import { Thread } from '../../models/thread.model';
+import { Message } from '../../models/message.model';
+import { Threads, UserProfile } from '../../models/user_profile.model';
+
+// Local Components
+import { MessageListComponent } from '../message-list/message-list.component';
 import { ExamplePromptsComponent } from '../example-prompts/example-prompts.component';
 import { PromptsCarouselComponent } from '../prompts-carousel/prompts-carousel.component';
+
+// Icons from @ng-icons
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+    cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee,
+    cssAdd, cssMenu, cssMoreVertical, cssPen, cssPlayButtonO
+} from '@ng-icons/css.gg';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { DeleteDialogComponent } from '../dialogs/delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-chat-window',
@@ -22,10 +56,12 @@ import { PromptsCarouselComponent } from '../prompts-carousel/prompts-carousel.c
     MessageListComponent,
     NgIconComponent,
     ExamplePromptsComponent,
-    PromptsCarouselComponent
+    PromptsCarouselComponent,
+    MatSidenavModule,
+    MatButtonModule, MatMenuModule, MatIconModule, MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule
   ],
   providers:[HttpClientModule],
-  viewProviders: [provideIcons({ cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee, cssAdd })],
+  viewProviders: [provideIcons({ cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee, cssAdd, cssMenu, cssMoreVertical, cssPen, cssPlayButtonO })],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.sass'
 })
@@ -37,11 +73,17 @@ export class ChatWindowComponent implements OnInit{
 
   threadId: string = '';
   messages: Message[] = [];
+  thread!: Thread;
 
   messageLoading: boolean = false;
   threadLoading: boolean = false;
 
-  constructor(private chatService: ChatService, private storageService: StorageService){
+  userProfile!: UserProfile;
+
+  showFiller = false;
+  items: MenuItem[] | undefined;
+
+  constructor(private chatService: ChatService, private storageService: StorageService, private userService: UserService, public dialog: MatDialog){
 
   }
   ngOnInit(): void {
@@ -55,15 +97,59 @@ export class ChatWindowComponent implements OnInit{
 
     this.chatService.$threadLoading.subscribe(loading =>{
       this.threadLoading = loading;
-    })
+    });
+
+    this.userService.$userProfile.subscribe((userProfile)=>{
+      if(userProfile){
+        this.userProfile = userProfile
+      }
+    });
   }
 
   // create thread
   createThread(){
-    this.thread$ = this.chatService.createThread();
-
-    this.thread$.pipe(takeUntil(this.destroy$)).subscribe(thread => {
+    this.chatService.createThread().then((thread)=>{
+      // console.log('thread id from chat window', thread.id)
       this.threadId = thread.id || '';
+      this.thread = thread;
+        if(thread.id){
+          this.chatService.listMessages().pipe(takeUntil(this.destroy$)).subscribe(messages =>{
+            console.log('messages', messages);
+            messages = messages.sort((a, b) => a.created_at! - b.created_at!);
+            this.messages = messages ? messages:[];
+            this.chatService._messages.next(this.messages);
+          })
+        }
+    })
+    .catch(error => {
+      console.error('Error fetching thread:', error);
+    });
+  }
+
+  createNewThread(){
+    this.chatService.createNewThread().then((thread)=>{
+    this.threadId = thread.id || '';
+    this.thread = thread;
+    console.log(thread)
+        if(thread.id){
+          this.chatService.listMessages().pipe(takeUntil(this.destroy$)).subscribe(messages =>{
+            console.log('messages', messages);
+            messages = messages.sort((a, b) => a.created_at! - b.created_at!);
+            this.messages = messages ? messages:[];
+            this.chatService._messages.next(this.messages);
+          })
+        }
+    })
+    .catch(error => {
+      console.error('Error fetching thread:', error);
+    });
+  }
+
+  getThread(threadId: string){
+    if(threadId){
+      this.chatService.getThread(threadId).then((thread)=>{
+        this.threadId = thread.id || '';
+      this.thread = thread;
       if(thread.id){
         this.chatService.listMessages().pipe(takeUntil(this.destroy$)).subscribe(messages =>{
           console.log('messages', messages);
@@ -72,8 +158,13 @@ export class ChatWindowComponent implements OnInit{
           this.chatService._messages.next(this.messages);
         })
       }
-    });
+      })
+    } else {
+      console.log('No thread ID')
+    }
+
   }
+
   // creating message
   createMessage(message: string){
     const userMessage: Message = {
@@ -168,11 +259,6 @@ export class ChatWindowComponent implements OnInit{
     }else {
       // Assuming newMessages are sorted with the newest first
       this.messages[this.messages.length - 1] = newMessages[1]; // replacing locally created message with open ai message
-      // for (const message of newMessages) {
-      //   if (!this.messages.some(m => m.id === message.id)) {
-      //     this.messages.unshift(message); // Prepend new messages
-      //     this.messages.sort((a, b) => a.created_at! - b.created_at!);
-      //   }
       this.messages.push(newMessages[0]);
       this.chatService._messages.next(this.messages);
       }
@@ -180,20 +266,59 @@ export class ChatWindowComponent implements OnInit{
 
   }
 
-  // delete thread
-  deleteThread(){
-    this.chatService.deleteThread().subscribe(
-      response=>{
+  deleteThread(threadId: string) {
+    this.chatService.deleteThread(threadId).then(
+      respsone =>{
         this.storageService.removeItem('thread') // removing thread from local storage
-        this.createThread()
         this.messages = [];
+        if(this.userProfile.threads!.length > 1){
+          this.getThread(this.userProfile.threads![0].thread_id ?? '')
+        } else {
+          this.createThread()
+        }
         this.chatService._messages.next(this.messages);
       },
-      error=>{
+      error =>{
         alert('Error deleting thread')
       }
     )
   }
+
+  openDialog(thread: Threads | null): void {
+    if(thread){
+      const dialogRef = this.dialog.open(DeleteDialogComponent, {
+        data: {thread_name: thread.thread_name, thread_id: thread.thread_id, creation_date: thread.creation_date},
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        if(result === true) {
+          this.deleteThread(thread.thread_id ?? '')
+        }
+      });
+    } else {
+      const threadRef = this.userProfile.threads?.find((x)=>x.thread_id === this.threadId);
+
+        if(threadRef){
+          const dialogRef = this.dialog.open(DeleteDialogComponent, {
+            data: {thread_name: threadRef.thread_name, thread_id: threadRef.thread_id, creation_date: threadRef.creation_date},
+          });
+
+          dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+            if(result === true) {
+              this.deleteThread(threadRef.thread_id ?? '')
+            }
+          });
+        } else {
+          alert('error deleting thread')
+        }
+
+    }
+
+  }
+
+
 
   createUnixTime(): number{
     // Get the current date and time
@@ -203,6 +328,12 @@ export class ChatWindowComponent implements OnInit{
     const unixTime = Math.floor(now.getTime()/1000);
 
     return unixTime
+  }
+
+  dateConversion(date: any): string {
+    const formatted_date = moment(date, 'HH:mm:ss [GMT]Z (z)');
+    // return `${formatted_date.fromNow()} (${formatted_date.format('lll')})`
+    return `${formatted_date.format('lll')}`
   }
 
   ngOnDestroy(): void {

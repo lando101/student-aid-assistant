@@ -1,0 +1,38 @@
+<!-- <h1 mat-dialog-title>Hi {{data.thread_id}}</h1>
+<p>{{data.thread_name}}</p>
+<p>{{data.creation_date}}</p>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Keep Thread</button>
+  <button class="delete-button flex items-center gap-1 px-3" [mat-dialog-close]="true" cdkFocusInitial>
+    <ng-icon [size]="'18px'" name="cssTrashEmpty" class="mb-1"></ng-icon>
+    Delete Thread
+  </button>
+</div> -->
+
+<div class="p-4 flex flex-col gap-6">
+  <div class="flex flex-col gap-3">
+    <div>
+      <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD NAME</p>
+      <div class="font-bold text-xl">{{data.thread_name === '' ? 'Unnamed thread':data.thread_name}}</div>
+    </div>
+    <div>
+      <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-0">THREAD ID</p>
+      <div class="text-sm text-gray-700 dark:text-neutral-600 font-bold uppercase mb-0 flex items-center gap-2 ">
+        {{ data.thread_id }}
+      </div>
+    </div>
+    <div>
+      <p class="text-xs text-gray-600 dark:text-neutral-600 font-bold mb-0">CREATION DATE</p>
+      <div class="text-sm text-gray-700 dark:text-neutral-600 font-bold uppercase mb-0 flex items-center gap-2 ">
+        {{ dateConversion(data.creation_date)}}
+      </div>
+    </div>
+  </div>
+  <div class="flex gap-4 items-center">
+    <button mat-button [disableRipple]="true" class="rounded-none py-4 hover:rounded-none"  (click)="onNoClick()">Keep Thread</button>
+    <button class="delete-button flex items-center gap-1 px-3" [mat-dialog-close]="true" cdkFocusInitial>
+      <ng-icon [size]="'18px'" name="cssTrashEmpty" class="mb-1"></ng-icon>
+      Delete Thread
+    </button>
+  </div>
+</div>

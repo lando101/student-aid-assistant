@@ -24,6 +24,11 @@
   &:hover
     @apply bg-neutral-900 text-gray-50 dark:bg-neutral-700
 
+.delete-button
+  @apply bg-red-700 text-white h-11 px-2 border-solid font-semibold transition-colors duration-100
+  &:hover
+    @apply bg-red-800 text-gray-50
+
 .action-button
   @apply bg-neutral-900 h-11 px-2 font-semibold transition-colors duration-100 text-gray-100
   &:hover
@@ -61,3 +66,7 @@ body
   display: flex
   flex-direction: column-reverse
   overflow-anchor: auto !important
+
+
+.mat-mdc-dialog-container .mdc-dialog__surface
+  border-radius: 0px !important

@@ -27,17 +27,13 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideClientHydration(), provideHttpClient(withFetch()), provideAnimations(),
     importProvidersFrom([
-      provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-      provideAnalytics(() => getAnalytics()),
-      provideAuth(() => getAuth()),
-      provideFirestore(() => getFirestore()),
-      provideFunctions(() => getFunctions()),
-      provideMessaging(() => getMessaging()),
-      providePerformance(() => getPerformance()),
-      provideStorage(() => getStorage()),
-    ]),
-    // importProvidersFrom(
-    //   provideFire
-    // )
-  ],
+        provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+        provideAnalytics(() => getAnalytics()),
+        provideAuth(() => getAuth()),
+        provideFirestore(() => getFirestore()),
+        provideFunctions(() => getFunctions()),
+        provideMessaging(() => getMessaging()),
+        providePerformance(() => getPerformance()),
+        provideStorage(() => getStorage()),
+    ]), provideAnimations()],
 };

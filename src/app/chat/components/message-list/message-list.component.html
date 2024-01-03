@@ -5,8 +5,8 @@
     <p class="dark:text-neutral-400 text-sm text-gray-600 font-semibold mb-0 flex items-center">Showing last {{messages.length}} messages <ng-icon class="ml-1" [size]="'16px'" name="cssInfo"></ng-icon></p>
   </div>
     <div class="scroller w-full">
-      <div id="messagesContainer" #messagesContainer class="flex flex-col gap-3 pr-5">
-        <div *ngFor="let message of messages" class="message-container">
+      <div id="messagesContainer" #messagesContainer class="flex flex-col gap-3 pr-5 message-container">
+        <div *ngFor="let message of messages">
           <div [ngClass]="{'items-end': message.role !== 'assistant'}" class="message" *ngIf="message">
             <div class="flex gap-1 items-center capitalize font-bold">
               <ng-icon *ngIf="message.role === 'assistant'" class="ml-1" [size]="'20px'" name="cssBot"></ng-icon>{{message.role === 'assistant' ? 'assistant': 'you'}}

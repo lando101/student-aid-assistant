@@ -3,6 +3,7 @@ import { User } from 'firebase/auth';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Firestore, collection, collectionData, addDoc, getDoc, getDocs, doc, query, where, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from '@angular/fire/firestore';
 import { UserProfile } from '../../chat/models/user_profile.model';
+import { StringFormat } from 'firebase/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -25,38 +26,19 @@ export class UserService {
         console.log('user service', user);
         this.user = user;
         // this.getUserProfile().then((data: any)=>{
-        //   console.log('user data', data)
+        //   // console.log('user data', data)
         // });
 
         this.subUserProfile();
       }
     })
-
-    // const userProfileCollection = collection(this.firestore, 'users');
-    // collectionData(userProfileCollection) as Observable<any>;
-
    }
 
-  //  async getUserProfile(): Promise<any>{
-
-  //   console.log('user uid',this.user.uid);
-  //   const docRef = doc(this.firestore, 'users', this.user.uid);
-  //   const docSnap = await getDoc(docRef);
-
-  //   if (docSnap.exists()){
-  //     console.log("Document data:", docSnap.data());
-  //     return docSnap.data();
-  //   } else {
-  //     // docSnap.data() will be undefined in this case
-  //     console.log("No such document!");
-  //     return this.createUserProfile()
-  //   }
-  //  }
 
    subUserProfile() {
     const unsub = onSnapshot(doc(this.firestore, 'users', this.user.uid), (doc)=>{
       const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
-      console.log(source, " data: ", doc.data());
+      // console.log(source, " data: ", doc.data());
       if(doc.data()){
         this._userProfile.next(doc.data())
         this.userProfile = doc.data();
@@ -66,27 +48,27 @@ export class UserService {
     });
    }
 
-   async createUserProfile(): Promise<any> {
+   async createUserProfile(uid?: string, email?: string): Promise<any> {
     let threads: [{thread_id?: string, thread_name?: string, creation_date?: string | Date | null | undefined}] | null = null
 
-    const userRef = await setDoc(doc(this.firestore, 'users', this.user.uid), {
-      email: this.user.email,
+    const userRef = await setDoc(doc(this.firestore, 'users', uid ? uid:this.user.uid), {
+      email: email ? email:this.user.email,
       first_name: '',
       last_name: '',
       image: '',
       last_login: '',
       threads: [],
-      uid: this.user.uid
+      uid: uid ? uid:this.user.uid
     });
 
     return {
-      email: this.user.email,
+      email: email ? email:this.user.email,
       first_name: '',
       last_name: '',
       image: '',
       last_login: '',
       threads: threads,
-      uid: this.user.uid
+      uid: uid ? uid:this.user.uid
     };
    }
 
@@ -103,11 +85,25 @@ export class UserService {
 
     const thread = this.userProfile.threads.find((thread_id: any) => thread_id === thread_id);
 
-    console.log('thread to delete', thread)
+    // console.log('thread to delete', thread)
 
     await updateDoc(docRef, {
       threads: arrayRemove({thread_id: thread_id, thread_name: thread.thread_name, creation_date: thread.creation_date})
     })
+   }
+
+   async updateUser(user_id: string, key: string, value: string): Promise<any> {
+    if(user_id){
+      const docRef = doc(this.firestore, 'users', user_id);
+      return await updateDoc(docRef, {
+        [key]: value
+      })
+    } else {
+      return 'error'
+    }
+
+
+
    }
 
 }

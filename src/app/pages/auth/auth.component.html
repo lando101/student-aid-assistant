@@ -1,2 +1,24 @@
-<app-login-form></app-login-form>
-<app-signup-form></app-signup-form>
+<div class="w-full h-screen min-h-full min-w-full flex items-center justify-center overflow-x-hidden overflow-y-auto">
+  <div class="flex container">
+    <div class="lg:w-1/2 flex flex-col justify-center">
+      <div class="bg-white rounded-none border border-gray-300 p-16">
+        <app-login-form></app-login-form>
+      </div>
+    </div>
+    <div class="lg:w-1/2 bg-transparent flex items-end p-10">
+      <p-carousel class="w-full" [showNavigators]="false" [value]="slides" [numVisible]="1" [numScroll]="1">
+        <ng-template let-slide pTemplate="item">
+          <div class="p-3 bg-transparent flex flex-col items-center gap-8">
+            <img [src]="slide.img" class="max-w-96">
+            <div class="flex flex-col items-center gap-2">
+              <p class="text-center text-2xl font-bold mb-0">{{slide.header}}</p>
+              <p class="text-center text-lg font-medium text-gray-700">{{slide.content}}</p>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+    </div>
+  </div>
+</div>
+
+<!-- <app-signup-form></app-signup-form> -->

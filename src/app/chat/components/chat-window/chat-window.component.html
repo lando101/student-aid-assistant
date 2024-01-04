@@ -1,10 +1,10 @@
 <mat-drawer-container class="example-container bg-transparent h-full" autosize>
-  <mat-drawer #drawer class="example-sidenav py-9 px-3 bg-transparent border-0" mode="side">
+  <mat-drawer #drawer class="example-sidenav py-9 pr-8 mr-8 bg-transparent border-0" mode="side">
     <div *ngIf="userProfile">
       <p class="text-gray-600 font-black">THREADS ({{userProfile.threads?.length ?? 0}})</p>
       <div class="flex flex-col gap-4 justify-center" *ngIf="userProfile">
         <div *ngFor="let thread of userProfile.threads?.reverse()">
-          <div class="flex flex-nowrap gap-1 transition-colors hover:bg-gray-200" [ngClass]="{'!bg-white !border-gray-400 border-2': threadId === thread.thread_id, 'border-gray-500 border bg-gray-50': threadId !== thread.thread_id}">
+          <div class="flex flex-nowrap gap-1 transition-colors border-gray-500 border hover:bg-gray-200 " [ngClass]="{'!bg-white shadow-md shadow-neutral-200': threadId === thread.thread_id, 'border-gray-500 border bg-gray-50': threadId !== thread.thread_id}">
             <button class="flex flex-col gap-1 text-left pl-3 py-3" (click)="getThread(thread.thread_id ?? '')">
               <div class="font-bold text-gray-900 truncate max-w-48">{{thread.thread_name ? thread.thread_name:'Unnamed chat'}}</div>
               <div class="truncate max-w-48 text-xs font-bold text-gray-700">Created {{dateConversion(thread.creation_date)}}</div>
@@ -61,20 +61,20 @@
               </div>
             </div>
             <div class="flex items-center gap-3 justify-between md:justify-end">
-              <button class="flex items-center justify-center gap-2 primary-button min-w-44" (click)="createNewThread()"><ng-icon [size]="'18px'" name="cssAdd"></ng-icon>New Thread</button>
-              <button class="flex items-center justify-center gap-2 primary-button min-w-44" (click)="openDialog(null)"><ng-icon [size]="'18px'" name="cssTrashEmpty"></ng-icon>Delete Thread</button>
+              <button class="flex items-center justify-center gap-2 primary-button-black min-w-44" (click)="createNewThread()"><ng-icon [size]="'18px'" name="cssAdd"></ng-icon>New Thread</button>
+              <button class="flex items-center justify-center gap-2 delete-button-black min-w-44" (click)="openDialog(null)"><ng-icon [size]="'18px'" name="cssTrashEmpty"></ng-icon>Delete Thread</button>
             </div>
           </div>
-          <div class="flex flex-col gap-8 max-w-3xl justify-between h-full w-full">
+          <div class="flex flex-col gap-8 justify-between h-full w-full">
             <app-example-prompts *ngIf="messages.length === 0 || !messages"></app-example-prompts>
             <!-- ... other thread details ... -->
             <app-message-list *ngIf="messages.length > 0" [messageLoading]="messageLoading"></app-message-list>
             <div class="relative w-full">
-              <div class="max-w-3xl bottom-0 absolute w-full prompt-box">
+              <div class=" bottom-0 absolute w-full prompt-box">
                 <app-prompts-carousel *ngIf="messages.length === 0"></app-prompts-carousel>
                 <div class="flex items-center gap-1 w-full">
                   <input #chatbox [disabled]="messageLoading" [placeholder]="messageLoading === true ? 'Assistant is responding':'Enter a prompt here...'" class="bg-white dark:!bg-neutral-900 h-12 px-3 border border-solid !border-neutral-800 dark:!border-neutral-600 w-full" #inputbox type="text">
-                  <button [ngClass]="{'bg-gray-500': messageLoading === true}" class="bg-blue-700 h-12 px-3 font-black text-gray-200 transition-colors" (click)="createMessage(inputbox.value)">Send</button>
+                  <button [ngClass]="{'bg-gray-500': messageLoading === true}" class="send-button" (click)="createMessage(inputbox.value)">Send</button>
                 </div>
                 <div class="text-xs font-semibold py-3 w-full text-center text-gray-500 dark:text-neutral-400 flex flex-wrap items-center justify-center gap-1">Built using ChatGPT Assistant Beta // Developed and designed by Landon C. Messmer <ng-icon name="cssCoffee"></ng-icon></div>
               </div>

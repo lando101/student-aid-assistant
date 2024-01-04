@@ -3,6 +3,7 @@ import { User } from 'firebase/auth';
 import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 import { isPlatformBrowser } from '@angular/common';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface Credentials {
   // Customize received credentials here
@@ -17,6 +18,9 @@ const userKey = 'user'
   providedIn: 'root'
 })
 export class CredentialsService {
+  public _credState: BehaviorSubject<any> = new BehaviorSubject<boolean>(false);
+  public $credState: Observable<boolean> = this._credState.asObservable();
+
   private _credentials: Credentials | null = null;
   private _user: User | null = null
 
@@ -28,10 +32,12 @@ export class CredentialsService {
         this._credentials = JSON.parse(savedCredentials);
         this._user = JSON.parse(savedUser);
         this.userService.userSubject.next(this._user);
+        this._credState.next(true);
       }
     } catch (error) {
         this._credentials = null
         this._user = null;
+        this._credState.next(false);
     }
 
    }
@@ -42,9 +48,11 @@ export class CredentialsService {
    */
   isAuthenticated(): boolean {
     if(this._credentials && this._user){
-      console.log("cred", this._user)
+      // console.log("cred", this._user)
+      this._credState.next(true);
       return true;
     } else {
+      this._credState.next(false);
       return false;
     }
     // return !!this._credentials;
@@ -69,15 +77,17 @@ export class CredentialsService {
       if (isPlatformBrowser(this.platformId)){
         this._credentials = credentials || null;
 
-        if (credentials) {
+        if (credentials && user) {
           const storage = remember ? localStorage : sessionStorage;
           storage.setItem(credentialsKey, JSON.stringify(credentials));
           storage.setItem(userKey, JSON.stringify(user));
+          this._credState.next(true);
         } else {
           sessionStorage.removeItem(credentialsKey);
           localStorage.removeItem(credentialsKey);
           sessionStorage.removeItem(userKey);
           localStorage.removeItem(userKey);
+          this._credState.next(false);
         }
       }
 

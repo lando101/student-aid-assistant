@@ -92,7 +92,7 @@ export class ChatWindowComponent implements OnInit{
     this.chatService.$messageLoading.subscribe(loading =>{
       this.messageLoading = loading;
       // alert('message loading'+loading)
-      console.log('message loading:', loading)
+      // console.log('message loading:', loading)
     });
 
     this.chatService.$threadLoading.subscribe(loading =>{
@@ -109,12 +109,12 @@ export class ChatWindowComponent implements OnInit{
   // create thread
   createThread(){
     this.chatService.createThread().then((thread)=>{
-      // console.log('thread id from chat window', thread.id)
+      // // console.log('thread id from chat window', thread.id)
       this.threadId = thread.id || '';
       this.thread = thread;
         if(thread.id){
           this.chatService.listMessages().pipe(takeUntil(this.destroy$)).subscribe(messages =>{
-            console.log('messages', messages);
+            // console.log('messages', messages);
             messages = messages.sort((a, b) => a.created_at! - b.created_at!);
             this.messages = messages ? messages:[];
             this.chatService._messages.next(this.messages);
@@ -130,10 +130,10 @@ export class ChatWindowComponent implements OnInit{
     this.chatService.createNewThread().then((thread)=>{
     this.threadId = thread.id || '';
     this.thread = thread;
-    console.log(thread)
+    // console.log(thread)
         if(thread.id){
           this.chatService.listMessages().pipe(takeUntil(this.destroy$)).subscribe(messages =>{
-            console.log('messages', messages);
+            // console.log('messages', messages);
             messages = messages.sort((a, b) => a.created_at! - b.created_at!);
             this.messages = messages ? messages:[];
             this.chatService._messages.next(this.messages);
@@ -152,7 +152,7 @@ export class ChatWindowComponent implements OnInit{
       this.thread = thread;
       if(thread.id){
         this.chatService.listMessages().pipe(takeUntil(this.destroy$)).subscribe(messages =>{
-          console.log('messages', messages);
+          // console.log('messages', messages);
           messages = messages.sort((a, b) => a.created_at! - b.created_at!);
           this.messages = messages ? messages:[];
           this.chatService._messages.next(this.messages);
@@ -160,7 +160,7 @@ export class ChatWindowComponent implements OnInit{
       }
       })
     } else {
-      console.log('No thread ID')
+      // console.log('No thread ID')
     }
 
   }
@@ -188,8 +188,8 @@ export class ChatWindowComponent implements OnInit{
 
     this.chatService.createMessage(message).subscribe(
       response => {
-        console.log('Message sent response', response);
-        this.runAssistant('you are a assistant that is an expert with federal student aid in the united states. only answer questions related to federal student aid. ') // update this to say "address user as first name last name"
+        // console.log('Message sent response', response);
+        this.runAssistant('you are a assistant that is an expert with student aid in the united states. only answer questions related to student aid. ') // update this to say "address user as first name last name"
       },
       error => {
         alert('Error creating message');
@@ -197,7 +197,7 @@ export class ChatWindowComponent implements OnInit{
     )
     // .subscribe({
     //   next(data) {
-    //     console.log('Message sent response', data);
+    //     // console.log('Message sent response', data);
     //     this.runAssistant()
     //   },
     //   error(err) {
@@ -210,7 +210,7 @@ export class ChatWindowComponent implements OnInit{
   runAssistant(instructions?: string){
     this.chatService.runAssistant(instructions).subscribe(
       response => {
-        console.log('Assistant run response:', response);
+        // console.log('Assistant run response:', response);
         if(response.id){
           this.checkRunStatus(response.id)
         } else{
@@ -230,13 +230,13 @@ export class ChatWindowComponent implements OnInit{
 
     this.chatService.pollStatus(runId).subscribe(
       response => {
-        console.log('Status:', response.status);
+        // console.log('Status:', response.status);
         if(response.status === 'completed' || Date.now() - startTime > duration) {
           // get message list if completed
-          console.log('Status: (done)', response.status);
+          // console.log('Status: (done)', response.status);
           this.chatService.listMessages().subscribe(
             response => {
-              console.log('Messages:', response)
+              // console.log('Messages:', response)
               this.updateMessages(response)
             },
             error => {
@@ -262,7 +262,7 @@ export class ChatWindowComponent implements OnInit{
       this.messages.push(newMessages[0]);
       this.chatService._messages.next(this.messages);
       }
-    console.log('messages list:', this.messages)
+    // console.log('messages list:', this.messages)
 
   }
 
@@ -291,7 +291,7 @@ export class ChatWindowComponent implements OnInit{
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
+        // console.log('The dialog was closed');
         if(result === true) {
           this.deleteThread(thread.thread_id ?? '')
         }
@@ -305,7 +305,7 @@ export class ChatWindowComponent implements OnInit{
           });
 
           dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
+            // console.log('The dialog was closed');
             if(result === true) {
               this.deleteThread(threadRef.thread_id ?? '')
             }

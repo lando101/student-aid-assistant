@@ -11,17 +11,20 @@ import { UserService } from './user.service';
   providedIn: 'root'
 })
 export class AuthService {
-  // public userSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  // public $user: Observable<any> = this.userSubject.asObservable();
+  public _authState: BehaviorSubject<any> = new BehaviorSubject<boolean>(false);
+  public $authState: Observable<boolean> = this._authState.asObservable();
+
+
 
   constructor(private auth: Auth, private credentialService: CredentialsService, private router: Router, private userService: UserService) {
     // this.auth.onAuthStateChanged((state) => {
-    //   console.log('Auth state changed', state)
+    //   // console.log('Auth state changed', state)
     // })
     authState(this.auth).subscribe((data)=>{
       if(!data){
-        this.logOut();
+        // this.logOut();
       }
+      this._authState.next(!!data)
     })
   }
 

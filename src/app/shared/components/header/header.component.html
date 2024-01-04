@@ -1,9 +1,9 @@
 
-<div class="h-20 bg-gray-50 dark:bg-neutral-900 w-full flex justify-center items-center border-b-2 border-gray-950 dark:border-neutral-400">
+<div *ngIf="currentUser" class="h-20 bg-gray-50 dark:bg-neutral-900 w-full flex justify-center items-center border-b-2 border-gray-950 dark:border-neutral-400">
   <div class="flex-nowrap justify-between w-full flex items-center container">
     <div class=" flex flex-nowrap gap-3 items-center">
       <span class="text-sm logo bg-neutral-950 text-gray-100 p-2 hidden lg:block">
-         federal student aid assistant [beta]
+         student aid helper [beta]
       </span>
       <span class="text-sm logo bg-neutral-950 text-gray-100 p-2 block lg:hidden">
         fsa [beta]
@@ -20,7 +20,7 @@
         </li>
       </ul>
     </div>
-    <div *ngIf="currentUser">
+    <div>
       <div class="hidden md:flex gap-3">
         <div>
           <button class="primary-button capitalize flex items-center gap-2" (click)="toggleTheme()">

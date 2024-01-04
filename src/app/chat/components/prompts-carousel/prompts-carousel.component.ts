@@ -34,7 +34,7 @@ prompts: Prompt[]= [
   {
     id: '1',
     title: 'Applying for aid',
-    prompt: 'How do I apply for federal student aid?',
+    prompt: 'How do I apply for student aid?',
     description: ''
   },
   {
@@ -52,7 +52,7 @@ prompts: Prompt[]= [
   {
     id: '4',
     title: 'Repaying aid',
-    prompt: 'Do I need to repay federal student aid?',
+    prompt: 'Do I need to repay student aid?',
     description: ''
   },
   {
@@ -64,7 +64,7 @@ prompts: Prompt[]= [
   {
     id: '6',
     title: 'Aid eligibility',
-    prompt: "How do I maintain eligibility for federal student aid?",
+    prompt: "How do I maintain eligibility for student aid?",
     description: ''
   }
 ]

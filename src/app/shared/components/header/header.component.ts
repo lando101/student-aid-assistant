@@ -37,13 +37,13 @@ export class HeaderComponent {
   constructor(private auth: AuthService, private userService: UserService, private themeService: ThemeService) {
     this.userService.$user.subscribe((user)=>{
       this.currentUser = user;
-      console.log('header', this.currentUser)
+      // console.log('header', this.currentUser)
     });
 
     try{
       this.themeService.themeSubject.subscribe((theme)=>{
         this.theme = theme;
-        console.log('theme', this.theme)
+        // console.log('theme', this.theme)
       })
     } catch(error){
       this.theme = 'light'

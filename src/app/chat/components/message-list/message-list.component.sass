@@ -1,3 +1,15 @@
+::ng-deep p
+  &:last-child
+      margin-bottom: 0px
+
+::ng-deep ol
+  padding-left: 0px
+
+::ng-deep li
+  margin-bottom: 5px
+  &:last-child
+    margin-bottom: 0px
+
 .message-width
   max-width: 85%
 
@@ -12,6 +24,7 @@
   overflow: auto
   height: calc(100vh - 381px)
   display: flex
+  scroll-behavior: smooth
   flex-direction: column-reverse
   overflow-anchor: auto !important /*  See https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor */
 

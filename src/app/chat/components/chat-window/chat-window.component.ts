@@ -46,6 +46,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DeleteDialogComponent } from '../dialogs/delete-dialog/delete-dialog.component';
+import { animate, keyframes, query, stagger, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-chat-window',
@@ -61,6 +62,20 @@ import { DeleteDialogComponent } from '../dialogs/delete-dialog/delete-dialog.co
     MatButtonModule, MatMenuModule, MatIconModule, MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule
   ],
   providers:[HttpClientModule],
+  animations: [
+    trigger('listAnimationTest', [
+      transition('* => *', [
+        query(':enter', [
+          style({ opacity: 0, transform: 'translateY(100%)' }),
+          stagger('100ms', animate('800ms ease-out', keyframes([
+            style({ opacity: 0, transform: 'translateY(10px)', offset: 0 }),
+            style({ opacity: 1, transform: 'translateY(-7px)', offset: 0.7 }), // Overshoot to 105%
+            style({ opacity: 1, transform: 'translateY(0)', offset: 1 }) // Settle back to 100%
+          ])))
+        ], { optional: true })
+      ])
+    ]),
+  ],
   viewProviders: [provideIcons({ cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee, cssAdd, cssMenu, cssMoreVertical, cssPen, cssPlayButtonO })],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.sass'
@@ -231,7 +246,7 @@ export class ChatWindowComponent implements OnInit{
     this.chatService.pollStatus(runId).subscribe(
       response => {
         // console.log('Status:', response.status);
-        if(response.status === 'completed' || Date.now() - startTime > duration) {
+        if(response.status === 'completed') {
           // get message list if completed
           // console.log('Status: (done)', response.status);
           this.chatService.listMessages().subscribe(
@@ -258,7 +273,7 @@ export class ChatWindowComponent implements OnInit{
       this.chatService._messages.next(this.messages);
     }else {
       // Assuming newMessages are sorted with the newest first
-      this.messages[this.messages.length - 1] = newMessages[1]; // replacing locally created message with open ai message
+      this.messages[this.messages.length - 1].id = newMessages[1].id; // replacing locally created message with open ai message
       this.messages.push(newMessages[0]);
       this.chatService._messages.next(this.messages);
       }
@@ -271,11 +286,16 @@ export class ChatWindowComponent implements OnInit{
       respsone =>{
         this.storageService.removeItem('thread') // removing thread from local storage
         this.messages = [];
-        if(this.userProfile.threads!.length > 1){
-          this.getThread(this.userProfile.threads![0].thread_id ?? '')
+        if(this.userProfile.threads){
+          if(this.userProfile.threads.length > 1){
+            this.getThread(this.userProfile.threads![this.userProfile.threads.length-1 ?? 0].thread_id ?? '')
+          } else {
+            this.createThread()
+          }
         } else {
           this.createThread()
         }
+
         this.chatService._messages.next(this.messages);
       },
       error =>{
@@ -297,23 +317,24 @@ export class ChatWindowComponent implements OnInit{
         }
       });
     } else {
-      const threadRef = this.userProfile.threads?.find((x)=>x.thread_id === this.threadId);
+      // const threadRef = this.userProfile.threads?.find((x)=>x.thread_id === this.threadId);
 
-        if(threadRef){
-          const dialogRef = this.dialog.open(DeleteDialogComponent, {
-            data: {thread_name: threadRef.thread_name, thread_id: threadRef.thread_id, creation_date: threadRef.creation_date},
-          });
+      //   if(threadRef){
+      //     const dialogRef = this.dialog.open(DeleteDialogComponent, {
+      //       data: {thread_name: threadRef.thread_name, thread_id: threadRef.thread_id, creation_date: threadRef.creation_date},
+      //     });
 
-          dialogRef.afterClosed().subscribe(result => {
-            // console.log('The dialog was closed');
-            if(result === true) {
-              this.deleteThread(threadRef.thread_id ?? '')
-            }
-          });
-        } else {
-          alert('error deleting thread')
-        }
+      //     dialogRef.afterClosed().subscribe(result => {
+      //       // console.log('The dialog was closed');
+      //       if(result === true) {
+      //         this.deleteThread(threadRef.thread_id ?? '')
+      //       }
+      //     });
+      //   } else {
+      //     alert('error deleting thread')
+      //   }
 
+      alert('error deleting thread')
     }
 
   }

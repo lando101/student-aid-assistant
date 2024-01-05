@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { User } from 'firebase/auth';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { Firestore, collection, collectionData, addDoc, getDoc, getDocs, doc, query, where, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from '@angular/fire/firestore';
-import { UserProfile } from '../../chat/models/user_profile.model';
+import { Firestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from '@angular/fire/firestore';
+import { Threads, UserProfile } from '../../chat/models/user_profile.model';
 import { StringFormat } from 'firebase/storage';
 
 @Injectable({
@@ -83,9 +83,10 @@ export class UserService {
    async removeThread(thread_id: string | null) {
     const docRef = doc(this.firestore, 'users', this.user.uid);
 
-    const thread = this.userProfile.threads.find((thread_id: any) => thread_id === thread_id);
+    const thread = this.userProfile.threads.find((refThread_id: Threads) => refThread_id.thread_id === thread_id);
 
-    // console.log('thread to delete', thread)
+    console.log('threads', this.userProfile.threads);
+    console.log('thread id to delete', thread_id)
 
     await updateDoc(docRef, {
       threads: arrayRemove({thread_id: thread_id, thread_name: thread.thread_name, creation_date: thread.creation_date})

@@ -10,8 +10,19 @@
 .menu-toggle-btn
   @apply bg-slate-200 hover:bg-slate-300 transition-colors rounded-full
   width: 40px
+  min-width: 40px
+  min-height: 40px
   height: 40px
   border-radius: 100%
   display: flex
   align-items: center
   justify-content: center
+
+
+.thread-button
+  @apply flex flex-nowrap gap-1 transition-colors border-gray-300 border bg-gray-50
+  &:hover
+    @apply bg-white
+
+.thread-button-active
+  @apply flex flex-nowrap gap-1 transition-colors bg-white shadow-md shadow-neutral-200 border border-gray-500

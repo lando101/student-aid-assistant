@@ -11,10 +11,12 @@ import { trigger, style, transition, animate, query, stagger, keyframes } from '
 
 import { ChatService } from '../../services/chat.service';
 import { MarkdownPipe } from '../../../shared/pipes/markdown.pipe';
+import { Subscription } from 'rxjs';
+import { NgxTypedJsModule } from 'ngx-typed-js';
 @Component({
   selector: 'app-message-list',
   standalone: true,
-  imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe],
+  imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule],
   viewProviders: [provideIcons({ cssInfo, cssBot, cssUser, featherThumbsUp, featherThumbsDown })],
   animations: [
     trigger('listAnimation', [
@@ -54,6 +56,7 @@ export class MessageListComponent implements OnInit {
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
   @Input() messageLoading: boolean = false;
+  private messagesSubscription!: Subscription;
 
   messages: Message[] | null = null;
   initialLoad: boolean = true;
@@ -61,19 +64,21 @@ export class MessageListComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    this.chatService.$messages.subscribe((messages: Message[]) =>{
-      if(messages){
-        this.messages = messages;
+    this.messagesSubscription = this.chatService.$messages.subscribe(
+      (messages: Message[]) => {
+        if (messages) {
+          this.messages = messages;
+        }
+        setTimeout(() => {
+          this.initialLoad = false;
+        }, 50);
+
+        console.log('messages list', this.messages);
+      },
+      error => {
+        // handle error
       }
-      setTimeout(() => {
-        this.initialLoad = false;
-      }, 50);
-
-      console.log('messages list', this.messages)
-    },
-    error =>{
-
-    })
+    );
   }
 
   getMessageContainerHeight(): number {
@@ -90,4 +95,10 @@ export class MessageListComponent implements OnInit {
   //     this.messageList.scrollTop(this.getMessageContainerHeight());
   //   }
   // }
+
+  ngOnDestroy(): void {
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+    }
+  }
 }

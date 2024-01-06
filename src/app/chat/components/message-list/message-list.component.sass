@@ -1,17 +1,22 @@
-::ng-deep p
-  &:last-child
-      margin-bottom: 0px
 
-::ng-deep ol
-  padding-left: 0px
 
-::ng-deep li
-  margin-bottom: 5px
-  &:last-child
-    margin-bottom: 0px
-
-.message-width
+::ng-deep .message-width
   max-width: 85%
+  p
+    margin-bottom: 1rem
+    &:last-child
+      margin-bottom: 0px !important
+
+  ol
+    padding-left: 0px
+
+  ul
+    margin-bottom: 1rem
+
+  li
+    margin-bottom: 5px !important
+    &:last-child
+      margin-bottom: 0px
 
 .message-container
   &:last-child

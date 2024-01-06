@@ -12,3 +12,12 @@
   @apply bg-transparent p-3 dark:text-neutral-300 transition-colors duration-100 border border-transparent
   &:hover
     @apply bg-gray-50 dark:bg-neutral-900 border-neutral-500 dark:border-neutral-800
+
+::ng-deep .typed-cursor.typed-cursor--blink
+  -webkit-animation: typedjsBlink 1.3s infinite !important
+  animation: typedjsBlink 1.3s infinite !important
+
+@keyframes typedjsBlink
+  50%
+    opacity: 0
+

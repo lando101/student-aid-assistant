@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { User } from 'firebase/auth';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { Firestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove, collection } from '@angular/fire/firestore';
 import { Threads, UserProfile } from '../../chat/models/user_profile.model';
 import { StringFormat } from 'firebase/storage';
+import { addDoc, getDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class UserService {
 
   constructor() {
     this.$user.subscribe((user)=>{
-      if(!!user){
+      if(!!user && user != this.user){
         console.log('user service', user);
         this.user = user;
         // this.getUserProfile().then((data: any)=>{
@@ -30,6 +31,7 @@ export class UserService {
         // });
 
         this.subUserProfile();
+        this.subUserThreads();
       }
     })
    }
@@ -38,13 +40,27 @@ export class UserService {
    subUserProfile() {
     const unsub = onSnapshot(doc(this.firestore, 'users', this.user.uid), (doc)=>{
       const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
-      // console.log(source, " data: ", doc.data());
+      console.log(source, " data: ", doc.data());
       if(doc.data()){
         this._userProfile.next(doc.data())
         this.userProfile = doc.data();
       } else {
         this._userProfile.next(this.createUserProfile())
       }
+    });
+   }
+
+   subUserThreads() {
+    const unsub = onSnapshot(collection(this.firestore, 'users', this.user.uid, 'threads'), (docs)=>{
+      docs.forEach((doc)=>{
+        // const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
+        console.log("threads data: ", doc.data());
+      })
+
+      // if(doc.docs){
+
+      // } else {
+      // }
     });
    }
 
@@ -74,11 +90,26 @@ export class UserService {
 
    // add threads to user profile
    async addThread(thread_id: string | null, thread_name: string | null) {
-    const docRef = doc(this.firestore, 'users', this.user.uid);
-    await updateDoc(docRef, {
-      threads: arrayUnion({thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString()})
+    const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!);
+
+    // await updateDoc(docRef, {
+    //   threads: arrayUnion({thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString()})
+    // })
+    await setDoc(docRef,{
+      thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString()
     })
    }
+
+    // add threads to user profile
+    async updateThread(thread_id: string | null, thread_name: string | null) {
+      const docRef = doc(this.firestore, 'users', this.user.uid);
+      // await updateDoc(docRef, {
+      //   threads: arrayUnion({thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString()})
+      // })
+
+     const collectionRef = doc(this.firestore, `users/${this.user.uid}/threads`, 'thread_aeI2bIoXCvILNwLyo9OpFmHp');
+     console.log((await getDoc(collectionRef)).data())
+     }
 
    async removeThread(thread_id: string | null) {
     const docRef = doc(this.firestore, 'users', this.user.uid);

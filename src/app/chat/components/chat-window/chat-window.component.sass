@@ -4,11 +4,16 @@
 // @import 'tailwindcss/utilities'
 
 .prompt-box
-  backdrop-filter: blur(6px)
-  background: #f3f4f6d6
+  backdrop-filter: blur(4px)
+  // background: linear-gradient(181deg, #f3f4f687, #f3f4f6f2, rgb(243 244 246))
+  @apply bg-gradient-to-t from-gray-100 via-[#f3f4f6f2] to-transparent dark:bg-gradient-to-t dark:from-neutral-950 dark:via-[#0a0a0ae3] dark:to-transparent
+  input
+    // background-color: #ffffff57 !important
+    // backdrop-filter: brightness(1.5)
+    @apply bg-white bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-90 backdrop-brightness-150 dark:backdrop-brightness-0
 
 .menu-toggle-btn
-  @apply bg-slate-200 hover:bg-slate-300 transition-colors rounded-full
+  @apply bg-slate-200 dark:bg-neutral-800 dark:text-neutral-400 hover:bg-slate-300 dark:hover:bg-neutral-700 transition-colors rounded-full
   width: 40px
   min-width: 40px
   min-height: 40px
@@ -20,12 +25,13 @@
 
 
 .thread-button
-  @apply flex flex-nowrap gap-1 transition-colors border-gray-300 border bg-gray-50
+  @apply flex flex-nowrap gap-1  border-gray-300 border bg-gray-50 rounded-xl transition opacity-90
   &:hover
-    @apply bg-white
+    @apply bg-white scale-[1.03]
 
 .thread-button-active
-  @apply flex flex-nowrap gap-1 transition-colors bg-white shadow-md shadow-neutral-200 border border-gray-500
+  @apply flex flex-nowrap gap-1 transition bg-white shadow-md shadow-neutral-200 border border-gray-500 rounded-xl scale-105
 
 .content-container
   height: calc(100% - 15vh)
+

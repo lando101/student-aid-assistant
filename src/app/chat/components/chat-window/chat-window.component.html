@@ -3,7 +3,7 @@
     <div *ngIf="userProfile?.threads?.length ?? 0 > 0" >
       <p class="text-gray-600 font-black">THREADS ({{userProfile.threads?.length}})</p>
       <div class="">
-        <div class="m-2" *ngFor="let thread of threads?.reverse()" @growShrink>
+        <div class="mx-2 my-3" *ngFor="let thread of threads?.reverse()" @growShrink>
           <div [ngClass]="{'thread-button-active': threadId === thread.thread_id, 'thread-button': threadId !== thread.thread_id}">
             <button class="flex flex-col gap-1 text-left pl-3 py-3" (click)="getThread(thread.thread_id ?? '')">
               <div class="font-bold text-gray-900 truncate max-w-48">{{thread.thread_name ? thread.thread_name:'Unnamed chat'}}</div>
@@ -74,10 +74,10 @@
                   <app-prompts-carousel></app-prompts-carousel>
                 </div>
               </div>
-              <div class="w-full absolute bottom-0">
-                <div class="w-full ">
-                  <div class="flex items-center gap-1 ">
-                    <input #chatbox [disabled]="messageLoading" [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'" class="typing bg-white dark:!bg-neutral-900 h-12 px-3 border border-solid !border-neutral-800 dark:!border-neutral-600 w-full" #inputbox type="text">
+              <div class="w-full absolute bottom-0 message-footer prompt-box">
+                <div class="w-full">
+                  <div class="flex items-center gap-2">
+                    <input #chatbox [disabled]="messageLoading" [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'" class="typing h-12 px-3 border border-solid dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full" #inputbox type="text">
                     <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" class="send-button" (click)="createMessage(inputbox.value)">Send</button>
                   </div>
                   <div class="text-xs font-semibold py-3 w-full text-center text-gray-500 dark:text-neutral-400 flex flex-wrap items-center justify-center gap-1">Built using ChatGPT Assistant Beta // Developed and designed by Landon C. Messmer <ng-icon name="cssCoffee"></ng-icon></div>

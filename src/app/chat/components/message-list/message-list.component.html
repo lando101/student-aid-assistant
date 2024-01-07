@@ -4,19 +4,19 @@
     <p class="dark:text-neutral-400 text-gray-700 font-semibold mb-0">Current Thread</p>
     <p class="dark:text-neutral-400 text-sm text-gray-600 font-semibold mb-0 flex items-center">Showing last {{messages.length}} messages <ng-icon class="ml-1" [size]="'16px'" name="cssInfo"></ng-icon></p>
   </div>
-    <div class="scroller w-full">
+    <div class="scroller w-full pl-3">
       <div [@listAnimation]="initialLoad ? undefined : messages.length" id="messagesContainer" #messagesContainer class="flex flex-col gap-3 pr-5 message-container">
         <div *ngFor="let message of messages, let i = index">
           <div [ngClass]="{'items-end': message.role !== 'assistant'}" class="message" >
-            <div class="flex gap-1 items-center capitalize font-bold" *ngIf="message">
+            <div class="flex gap-1 items-center capitalize font-bold dark:text-neutral-400" *ngIf="message">
               <ng-icon *ngIf="message.role === 'assistant'" class="ml-1" [size]="'20px'" name="cssBot"></ng-icon>{{message.role === 'assistant' ? 'assistant': 'you'}}
             </div>
             <div class="message-width ml-7 flex gap-2">
               <div>
-                <div [innerHTML]="message.content[0].text.value | markdown" [ngClass]="{'rounded-tl-none bg-white border border-gray-300':message.role === 'assistant', 'rounded-tr-none bg-neutral-800 text-neutral-200':message.role !== 'assistant'}" class="p-6 rounded-xl"></div>
-                <p class="mb-0 text-gray-600 font-bold text-xs py-2 w-full text-end">{{(message.created_at! * 1000) | date:'short'}}</p>
+                <div [innerHTML]="message.content[0].text.value | markdown" [ngClass]="{'rounded-tl-none bg-white dark:!text-neutral-200 dark:!bg-neutral-800 border border-gray-300 dark:!border-neutral-700':message.role === 'assistant', 'rounded-tr-none bg-neutral-800 dark:bg-neutral-900 text-neutral-200':message.role !== 'assistant'}" class="p-6 rounded-xl"></div>
+                <p class="mb-0 text-gray-600 dark:text-neutral-700 font-bold text-xs py-2 w-full text-end">{{(message.created_at! * 1000) | date:'short'}}</p>
               </div>
-              <div class="flex flex-col gap-2 pt-1" *ngIf="message.role === 'assistant'">
+              <div class="flex flex-col gap-2 pt-1 dark:text-neutral-700" *ngIf="message.role === 'assistant'">
                 <button class="opacity-70 hover:opacity-100">
                   <ng-icon class="ml-1" [size]="'16px'" name="featherThumbsUp"></ng-icon>
                 </button>
@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div class="absolute bottom-8 left-0">
+    <div class="absolute bottom-32 left-0">
       <div [@fadeInOut] *ngIf="messageLoading">
         <div class="message">
           <div class="flex gap-1 items-center capitalize font-bold">

@@ -8,6 +8,7 @@ import { Persistence, getAuth, provideAuth } from '@angular/fire/auth';
 import { Auth, signInAnonymously, signInWithEmailAndPassword, setPersistence, browserSessionPersistence  } from '@angular/fire/auth';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
+import { AuthenticationService } from '../../../core/authentication/authentication.service';
 
 @Component({
   selector: 'app-login-form',
@@ -22,7 +23,7 @@ export class LoginFormComponent {
 
   loginForm!: FormGroup;
   authenticated: boolean = false;
-  constructor(private formBuilder: FormBuilder, private auth: Auth, private router: Router, private authService: AuthService) { }
+  constructor(private formBuilder: FormBuilder, private auth: Auth, private router: Router, private authService: AuthService, private authNew: AuthenticationService) { }
   // constructor(private formBuilder: FormBuilder) { }
 
 
@@ -43,13 +44,17 @@ export class LoginFormComponent {
     const password: string = this.loginForm.get('password')!.value;
     if (this.loginForm.valid) {
       // Handle the form submission
-      this.authService.emailLogin(email, password).subscribe(data =>{
-          console.log('login state', data)
+      // this.authService.emailLogin(email, password).subscribe(data =>{
+      //     console.log('login state', data)
 
-        if(data){
-          this.router.navigate(['/home']);
-        }
-      })
+      //   if(data){
+      //     this.router.navigate(['/home']);
+      //   }
+      // })
+      this.authNew.emailLogin(email, password).then((data)=>{
+        console.log('login', data);
+        this.router.navigate(['/home']);
+      });
     }
   }
 

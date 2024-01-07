@@ -45,7 +45,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DeleteDialogComponent } from '../dialogs/delete-dialog/delete-dialog.component';
-import { animate, keyframes, query, stagger, style, transition, trigger } from '@angular/animations';
+import { animate, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { RenameDialogComponent } from '../dialogs/rename-dialog/rename-dialog.component';
 
@@ -103,6 +103,43 @@ import { RenameDialogComponent } from '../dialogs/rename-dialog/rename-dialog.co
         ),
       ]),
     ]),
+    trigger('growShrink', [
+      state('void', style({ height: '0', scale:.93, opacity: 0, margin: '0' })),
+      state('*', style({ height: '98px', scale: 1, opacity: 1, margin: '8px' })),
+      transition('void => *', [
+        animate('280ms ease-in', keyframes([
+          style({ height: '0', scale:.93, opacity: 0, offset: 0, margin: '0' }), // Start
+          style({ height: '98px', scale:.93, opacity: 0, offset: 0.55 }), // Shrink a bit
+          style({ height: '98px', scale:.93, opacity: 1, offset: 0.65 }), // Shrink a bit
+          style({ height: '98px', scale: 1, opacity: 1, offset: 1, margin: '8px' }), // Then shrink to final size
+        ]))
+      ]),
+      transition('* => void', [
+        animate('350ms ease-out', keyframes([
+          style({ height: '98px', scale:1, opacity: 1, offset: 0, margin: '8px' }), // Start
+          style({ height: '98px', scale:.93, opacity: 1, offset: 0.35 }), // Shrink a bit
+          style({ height: '98px', scale:.93, opacity: 1, offset: 0.6 }), // Shrink a bit
+          style({ height: '0', scale:.93, opacity: 0, offset: 1, margin: '0' }), // Fully disappear
+        ]))
+      ])
+    ]),
+    trigger('fadeInOut', [
+      state('void', style({ opacity: 0 })),
+      state('*', style({ opacity: 1 })),
+      transition(':enter', [animate('0.5s 500ms ease-out',
+        keyframes([
+          style({ opacity: 0, offset: 0, scale: .95 }),
+          style({ opacity: .5, transform: 'translateY(-10px)',  offset: .5, scale: .95 }),
+          style({ opacity: 1, transform: 'translateY(0px)', offset: 1, scale: 1 })
+        ])
+      )]), // 0% to 100% opacity
+      transition(':leave', [animate('0.5s ease-in',
+      keyframes([
+        style({ opacity: 1, offset: 0, scale: 1 }),
+        style({ opacity: 0, offset: 1, scale: .95 })
+      ])
+      )])  // 100% to 0% opacity
+    ])
   ],
   viewProviders: [
     provideIcons({
@@ -130,6 +167,7 @@ export class ChatWindowComponent implements OnInit {
   threadId: string = '';
   messages: Message[] = [];
   thread!: Thread;
+  threads: Threads[] = []
 
   messageLoading: boolean = false;
   threadLoading: boolean = false;
@@ -161,9 +199,27 @@ export class ChatWindowComponent implements OnInit {
     this.userService.$userProfile.subscribe((userProfile) => {
       if (userProfile) {
         this.userProfile = userProfile;
+        // this.threads = userProfile.threads
+
+        this.threads = this.updateThreads(this.threads, userProfile.threads)
       }
     });
   }
+
+  updateThreads(oldArray: Threads[], newArray: Threads[]) {
+    // Creating a map of thread IDs for easy lookup
+    const oldThreadMap = new Map(oldArray.map(thread => [thread.thread_id, thread]));
+
+    // Add new threads to the old array
+    newArray.forEach(thread => {
+        if (!oldThreadMap.has(thread.thread_id)) {
+            oldArray.push(thread);
+        }
+    });
+
+    // Filter out deleted threads from the old array
+    return oldArray.filter(thread => newArray.some(newThread => newThread.thread_id === thread.thread_id));
+}
 
   // create thread
   createThread() {
@@ -232,7 +288,6 @@ export class ChatWindowComponent implements OnInit {
         }
       });
     } else {
-      // console.log('No thread ID')
     }
   }
 
@@ -268,15 +323,6 @@ export class ChatWindowComponent implements OnInit {
         alert('Error creating message');
       }
     );
-    // .subscribe({
-    //   next(data) {
-    //     // console.log('Message sent response', data);
-    //     this.runAssistant()
-    //   },
-    //   error(err) {
-    //     alert('Error creating message');
-    //   }
-    // })
   }
 
   // run assistant
@@ -398,14 +444,15 @@ export class ChatWindowComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe((result) => {
         // console.log('The dialog was closed');
-        if (result === true) {
-          this.userService.updateThread(null, null);
+        if (result === result) {
+          this.userService.updateThread(thread.thread_id ?? '', 'thread_name', result);
         }
       });
     } else {
       alert('error deleting thread');
+      }
     }
-  }
+
 
   createUnixTime(): number {
     // Get the current date and time

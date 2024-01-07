@@ -8,16 +8,21 @@ export class StorageService {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
-  setItem(key: string, value: string) {
+  setItem(key: string, value: string, doNotRemember?: boolean) {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(key, value);
+      if(doNotRemember) {
+        sessionStorage.setItem(key,value);
+      } else {
+        localStorage.setItem(key, value);
+        sessionStorage.setItem(key,value);
+      }
     }
   }
 
   getItem(key: string): string | null {
     try {
       if (isPlatformBrowser(this.platformId)) {
-        return localStorage.getItem(key);
+        return sessionStorage.getItem(key) || localStorage.getItem(key);
       }
       return null;
     } catch (error) {
@@ -29,6 +34,7 @@ export class StorageService {
   removeItem(key: string) {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(key);
+      sessionStorage.removeItem(key)
     }
   }
 }

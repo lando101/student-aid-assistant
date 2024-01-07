@@ -16,6 +16,7 @@ import { cssSun, cssMoon, cssMenu } from '@ng-icons/css.gg';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api/menuitem';
 import { SidebarModule } from 'primeng/sidebar';
+import { AuthenticationService } from '../../../core/authentication/authentication.service';
 
 @Component({
   selector: 'app-header',
@@ -34,11 +35,20 @@ export class HeaderComponent {
   currentUser: User | null = null;
   value!: number;
 
-  constructor(private auth: AuthService, private userService: UserService, private themeService: ThemeService) {
-    this.userService.$user.subscribe((user)=>{
-      this.currentUser = user;
-      // console.log('header', this.currentUser)
-    });
+  constructor(private auth: AuthService, private userService: UserService, private themeService: ThemeService, private authService: AuthenticationService) {
+    // this.userService.$user.subscribe((user)=>{
+    //   this.currentUser = user;
+    //   // console.log('header', this.currentUser)
+    // });
+
+    this.authService.$currentUser.subscribe((user)=>{
+      console.log('header user', user)
+      if(!!user) {
+        this.currentUser = user;
+      } else {
+        this.currentUser = null
+      }
+    })
 
     try{
       this.themeService.themeSubject.subscribe((theme)=>{
@@ -95,6 +105,6 @@ export class HeaderComponent {
   }
 
   logOut(){
-    this.auth.logOut();
+    this.authService.logOut();
   }
 }

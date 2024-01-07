@@ -5,6 +5,7 @@
         <div>
           <label class="text-sm text-gray-600 dark:text-neutral-600 font-semibold mb-1" for="threadName">THREAD NAME</label>
           <input
+            #name
             type="text"
             placeholder="Enter new thread name..."
             id="threadName"
@@ -39,7 +40,7 @@
   </div>
   <div class="flex gap-4 items-center">
     <button mat-button [disableRipple]="true" class="rounded-none py-4 hover:rounded-none"  (click)="onNoClick()">Keep Name</button>
-    <button type="submit" [disabled]="!threadNameControl.valid" class="primary-button-black flex items-center gap-1 px-3" [mat-dialog-close]="true" cdkFocusInitial>
+    <button type="submit" [disabled]="!threadNameControl.valid" class="primary-button-black flex items-center gap-1 px-3" [mat-dialog-close]="name.value" cdkFocusInitial>
       Update Thread Name
     </button>
   </div>

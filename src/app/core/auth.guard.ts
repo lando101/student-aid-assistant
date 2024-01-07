@@ -4,6 +4,7 @@ import { Auth, authState } from '@angular/fire/auth';
 import { Observable, take, map, tap } from 'rxjs';
 import { CredentialsService } from './auth/credentials.service';
 import { AuthService } from './auth/auth.service';
+import { AuthenticationService } from './authentication/authentication.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,19 +13,10 @@ export class AuthGuard implements CanActivate{
 
   private authenticated: boolean = false;
 
-  constructor(private router: Router, private auth: Auth, private credentialService: CredentialsService, private authService: AuthService) {
-    // authState(this.auth).subscribe((state) => {
-    //   this.authenticated = !!state;
-    //   // console.log('auth state guard', this._authState)
-    // })
-
-    // this.authService.$authState.subscribe((auth)=>{
-    //   this.authenticated = auth
-    //  })
-
-     this.credentialService.$credState.subscribe((state)=>{
-      this.authenticated = state
-     })
+  constructor(private router: Router, private auth: Auth, private credentialService: CredentialsService, private authService: AuthenticationService) {
+     this.authService.$currentUser.subscribe((user)=>{
+      this.authenticated = !!user;
+     });
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
@@ -44,8 +36,8 @@ export class AuthGuard implements CanActivate{
     //   this.router.navigate(['/auth']);
     //   return false
     // }
-    const authState = this.authenticated;
-    if (authState) {
+    const currentUser = this.authenticated;
+    if (currentUser) {
       return true;
     } else {
       this.router.navigate(['/auth']);

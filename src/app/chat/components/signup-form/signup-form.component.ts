@@ -6,6 +6,7 @@ import { Auth, signInAnonymously, createUserWithEmailAndPassword } from '@angula
 import {MatDividerModule} from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
 import { UserService } from '../../../core/auth/user.service';
+import { AuthenticationService } from '../../../core/authentication/authentication.service';
 
 @Component({
   selector: 'app-signup-form',
@@ -18,7 +19,7 @@ export class SignupFormComponent {
   signupForm!: FormGroup;
   image: string = 'https://firebasestorage.googleapis.com/v0/b/federal-student-aid-assistant.appspot.com/o/site_images%2Fhuman_chillin.svg?alt=media&token=8607d36b-9eec-4609-a650-a7c9a16f6994'
   uid: string | null = null;
-  constructor(private formBuilder: FormBuilder, private auth: Auth, private userService: UserService) { }
+  constructor(private formBuilder: FormBuilder, private auth: Auth, private userService: UserService, private authNew: AuthenticationService) { }
 
   ngOnInit(): void {
     this.signupForm = this.formBuilder.group({
@@ -47,28 +48,45 @@ export class SignupFormComponent {
   }
 
   onSubmit(): void {
+    console.log(this.signupForm.value);
+
     const email: string = this.signupForm.get('email')!.value.trim();
     const password: string = this.signupForm.get('password')!.value.trim();
     const firstName: string = this.signupForm.get('firstName')!.value.trim();
     const lastName: string = this.signupForm.get('lastName')!.value.trim();
 
+    let profile = {
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName
+    }
+
+
     if (this.signupForm.valid) {
       console.log(this.signupForm.value);
-      createUserWithEmailAndPassword(this.auth, email, password).then((data)=> {
-        console.log('signup', data);
-        this.uid = data.user.uid
-        this.userService.createUserProfile(this.uid, email).then(()=>{
-          this.userService.updateUser(this.uid ?? '', 'first_name', firstName)
-          .then(()=>{
-            this.userService.updateUser(this.uid ?? '', 'last_name', lastName)
-          })
-        })
-        // console.log('email', this.auth.currentUser?.email);
-      }).catch(error => {
-        alert('error creating account')
-      })
+      // createUserWithEmailAndPassword(this.auth, email, password).then((data)=> {
+      //   console.log('signup', data);
+      //   this.uid = data.user.uid
+      //   this.userService.createUserProfile(this.uid, email).then(()=>{
+      //     this.userService.updateUser(this.uid ?? '', 'first_name', firstName)
+      //     .then(()=>{
+      //       this.userService.updateUser(this.uid ?? '', 'last_name', lastName)
+      //     })
+      //   })
+      //   // console.log('email', this.auth.currentUser?.email);
+      // }).catch(error => {
+      //   alert('error creating account')
+      // })
+
       // Handle the form submission
       // this.authService.SignUp(this.signupForm.get('email')?.value, this.signupForm.get('password')?.value);
+      this.authNew.createAccountEmail(profile).then((user)=>{
+        this.userService.createUserProfile(profile, user!.uid)
+        .then((data)=>{
+
+        })
+      });
     }
   }
 }

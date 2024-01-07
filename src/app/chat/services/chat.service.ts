@@ -129,6 +129,7 @@ export class ChatService {
 
   async getThread(threadId: string): Promise<any> {
     try {
+      this._threadLoading.next(true);
       const thread = await firstValueFrom(
         this.http.get<Thread>(`${this.apiUrl}/threads/${threadId}`).pipe(
           tap(thread => {
@@ -189,6 +190,7 @@ export class ChatService {
 
   // get messages (response)
    listMessages(): Observable<Message[]> {
+    // this._messageLoading.next(true);
     let url = '';
     if(this.thread){
       url = `${this.apiUrl}/list-messages/${this.thread.id}`;

@@ -2,8 +2,8 @@
   <mat-drawer #drawer class="example-sidenav py-9 pr-8 mr-8 bg-transparent border-0" mode="side" >
     <div *ngIf="userProfile?.threads?.length ?? 0 > 0" >
       <p class="text-gray-600 font-black">THREADS ({{userProfile.threads?.length}})</p>
-      <div class="flex flex-col gap-4 justify-center">
-        <div *ngFor="let thread of userProfile.threads?.reverse()">
+      <div class="">
+        <div class="m-2" *ngFor="let thread of threads?.reverse()" @growShrink>
           <div [ngClass]="{'thread-button-active': threadId === thread.thread_id, 'thread-button': threadId !== thread.thread_id}">
             <button class="flex flex-col gap-1 text-left pl-3 py-3" (click)="getThread(thread.thread_id ?? '')">
               <div class="font-bold text-gray-900 truncate max-w-48">{{thread.thread_name ? thread.thread_name:'Unnamed chat'}}</div>
@@ -43,45 +43,53 @@
 
   <div class="example-sidenav-content bg-transparent h-full">
     <div class="container flex items-center justify-center py-9 h-full">
-      <div class="w-full max-w-5xl h-full">
-        <div *ngIf="threadId; else loading" class="flex h-full gap-4">
-          <!-- Display thread details -->
-          <button type="button" class="menu-toggle-btn" (click)="drawer.toggle()">
-            <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
-          </button>
-          <div class="flex flex-col gap-10 justify-start items-center w-100">
-            <div class="flex justify-between items-start w-full flex-wrap">
-              <div class="flex items-center gap-3">
-
-                <div class="hidden md:block">
-                  <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
-                  <div class="text-sm text-gray-700 dark:text-neutral-600 font-semibold uppercase mb-0 flex items-center gap-2 ">
-                    <div class="truncate w-48">{{ thread.id }}</div>
-                    <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
+      <div class="w-full max-w-5xl h-full overflow-hidden">
+        <!-- <div *ngIf="!threadLoading && !messageLoading; else loading" class="flex flex-col h-full gap-4"> -->
+          <div class="flex gap-3 h-full w-full">
+            <button type="button" class="menu-toggle-btn" (click)="drawer.toggle()">
+              <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
+            </button>
+            <div class="flex flex-col h-full gap-4 w-full relative">
+            <!-- Display thread details -->
+            <div class="flex flex-col gap-10 justify-start items-center w-100 h-100 relative">
+              <div class="flex justify-between items-start w-full flex-wrap">
+                <div class="flex items-center gap-3">
+                  <div class="hidden md:block">
+                    <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
+                    <div class="text-sm text-gray-700 dark:text-neutral-600 font-semibold uppercase mb-0 flex items-center gap-2 ">
+                      <div class="truncate w-48">{{ thread.id }}</div>
+                      <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
+                    </div>
                   </div>
                 </div>
+                <div class="flex items-center gap-3 justify-between md:justify-end">
+                  <button class="flex items-center justify-center gap-2 primary-button-black min-w-44" (click)="createNewThread()"><ng-icon [size]="'18px'" name="cssAdd"></ng-icon>New Thread</button>
+                  <button class="flex items-center justify-center gap-2 delete-button-black min-w-44" (click)="openDialog(null)"><ng-icon [size]="'18px'" name="cssTrashEmpty"></ng-icon>Delete Thread</button>
+                </div>
               </div>
-              <div class="flex items-center gap-3 justify-between md:justify-end">
-                <button class="flex items-center justify-center gap-2 primary-button-black min-w-44" (click)="createNewThread()"><ng-icon [size]="'18px'" name="cssAdd"></ng-icon>New Thread</button>
-                <button class="flex items-center justify-center gap-2 delete-button-black min-w-44" (click)="openDialog(null)"><ng-icon [size]="'18px'" name="cssTrashEmpty"></ng-icon>Delete Thread</button>
+              <div class="flex flex-col gap-8 justify-between w-full content-container">
+                <app-example-prompts *ngIf="messages.length === 0 && !threadLoading && !messageLoading" @fadeInOut></app-example-prompts>
+                <app-message-list *ngIf="messages.length > 0" @fadeInOut [messageLoading]="messageLoading"></app-message-list>
+                <div class="prompt-box" *ngIf="messages.length === 0" @fadeInOut>
+                  <app-prompts-carousel></app-prompts-carousel>
+                </div>
               </div>
-            </div>
-            <div class="flex flex-col gap-8 justify-between h-full w-full">
-              <app-example-prompts *ngIf="messages.length === 0 || !messages"></app-example-prompts>
-              <!-- ... other thread details ... -->
-              <app-message-list *ngIf="messages.length > 0" [messageLoading]="messageLoading"></app-message-list>
-              <div class="relative w-full">
-                <div class=" bottom-0 absolute w-full prompt-box">
-                  <app-prompts-carousel *ngIf="messages.length === 0"></app-prompts-carousel>
-                  <div class="flex items-center gap-1 w-full">
-                      <input #chatbox [disabled]="messageLoading" [placeholder]="messageLoading === true ? 'Assistant is responding...':'Enter a prompt here...'" class="typing bg-white dark:!bg-neutral-900 h-12 px-3 border border-solid !border-neutral-800 dark:!border-neutral-600 w-full" #inputbox type="text">
-                    <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading === true}" class="send-button" (click)="createMessage(inputbox.value)">Send</button>
+              <div class="w-full absolute bottom-0">
+                <div class="w-full ">
+                  <div class="flex items-center gap-1 ">
+                    <input #chatbox [disabled]="messageLoading" [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'" class="typing bg-white dark:!bg-neutral-900 h-12 px-3 border border-solid !border-neutral-800 dark:!border-neutral-600 w-full" #inputbox type="text">
+                    <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" class="send-button" (click)="createMessage(inputbox.value)">Send</button>
                   </div>
                   <div class="text-xs font-semibold py-3 w-full text-center text-gray-500 dark:text-neutral-400 flex flex-wrap items-center justify-center gap-1">Built using ChatGPT Assistant Beta // Developed and designed by Landon C. Messmer <ng-icon name="cssCoffee"></ng-icon></div>
                 </div>
               </div>
             </div>
+
           </div>
+
+          <!-- <div class="container"> -->
+
+          <!-- </div> -->
 
 
           <!-- <button class="text-3xl bg-blue-500" (click)="deleteThread()">delete thread</button> -->

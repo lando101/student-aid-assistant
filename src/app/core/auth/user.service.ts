@@ -4,7 +4,9 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Firestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove, collection } from '@angular/fire/firestore';
 import { Threads, UserProfile } from '../../chat/models/user_profile.model';
 import { StringFormat } from 'firebase/storage';
-import { addDoc, getDoc } from 'firebase/firestore';
+import { addDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { StorageService } from '../../chat/services/storage.service';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,22 +21,40 @@ export class UserService {
 
   public _userProfile: BehaviorSubject<any> = new BehaviorSubject<UserProfile | null | any>(null);
   public $userProfile: Observable<UserProfile | null | any> = this._userProfile.asObservable();
-  public userProfile: UserProfile | null | any = null;
 
-  constructor() {
-    this.$user.subscribe((user)=>{
-      if(!!user && user != this.user){
-        console.log('user service', user);
+  public userProfile!: UserProfile | null | any;
+
+  userProfileKey: string = "userProfile";
+
+
+  constructor(private storageService: StorageService, private authService: AuthenticationService) {
+    console.log('user service')
+    this.authService.$currentUser.subscribe((user) => {
+      console.log('Received user in UserService:', user);
+      if (user) {
         this.user = user;
-        // this.getUserProfile().then((data: any)=>{
-        //   // console.log('user data', data)
-        // });
-
-        this.subUserProfile();
-        this.subUserThreads();
+        try {
+          const userProfile = this.storageService.getItem(this.userProfileKey);
+          console.log('Retrieved userProfile from storage:', userProfile);
+          if (userProfile) {
+            this.userProfile = JSON.parse(userProfile);
+            this._userProfile.next(this.userProfile);
+          } else {
+            this.userProfile = null;
+            this._userProfile.next(null);
+          }
+          this.subUserProfile();
+          this.subUserThreads();
+        } catch (error) {
+          console.error('Error parsing userProfile:', error);
+          this.userProfile = null;
+          this._userProfile.next(null);
+        }
+      } else {
+        console.log('User object is falsy in UserService.');
       }
-    })
-   }
+    });
+  }
 
 
    subUserProfile() {
@@ -45,83 +65,98 @@ export class UserService {
         this._userProfile.next(doc.data())
         this.userProfile = doc.data();
       } else {
-        this._userProfile.next(this.createUserProfile())
+        // this._userProfile.next(this.createUserProfile())
       }
     });
    }
 
    subUserThreads() {
     const unsub = onSnapshot(collection(this.firestore, 'users', this.user.uid, 'threads'), (docs)=>{
+      this.userProfile.threads = []; // might need to fix for animations
       docs.forEach((doc)=>{
-        // const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
         console.log("threads data: ", doc.data());
-      })
-
-      // if(doc.docs){
-
-      // } else {
-      // }
+        this.userProfile.threads.push(doc.data())
+      });
+      this.storageService.setItem(this.userProfileKey, JSON.stringify(this.userProfile));
+      this._userProfile.next(this.userProfile);
+      console.log('user profile with trheads', this.userProfile)
     });
    }
 
-   async createUserProfile(uid?: string, email?: string): Promise<any> {
-    let threads: [{thread_id?: string, thread_name?: string, creation_date?: string | Date | null | undefined}] | null = null
+   async createUserProfile(profile: {email: string, password: string, firstName: string, lastName: string}, uid: string): Promise<any> {
+    const { email, firstName, lastName } = profile;
 
-    const userRef = await setDoc(doc(this.firestore, 'users', uid ? uid:this.user.uid), {
-      email: email ? email:this.user.email,
-      first_name: '',
-      last_name: '',
-      image: '',
-      last_login: '',
-      threads: [],
-      uid: uid ? uid:this.user.uid
-    });
+    const docRef = doc(this.firestore, 'users', uid);
 
-    return {
-      email: email ? email:this.user.email,
-      first_name: '',
-      last_name: '',
-      image: '',
-      last_login: '',
-      threads: threads,
-      uid: uid ? uid:this.user.uid
-    };
+    try {
+      // Set the document
+      await setDoc(docRef, {
+        email: email,
+        first_name: firstName,
+        last_name: lastName,
+        image: '',
+        last_login: '',
+        uid: uid || this.user.uid
+      });
+
+      // Fetch the newly created/updated document
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        console.log('Document data:', docSnap.data());
+        this.userProfile = docSnap.data();
+        this.storageService.setItem(this.userProfileKey, JSON.stringify(docSnap.data()));
+        return docSnap.data();
+      } else {
+        console.log('No such document!');
+        try {
+          this.storageService.removeItem(this.userProfileKey);
+        } catch (error) {
+
+        }
+        this.userProfile = null;
+
+        return null;
+      }
+    } catch (error) {
+      console.error('Error writing document: ', error);
+      try {
+        this.storageService.removeItem(this.userProfileKey);
+      } catch (error) {
+
+      }
+
+      this.userProfile = null;
+    }
    }
 
    // add threads to user profile
    async addThread(thread_id: string | null, thread_name: string | null) {
     const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!);
-
-    // await updateDoc(docRef, {
-    //   threads: arrayUnion({thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString()})
-    // })
     await setDoc(docRef,{
       thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString()
     })
    }
 
     // add threads to user profile
-    async updateThread(thread_id: string | null, thread_name: string | null) {
-      const docRef = doc(this.firestore, 'users', this.user.uid);
+    async updateThread(thread_id: string, key: string, value: string) {
+      const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!);
+
+      await updateDoc(docRef, {
+        [key]: value
+      })
       // await updateDoc(docRef, {
       //   threads: arrayUnion({thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString()})
       // })
-
-     const collectionRef = doc(this.firestore, `users/${this.user.uid}/threads`, 'thread_aeI2bIoXCvILNwLyo9OpFmHp');
-     console.log((await getDoc(collectionRef)).data())
      }
 
    async removeThread(thread_id: string | null) {
-    const docRef = doc(this.firestore, 'users', this.user.uid);
+    const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!);
 
-    const thread = this.userProfile.threads.find((refThread_id: Threads) => refThread_id.thread_id === thread_id);
+    await deleteDoc(docRef)
 
-    console.log('threads', this.userProfile.threads);
-    console.log('thread id to delete', thread_id)
-
-    await updateDoc(docRef, {
-      threads: arrayRemove({thread_id: thread_id, thread_name: thread.thread_name, creation_date: thread.creation_date})
-    })
+    // await updateDoc(docRef, {
+    //   threads: arrayRemove({thread_id: thread_id, thread_name: thread.thread_name, creation_date: thread.creation_date})
+    // })
    }
 
    async updateUser(user_id: string, key: string, value: string): Promise<any> {

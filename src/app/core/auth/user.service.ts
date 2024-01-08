@@ -4,9 +4,10 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Firestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove, collection } from '@angular/fire/firestore';
 import { Threads, UserProfile } from '../../chat/models/user_profile.model';
 import { StringFormat } from 'firebase/storage';
-import { addDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { Timestamp, addDoc, deleteDoc, getDoc } from 'firebase/firestore';
 import { StorageService } from '../../chat/services/storage.service';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { Message } from '../../chat/models/message.model';
 
 @Injectable({
   providedIn: 'root'
@@ -133,31 +134,32 @@ export class UserService {
    async addThread(thread_id: string | null, thread_name: string | null) {
     const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!);
     await setDoc(docRef,{
-      thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString()
+      thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString(), last_message_content: '', last_updated: new Date().toUTCString()
     })
    }
 
-    // add threads to user profile
-    async updateThread(thread_id: string, key: string, value: string) {
-      const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!);
+   // add threads to user profile
+   async addMessages(thread_id: string | null, mesg: Message | null) {
+    const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!, 'messages', mesg!.id!);
+   }
 
-      await updateDoc(docRef, {
-        [key]: value
-      })
-      // await updateDoc(docRef, {
-      //   threads: arrayUnion({thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString()})
-      // })
-     }
+  // add threads to user profile
+  async updateThread(thread_id: string, key: string, value: string | Timestamp) {
+    const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!);
+
+    await updateDoc(docRef, {
+      [key]: value,
+      last_updated: new Date().toUTCString()
+    })
+  }
 
    async removeThread(thread_id: string | null) {
     const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!);
 
     await deleteDoc(docRef)
-
-    // await updateDoc(docRef, {
-    //   threads: arrayRemove({thread_id: thread_id, thread_name: thread.thread_name, creation_date: thread.creation_date})
-    // })
    }
+
+  //  async getMessages()
 
    async updateUser(user_id: string, key: string, value: string): Promise<any> {
     if(user_id){
@@ -168,9 +170,5 @@ export class UserService {
     } else {
       return 'error'
     }
-
-
-
    }
-
 }

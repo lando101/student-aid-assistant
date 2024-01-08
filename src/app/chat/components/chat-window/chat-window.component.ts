@@ -11,7 +11,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 // PrimeNG Modules
 import { MenuItem } from 'primeng/api';
@@ -48,115 +48,106 @@ import { DeleteDialogComponent } from '../dialogs/delete-dialog/delete-dialog.co
 import { animate, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { RenameDialogComponent } from '../dialogs/rename-dialog/rename-dialog.component';
+import { TimeagoPipe } from "../../../shared/pipes/timeago.pipe";
+import { featherClock, featherEdit } from '@ng-icons/feather-icons';
 
 @Component({
-  selector: 'app-chat-window',
-  standalone: true,
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    MessageListComponent,
-    NgIconComponent,
-    ExamplePromptsComponent,
-    PromptsCarouselComponent,
-    MatSidenavModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    NgxTypedJsModule,
-    RenameDialogComponent
-  ],
-  providers: [HttpClientModule],
-  animations: [
-    trigger('listAnimationTest', [
-      transition('* => *', [
-        query(
-          ':enter',
-          [
-            style({ opacity: 0, transform: 'translateY(100%)' }),
-            stagger(
-              '100ms',
-              animate(
-                '800ms ease-out',
-                keyframes([
-                  style({
-                    opacity: 0,
-                    transform: 'translateY(10px)',
-                    offset: 0,
-                  }),
-                  style({
-                    opacity: 1,
-                    transform: 'translateY(-7px)',
-                    offset: 0.7,
-                  }), // Overshoot to 105%
-                  style({ opacity: 1, transform: 'translateY(0)', offset: 1 }), // Settle back to 100%
-                ])
-              )
-            ),
-          ],
-          { optional: true }
-        ),
-      ]),
-    ]),
-    trigger('growShrink', [
-      state('void', style({ height: '0', scale:.93, opacity: 0, margin: '0' })),
-      state('*', style({ height: '98px', scale: 1, opacity: 1, margin: '8px' })),
-      transition('void => *', [
-        animate('280ms ease-in', keyframes([
-          style({ height: '0', scale:.93, opacity: 0, offset: 0, margin: '0' }), // Start
-          style({ height: '98px', scale:.93, opacity: 0, offset: 0.55 }), // Shrink a bit
-          style({ height: '98px', scale:.93, opacity: 1, offset: 0.65 }), // Shrink a bit
-          style({ height: '98px', scale: 1, opacity: 1, offset: 1, margin: '8px' }), // Then shrink to final size
-        ]))
-      ]),
-      transition('* => void', [
-        animate('350ms ease-out', keyframes([
-          style({ height: '98px', scale:1, opacity: 1, offset: 0, margin: '8px' }), // Start
-          style({ height: '98px', scale:.93, opacity: 1, offset: 0.35 }), // Shrink a bit
-          style({ height: '98px', scale:.93, opacity: 1, offset: 0.6 }), // Shrink a bit
-          style({ height: '0', scale:.93, opacity: 0, offset: 1, margin: '0' }), // Fully disappear
-        ]))
-      ])
-    ]),
-    trigger('fadeInOut', [
-      state('void', style({ opacity: 0 })),
-      state('*', style({ opacity: 1 })),
-      transition(':enter', [animate('0.5s 500ms ease-out',
-        keyframes([
-          style({ opacity: 0, offset: 0, scale: .95 }),
-          style({ opacity: .5, transform: 'translateY(-10px)',  offset: .5, scale: .95 }),
-          style({ opacity: 1, transform: 'translateY(0px)', offset: 1, scale: 1 })
+    selector: 'app-chat-window',
+    standalone: true,
+    providers: [HttpClientModule],
+    animations: [
+        trigger('listAnimationTest', [
+            transition('* => *', [
+                query(':enter', [
+                    style({ opacity: 0, transform: 'translateY(100%)' }),
+                    stagger('100ms', animate('800ms ease-out', keyframes([
+                        style({
+                            opacity: 0,
+                            transform: 'translateY(10px)',
+                            offset: 0,
+                        }),
+                        style({
+                            opacity: 1,
+                            transform: 'translateY(-7px)',
+                            offset: 0.7,
+                        }),
+                        style({ opacity: 1, transform: 'translateY(0)', offset: 1 }), // Settle back to 100%
+                    ]))),
+                ], { optional: true }),
+            ]),
+        ]),
+        trigger('growShrink', [
+            state('void', style({ height: '0', scale: .93, opacity: 0, margin: '0' })),
+            state('*', style({ height: '110px', scale: 1, opacity: 1, margin: '8px' })),
+            transition('void => *', [
+                animate('280ms ease-in', keyframes([
+                    style({ height: '0', scale: .93, opacity: 0, offset: 0, margin: '0' }),
+                    style({ height: '110px', scale: .93, opacity: 0, offset: 0.55 }),
+                    style({ height: '110px', scale: .93, opacity: 1, offset: 0.65 }),
+                    style({ height: '110px', scale: 1, opacity: 1, offset: 1, margin: '8px' }), // Then shrink to final size
+                ]))
+            ]),
+            transition('* => void', [
+                animate('350ms ease-out', keyframes([
+                    style({ height: '110px', scale: 1, opacity: 1, offset: 0, margin: '8px' }),
+                    style({ height: '110px', scale: .93, opacity: 1, offset: 0.35 }),
+                    style({ height: '110px', scale: .93, opacity: 1, offset: 0.6 }),
+                    style({ height: '0', scale: .93, opacity: 0, offset: 1, margin: '0' }), // Fully disappear
+                ]))
+            ])
+        ]),
+        trigger('fadeInOut', [
+            state('void', style({ opacity: 0 })),
+            state('*', style({ opacity: 1 })),
+            transition(':enter', [animate('0.5s 500ms ease-out', keyframes([
+                    style({ opacity: 0, offset: 0, scale: .95 }),
+                    style({ opacity: .5, transform: 'translateY(-10px)', offset: .5, scale: .95 }),
+                    style({ opacity: 1, transform: 'translateY(0px)', offset: 1, scale: 1 })
+                ]))]),
+            transition(':leave', [animate('0.5s ease-in', keyframes([
+                    style({ opacity: 1, offset: 0, scale: 1 }),
+                    style({ opacity: 0, offset: 1, scale: .95 })
+                ]))]) // 100% to 0% opacity
         ])
-      )]), // 0% to 100% opacity
-      transition(':leave', [animate('0.5s ease-in',
-      keyframes([
-        style({ opacity: 1, offset: 0, scale: 1 }),
-        style({ opacity: 0, offset: 1, scale: .95 })
-      ])
-      )])  // 100% to 0% opacity
-    ])
-  ],
-  viewProviders: [
-    provideIcons({
-      cssAirplane,
-      cssTrashEmpty,
-      cssCopy,
-      cssPathTrim,
-      cssCoffee,
-      cssAdd,
-      cssMenu,
-      cssMoreVertical,
-      cssPen,
-      cssPlayButtonO,
-    }),
-  ],
-  templateUrl: './chat-window.component.html',
-  styleUrl: './chat-window.component.sass',
+    ],
+    viewProviders: [
+        provideIcons({
+            cssAirplane,
+            cssTrashEmpty,
+            cssCopy,
+            cssPathTrim,
+            cssCoffee,
+            cssAdd,
+            cssMenu,
+            cssMoreVertical,
+            cssPen,
+            cssPlayButtonO,
+            featherClock,
+            featherEdit
+        }),
+    ],
+    templateUrl: './chat-window.component.html',
+    styleUrl: './chat-window.component.sass',
+    imports: [
+        CommonModule,
+        HttpClientModule,
+        MessageListComponent,
+        NgIconComponent,
+        ExamplePromptsComponent,
+        PromptsCarouselComponent,
+        MatSidenavModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatButtonModule,
+        NgxTypedJsModule,
+        RenameDialogComponent,
+        TimeagoPipe
+    ]
 })
 export class ChatWindowComponent implements OnInit {
   @ViewChild('chatbox') chatbox: ElementRef | null = null;
@@ -201,24 +192,56 @@ export class ChatWindowComponent implements OnInit {
         this.userProfile = userProfile;
         // this.threads = userProfile.threads
 
-        this.threads = this.updateThreads(this.threads, userProfile.threads)
+        this.updateThreads(this.threads, userProfile.threads)
       }
     });
   }
 
   updateThreads(oldArray: Threads[], newArray: Threads[]) {
     // Creating a map of thread IDs for easy lookup
-    const oldThreadMap = new Map(oldArray.map(thread => [thread.thread_id, thread]));
+    if(oldArray.length !== newArray.length) {
+      const oldThreadMap = new Map(oldArray.map(thread => [thread.thread_id, thread]));
 
-    // Add new threads to the old array
-    newArray.forEach(thread => {
-        if (!oldThreadMap.has(thread.thread_id)) {
-            oldArray.push(thread);
+      // Add new threads to the old array
+      newArray.forEach(thread => {
+          if (!oldThreadMap.has(thread.thread_id)) {
+              oldArray.push(thread);
+          }
+      });
+
+      // Filter out deleted threads from the old array
+      this.threads = oldArray.filter(thread => newArray.some(newThread => newThread.thread_id === thread.thread_id));
+    } else if(oldArray.length === newArray.length) {
+
+      newArray.forEach(arrayItem => {
+        const index = this.threads.findIndex(thread => thread.thread_id === arrayItem.thread_id);
+        // console.log('new content', this.threads[index].last_message_content)
+
+        if(index >= 0){
+          console.log('new content', this.threads[index].last_message_content)
+          this.threads[index].last_message_content = arrayItem.last_message_content;
+          this.threads[index].last_updated = arrayItem.last_updated;
+          this.threads[index].thread_name = arrayItem.thread_name;
         }
-    });
+      //  console.log('match index', index)
+      })
 
-    // Filter out deleted threads from the old array
-    return oldArray.filter(thread => newArray.some(newThread => newThread.thread_id === thread.thread_id));
+      // newArray.forEach(newThread =>{
+      //   const index = this.threads.findIndex((item)=>{item.thread_id === newThread.thread_id});
+      //   console.log('updating threads', this.threads[index])
+      //   if(index){
+
+      //     // this.threads[index].last_message_content =
+      //     //   this.threads[index]?.last_message_content &&  newThread?.last_message_content ? newThread?.last_message_content:'';
+
+
+      //     // this.threads[index].last_updated = newThread?.last_updated;
+
+      //     // this.threads[index].thread_name = newThread?.thread_name
+      //   }
+      // })
+    }
+
 }
 
   // create thread
@@ -379,6 +402,15 @@ export class ChatWindowComponent implements OnInit {
       // Assuming newMessages are sorted with the newest first
       this.messages[this.messages.length - 1].id = newMessages[1].id; // replacing locally created message with open ai message
       this.messages.push(newMessages[0]);
+      try {
+        this.userService.updateThread(newMessages[0].thread_id!, 'last_message_content', newMessages[0].content[0].text.value)
+        this.userService.addMessages(newMessages[0].thread_id!, newMessages[0]).then(()=>{ // adding messages to user in firestore
+          this.userService.addMessages(newMessages[1].thread_id!, newMessages[1]);
+        });
+      } catch (error) {
+
+      }
+
       this.chatService._messages.next(this.messages);
     }
     // console.log('messages list:', this.messages)

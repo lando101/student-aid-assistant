@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:chatbot-app": "node dist/chatbot-app/server/server.mjs"
+    "serve:ssr:chatbot-app": "node dist/chatbot-app/server/server.mjs",
+    "postinstall": "npx --package @angular/compiler-cli@15.2.9 --yes ngcc"
   },
   "private": true,
   "dependencies": {
@@ -24,6 +25,7 @@
     "@angular/platform-server": "^17.0.8",
     "@angular/router": "^17.0.8",
     "@angular/ssr": "^17.0.8",
+    "@formkit/auto-animate": "^0.8.1",
     "@ng-bootstrap/ng-bootstrap": "^16.0.0",
     "@ng-icons/core": "^26.3.0",
     "@ng-icons/css.gg": "^26.3.0",
@@ -36,6 +38,7 @@
     "firebase": "^10.7.1",
     "markdown-it": "^14.0.0",
     "moment": "^2.30.1",
+    "ng-auto-animate": "^0.2.0",
     "ngx-toastr": "^18.0.0",
     "ngx-typed-js": "^2.1.1",
     "postcss-scss": "^4.0.9",

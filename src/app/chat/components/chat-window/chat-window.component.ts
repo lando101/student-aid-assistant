@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 // PrimeNG Modules
-import { MenuItem } from 'primeng/api';
+import { MenuItem, SharedModule } from 'primeng/api';
 
 
 // Third-Party Libraries
@@ -50,6 +50,8 @@ import { NgxTypedJsModule } from 'ngx-typed-js';
 import { RenameDialogComponent } from '../dialogs/rename-dialog/rename-dialog.component';
 import { TimeagoPipe } from "../../../shared/pipes/timeago.pipe";
 import { featherClock, featherEdit } from '@ng-icons/feather-icons';
+import { AutoAnimateModule } from '@formkit/auto-animate/angular';
+import { NgAutoAnimateDirective } from 'ng-auto-animate';
 
 @Component({
     selector: 'app-chat-window',
@@ -146,7 +148,8 @@ import { featherClock, featherEdit } from '@ng-icons/feather-icons';
         MatButtonModule,
         NgxTypedJsModule,
         RenameDialogComponent,
-        TimeagoPipe
+        TimeagoPipe,
+        NgAutoAnimateDirective
     ]
 })
 export class ChatWindowComponent implements OnInit {

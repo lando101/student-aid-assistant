@@ -8,6 +8,7 @@ import { provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { initializeApp } from 'firebase/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
+import { GLOBAL_AUTO_ANIMATE_OPTIONS } from 'ng-auto-animate';
 
 
 import {
@@ -22,6 +23,7 @@ import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { getPerformance, providePerformance } from '@angular/fire/performance';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { AutoAnimateModule } from '@formkit/auto-animate/angular';
 // import { Capacitor } from '@capacitor/core'
 
 export const appConfig: ApplicationConfig = {
@@ -35,5 +37,17 @@ export const appConfig: ApplicationConfig = {
         provideMessaging(() => getMessaging()),
         providePerformance(() => getPerformance()),
         provideStorage(() => getStorage()),
-    ]), provideAnimations()],
+    ]), provideAnimations(),
+    {
+      // provide: AutoAnimateModule
+    },
+    {
+      provide: GLOBAL_AUTO_ANIMATE_OPTIONS,
+      useValue: {
+        duration: 750,
+        easing: 'ease-out',
+        // etc.
+      },
+    },
+  ],
 };

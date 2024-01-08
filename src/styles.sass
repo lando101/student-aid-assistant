@@ -17,7 +17,12 @@
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap'
 
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap')
 
+.courier-text
+  font-family: 'Courier Prime', monospace
+  @apply text-base
+  
 ///import css-variables from
 .primary-button
   @apply bg-white dark:bg-neutral-800 dark:text-neutral-100 text-black h-11 px-2 border-solid border-black border-1 font-semibold transition-all duration-200 cursor-pointer

@@ -28,6 +28,7 @@
     "@ng-icons/core": "^26.3.0",
     "@ng-icons/css.gg": "^26.3.0",
     "@ng-icons/feather-icons": "^26.3.0",
+    "@ng-icons/iconoir": "^26.3.0",
     "@popperjs/core": "^2.11.8",
     "angular-animations": "^0.11.0",
     "autoprefixer": "^10.4.16",

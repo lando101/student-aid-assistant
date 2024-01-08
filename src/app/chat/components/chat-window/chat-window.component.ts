@@ -36,7 +36,7 @@ import { ExamplePromptsComponent } from '../example-prompts/example-prompts.comp
 import { PromptsCarouselComponent } from '../prompts-carousel/prompts-carousel.component';
 
 // Icons from @ng-icons
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { NgIconComponent, provideIcons, provideNgGlyphs } from '@ng-icons/core';
 import {
     cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee,
     cssAdd, cssMenu, cssMoreVertical, cssPen, cssPlayButtonO
@@ -49,7 +49,8 @@ import { animate, keyframes, query, stagger, state, style, transition, trigger }
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { RenameDialogComponent } from '../dialogs/rename-dialog/rename-dialog.component';
 import { TimeagoPipe } from "../../../shared/pipes/timeago.pipe";
-import { featherClock, featherEdit } from '@ng-icons/feather-icons';
+import { featherClock, featherEdit, featherTrash, featherPlusSquare } from '@ng-icons/feather-icons';
+import { iconoirTrash } from '@ng-icons/iconoir'
 
 @Component({
     selector: 'app-chat-window',
@@ -123,7 +124,10 @@ import { featherClock, featherEdit } from '@ng-icons/feather-icons';
             cssPen,
             cssPlayButtonO,
             featherClock,
-            featherEdit
+            featherEdit,
+            featherTrash,
+            featherPlusSquare,
+            iconoirTrash
         }),
     ],
     templateUrl: './chat-window.component.html',

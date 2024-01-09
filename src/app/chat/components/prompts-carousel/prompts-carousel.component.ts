@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 // import { CarouselModule } from 'primeng/carousel';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { OwlOptions } from 'ngx-owl-carousel-o';
+import { Subscription, debounceTime, fromEvent } from 'rxjs';
 
 export interface Product {
   id?: string;
@@ -25,14 +27,20 @@ export interface Prompt {
 @Component({
   selector: 'app-prompts-carousel',
   standalone: true,
-  imports: [CarouselModule],
+  imports: [CarouselModule, CommonModule],
   templateUrl: './prompts-carousel.component.html',
   styleUrl: './prompts-carousel.component.sass'
 })
 
 
 
-export class PromptsCarouselComponent implements OnInit{
+export class PromptsCarouselComponent implements OnInit, AfterViewInit, OnDestroy{
+
+@ViewChild('container', { static: true }) container!: ElementRef;
+private resizeSubscription!: Subscription;
+width!: string;
+
+init: boolean = false;
 prompts: Prompt[]= [
   {
     id: '1',
@@ -74,12 +82,14 @@ prompts: Prompt[]= [
 
 customOptions: OwlOptions = {
   loop: true,
-  mouseDrag: false,
-  touchDrag: false,
+  mouseDrag: true,
+  touchDrag: true,
   pullDrag: false,
-  dots: false,
+  dots: true,
+  autoWidth: true,
+  nav: false,
   navSpeed: 700,
-  navText: ['', ''],
+  navText: ['<', '>'],
   responsive: {
     0: {
       items: 1
@@ -94,12 +104,22 @@ customOptions: OwlOptions = {
       items: 4
     }
   },
-  nav: true
 }
 
   responsiveOptions: any[] | undefined;
+  
+  ngAfterViewInit() {
+    setTimeout(() => {
+    this.width = `${this.container.nativeElement.offsetWidth}px`;
+      
+    }, 500);
+    this.setupResizeListener();
+  }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.init = true;
+    }, 500);
     // this.productService.getProductsSmall().then((products) => {
     //     this.products = products;
     // });
@@ -123,4 +143,26 @@ customOptions: OwlOptions = {
     ];
 }
 
+private setupResizeListener() {
+  const element = this.container.nativeElement;
+
+  this.resizeSubscription = fromEvent(window, 'resize')
+    .pipe(debounceTime(300)) // Adjust debounceTime as needed to reduce unnecessary updates
+    .subscribe(() => {
+      const width = element.offsetWidth;
+      this.width = `${width}px`
+      // Handle the width change here or emit it to an observable/subject
+      console.log('Element width changed:', width);
+    });
+}
+
+private unsubscribeFromResize() {
+  if (this.resizeSubscription) {
+    this.resizeSubscription.unsubscribe();
+  }
+}
+
+ngOnDestroy() {
+  this.unsubscribeFromResize();
+}
 }

@@ -10,8 +10,23 @@
   </ng-template>
 </p-carousel> -->
 
-<owl-carousel-o [options]="customOptions">
-  <ng-template carouselSlide>Slide 1</ng-template>  
-  <ng-template carouselSlide>Slide 2</ng-template>  
-  <ng-template carouselSlide>Slide 3</ng-template>  
-</owl-carousel-o>
+<div>Some tags before</div>
+<div #container class="overflow-hidden" [style.width]="width">
+  <owl-carousel-o *ngIf="init" [options]="customOptions">
+    <ng-container *ngFor="let prompt of prompts">
+      <ng-template carouselSlide [id]="prompt.id!">
+        <div class="h-20">
+          <button class="prompt-button m-2">
+          <div class="text-left">
+              <p class="mb-1 text-xs font-semibold opacity-65">{{ prompt.title }}</p>
+              <p class="mb-1 text-sm font-semibold courier-text">{{ prompt.prompt }}</p>
+          </div>
+        </button></div>
+      </ng-template> 
+    </ng-container>
+  </owl-carousel-o>
+</div>
+  <div>Some tags before</div>
+
+
+

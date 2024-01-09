@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 
 // Angular Material Modules
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -155,6 +155,7 @@ import { iconoirTrash } from '@ng-icons/iconoir'
 })
 export class ChatWindowComponent implements OnInit {
   @ViewChild('chatbox') chatbox: ElementRef | null = null;
+  @ViewChild('drawer') drawer!: MatDrawer; 
 
   thread$?: Observable<Thread>;
   private destroy$ = new Subject<void>();
@@ -229,23 +230,7 @@ export class ChatWindowComponent implements OnInit {
         }
       //  console.log('match index', index)
       })
-
-      // newArray.forEach(newThread =>{
-      //   const index = this.threads.findIndex((item)=>{item.thread_id === newThread.thread_id});
-      //   console.log('updating threads', this.threads[index])
-      //   if(index){
-
-      //     // this.threads[index].last_message_content =
-      //     //   this.threads[index]?.last_message_content &&  newThread?.last_message_content ? newThread?.last_message_content:'';
-
-
-      //     // this.threads[index].last_updated = newThread?.last_updated;
-
-      //     // this.threads[index].thread_name = newThread?.thread_name
-      //   }
-      // })
     }
-
 }
 
   // create thread

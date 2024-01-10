@@ -83,21 +83,25 @@
                     </mat-icon>
                   </button>
                   <!-- <button class="flex items-center justify-center gap-2 delete-button-black min-w-44" (click)="openDialog(null)"><ng-icon [size]="'18px'" name="cssTrashEmpty"></ng-icon>Delete Thread</button> -->
-                
+
                 </div>
               </div>
-              <div class="flex flex-col gap-8 justify-between w-full content-container">
-                <app-example-prompts *ngIf="messages.length === 0 && !threadLoading && !messageLoading" @fadeInOut></app-example-prompts>
+              <div class="flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg">
+                <app-example-prompts class="h-full" *ngIf="messages.length === 0 && !threadLoading && !messageLoading" @fadeInOut></app-example-prompts>
                 <app-message-list *ngIf="messages.length > 0" @fadeInOut [messageLoading]="messageLoading"></app-message-list>
                 <div class="prompt-box" *ngIf="messages.length === 0" @fadeInOut>
-                  <app-prompts-carousel></app-prompts-carousel>
                 </div>
               </div>
-              <div class="w-full absolute bottom-0 message-footer prompt-box">
-                <div class="w-full">
-                  <div class="flex items-center gap-2">
-                    <input #chatbox [disabled]="messageLoading" [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'" class="typing h-12 px-3 border border-solid dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200" #inputbox type="text">
-                    <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" class="send-button" (click)="createMessage(inputbox.value)">Send</button>
+              <div class="w-full absolute bottom-0 message-footer prompt-box flex justify-center">
+                <div class="max-w-screen-lg w-full">
+                  <app-prompts-carousel (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
+                  <div class="flex items-center gap-2 pb-3">
+                    <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8" [showCursor]="false" [strings]="placeholders">
+                      <input #chatbox [disabled]="messageLoading" [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'" class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full" #inputbox type="text">
+                    </ngx-typed-js>
+                    <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" class="send-button" (click)="createMessage(inputbox.value)">
+                      <ng-icon [size]="'24px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
+                    </button>
                   </div>
                   <!-- <div class="text-xs font-semibold py-3 w-full text-center text-gray-500 dark:text-neutral-400 flex flex-wrap items-center justify-center gap-1">Built using ChatGPT Assistant Beta // Developed and designed by Landon C. Messmer <ng-icon name="cssCoffee"></ng-icon></div> -->
                 </div>

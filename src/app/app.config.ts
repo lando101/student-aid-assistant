@@ -22,7 +22,7 @@ import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { getPerformance, providePerformance } from '@angular/fire/performance';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideNgGlyphs } from '@ng-icons/core';
+
 // import { Capacitor } from '@capacitor/core'
 
 export const appConfig: ApplicationConfig = {
@@ -36,7 +36,9 @@ export const appConfig: ApplicationConfig = {
         provideMessaging(() => getMessaging()),
         providePerformance(() => getPerformance()),
         provideStorage(() => getStorage()),
-    ]), 
-    provideAnimations(),
+    ]), provideAnimations(),
+    // {
+    //   provide: AutoAnimateModule
+    // },
   ],
 };

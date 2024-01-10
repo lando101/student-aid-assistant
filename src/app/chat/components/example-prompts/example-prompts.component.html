@@ -1,10 +1,8 @@
-<div class="w-full text-center flex flex-col gap-14">
+<div class="w-full text-center flex flex-col example-prompts-container gap-12">
   <div class="pt-28 lg:p-0">
-    <!-- <p class="text-lg mb-2 text-gray-800 font-semibold">I specialize in student aid.</p> -->
     <div class="logo text-gray-800 dark:!text-neutral-500 p-2 font-medium mb-1">
       student aid helper [beta]
-   </div>
-    <!-- <h2 class="text-4xl text-gray-950 dark:text-neutral-200 font-black">How can I help?</h2> -->
+    </div>
     <ngx-typed-js [startDelay]="1000" [typeSpeed]="20" [showCursor]="true" [strings]="['How can I help?']">
       <span class="text-4xl text-gray-950 dark:text-neutral-200 font-black typing"></span>
     </ngx-typed-js>
@@ -12,28 +10,39 @@
   <section class="flex-col items-center hidden lg:flex">
     <div class="text-center mb-3 w-full">
       <h6 class="font-bold text-gray-800 dark:text-neutral-300 text-lg">Examples of topics you can ask</h6>
-      <!-- <ngx-typed-js #typewriter [startDelay]="750" [typeSpeed]="20" [showCursor]="true" [strings]="['Examples of topics you can ask']">
-        <span class="font-bold text-gray-800 dark:text-neutral-300 text-lg typing"></span>
-      </ngx-typed-js> -->
-      <!-- <p class="text-gray-600 mb-0 font-semibold"> You can select a question below to start a thread.</p> -->
     </div>
-    <!-- <div class="flex flex-col gap-2 max-w-3xl text-base">
+    <div class="flex flex-col gap-2 max-w-3xl text-base">
       <button class="prompt-button flex gap-4 items-start">
-        <div class="number">1</div> <div class="courier-text text-left">What are the different types of student aid available, and how do they differ?</div>
+        <div class="number">1</div>
+        <div class="courier-text text-left">What are the different types of student aid available, and how do they
+          differ?</div>
       </button>
       <button class="prompt-button flex gap-4 items-start">
-        <div class="number">2</div> <div class="courier-text text-left">How do I apply for student aid, and when are the deadlines?</div>
+        <div class="number">2</div>
+        <div class="courier-text text-left">How do I apply for student aid, and when are the deadlines?</div>
       </button>
       <button class="prompt-button flex gap-4 items-start">
-        <div class="number">3</div><div class="courier-text text-left">What are the eligibility requirements for student aid?</div>
+        <div class="number">3</div>
+        <div class="courier-text text-left">What are the eligibility requirements for student aid?</div>
       </button>
       <button class="prompt-button flex gap-4 items-start">
-        <div class="number">4</div><div class="courier-text text-left">Can you explain the difference between federal grants, loans and work study programs?</div>
+        <div class="number">4</div>
+        <div class="courier-text text-left">Can you explain the difference between federal grants, loans and work study
+          programs?</div>
       </button>
       <button class="prompt-button flex gap-4 items-start">
-        <span class="number">5</span><div class="courier-text text-left">How is the Expected Family Contribution (EFC) calculated, and how does it affect the amount of aid I am eligible for?</div>
+        <span class="number">5</span>
+        <div class="courier-text text-left">How is the Expected Family Contribution (EFC) calculated, and how does it
+          affect the amount of aid I am eligible for?</div>
       </button>
-    </div> -->
+    </div>
 
   </section>
 </div>
+
+
+
+<!-- <ngx-typed-js #typewriter [startDelay]="750" [typeSpeed]="20" [showCursor]="true" [strings]="['Examples of topics you can ask']">
+        <span class="font-bold text-gray-800 dark:text-neutral-300 text-lg typing"></span>
+      </ngx-typed-js> -->
+<!-- <p class="text-gray-600 mb-0 font-semibold"> You can select a question below to start a thread.</p> -->

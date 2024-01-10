@@ -46,10 +46,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DeleteDialogComponent } from '../dialogs/delete-dialog/delete-dialog.component';
 import { animate, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
-import { NgxTypedJsModule } from 'ngx-typed-js';
+import { NgxTypedJsComponent, NgxTypedJsModule } from 'ngx-typed-js';
 import { RenameDialogComponent } from '../dialogs/rename-dialog/rename-dialog.component';
 import { TimeagoPipe } from "../../../shared/pipes/timeago.pipe";
-import { featherClock, featherEdit, featherTrash, featherPlusSquare } from '@ng-icons/feather-icons';
+import { featherClock, featherEdit, featherTrash, featherPlusSquare, featherSend } from '@ng-icons/feather-icons';
 import { iconoirTrash } from '@ng-icons/iconoir'
 
 @Component({
@@ -127,6 +127,7 @@ import { iconoirTrash } from '@ng-icons/iconoir'
             featherEdit,
             featherTrash,
             featherPlusSquare,
+            featherSend,
             iconoirTrash
         }),
     ],
@@ -150,12 +151,13 @@ import { iconoirTrash } from '@ng-icons/iconoir'
         MatButtonModule,
         NgxTypedJsModule,
         RenameDialogComponent,
-        TimeagoPipe
+        TimeagoPipe,
     ]
 })
 export class ChatWindowComponent implements OnInit {
   @ViewChild('chatbox') chatbox: ElementRef | null = null;
-  @ViewChild('drawer') drawer!: MatDrawer; 
+  @ViewChild('drawer') drawer!: MatDrawer;
+  @ViewChild('typed') typed!: NgxTypedJsComponent;
 
   thread$?: Observable<Thread>;
   private destroy$ = new Subject<void>();
@@ -172,6 +174,8 @@ export class ChatWindowComponent implements OnInit {
 
   showFiller = false;
   items: MenuItem[] | undefined;
+
+  placeholders: string[] = []
 
   constructor(
     private chatService: ChatService,
@@ -200,6 +204,12 @@ export class ChatWindowComponent implements OnInit {
         this.updateThreads(this.threads, userProfile.threads)
       }
     });
+  }
+
+  hoverUpdate(placeholder: string){
+    this.placeholders = [placeholder]
+    this.typed.doReset()
+
   }
 
   updateThreads(oldArray: Threads[], newArray: Threads[]) {

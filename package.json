@@ -31,6 +31,7 @@
     "@ng-icons/iconoir": "^26.3.0",
     "@popperjs/core": "^2.11.8",
     "angular-animations": "^0.11.0",
+    "animate.css": "^4.1.1",
     "autoprefixer": "^10.4.16",
     "bootstrap": "^5.3.2",
     "express": "^4.18.2",

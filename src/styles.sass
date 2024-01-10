@@ -22,10 +22,12 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap')
 
+@import 'animate.css/animate.min.css'
+
 .courier-text
   font-family: 'Courier Prime', monospace
   @apply text-base
-  
+
 ///import css-variables from
 .primary-button
   @apply bg-white dark:bg-neutral-800 dark:text-neutral-100 text-black h-11 px-2 border-solid border-black border-1 font-semibold transition-all duration-200 cursor-pointer
@@ -58,7 +60,9 @@
     @apply scale-125
 
 .send-button
-  @apply bg-indigo-700 h-12 px-3 font-black text-gray-100 transition-all duration-200
+  @apply bg-indigo-700 h-12 font-black text-gray-100 transition-all duration-200 flex justify-center items-center
+  width: 3.1rem
+  border-radius: 100%
   &:hover
     @apply bg-indigo-600 dark:bg-indigo-800 shadow-md shadow-indigo-400 dark:shadow-indigo-950
 // button

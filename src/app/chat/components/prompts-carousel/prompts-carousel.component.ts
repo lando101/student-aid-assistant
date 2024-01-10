@@ -1,9 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { featherArrowLeft, featherArrowRight } from '@ng-icons/feather-icons';
 // import { CarouselModule } from 'primeng/carousel';
-import { CarouselModule } from 'ngx-owl-carousel-o';
+import { CarouselComponent, CarouselModule } from 'ngx-owl-carousel-o';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { Subscription, debounceTime, fromEvent } from 'rxjs';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
 
 export interface Product {
   id?: string;
@@ -27,7 +33,13 @@ export interface Prompt {
 @Component({
   selector: 'app-prompts-carousel',
   standalone: true,
-  imports: [CarouselModule, CommonModule],
+  viewProviders: [
+    provideIcons({
+        featherArrowRight,
+        featherArrowLeft
+    }),
+],
+  imports: [CarouselModule, CommonModule, NgIconComponent, MatButtonModule, MatIconModule],
   templateUrl: './prompts-carousel.component.html',
   styleUrl: './prompts-carousel.component.sass'
 })
@@ -35,8 +47,10 @@ export interface Prompt {
 
 
 export class PromptsCarouselComponent implements OnInit, AfterViewInit, OnDestroy{
-
+@ViewChild('owlCar', { static: true }) owlCar!: CarouselComponent;
 @ViewChild('container', { static: true }) container!: ElementRef;
+@Output() hoverString = new EventEmitter<string>();
+
 private resizeSubscription!: Subscription;
 width!: string;
 
@@ -81,49 +95,38 @@ prompts: Prompt[]= [
 ]
 
 customOptions: OwlOptions = {
-  loop: true,
+  loop: false,
   mouseDrag: true,
   touchDrag: true,
-  pullDrag: false,
-  dots: true,
+  pullDrag: true,
+  dots: false,
+  animateOut: 'animate__animated animate__backInDown',
+  animateIn: 'animate__animated animate__backInDown',
   autoWidth: true,
-  nav: false,
-  navSpeed: 700,
+  nav: true,
+  navSpeed: 500,
   navText: ['<', '>'],
-  responsive: {
-    0: {
-      items: 1
-    },
-    400: {
-      items: 2
-    },
-    740: {
-      items: 3
-    },
-    940: {
-      items: 4
-    }
-  },
 }
 
   responsiveOptions: any[] | undefined;
-  
+
   ngAfterViewInit() {
     setTimeout(() => {
     this.width = `${this.container.nativeElement.offsetWidth}px`;
-      
+
+    }, 500);
+    setTimeout(() => {
+      this.init = true;
     }, 500);
     this.setupResizeListener();
   }
 
   ngOnInit() {
-    setTimeout(() => {
-      this.init = true;
-    }, 500);
+
     // this.productService.getProductsSmall().then((products) => {
     //     this.products = products;
     // });
-   
+
     this.responsiveOptions = [
         {
             breakpoint: '1199px',
@@ -162,7 +165,23 @@ private unsubscribeFromResize() {
   }
 }
 
+promptHover(event: string){
+  this.hoverString.emit(event);
+  // console.log('hover', event)
+}
+
 ngOnDestroy() {
   this.unsubscribeFromResize();
+}
+
+print(event: any){
+  console.log(event)
+  // console.log(this.owlCar.slides)
+  console.log(this.owlCar.slidesData)
+  console.log(this.owlCar.navData)
+
+  // console.log(this.owlCar.slidesOutputData)
+
+
 }
 }

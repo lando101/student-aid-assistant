@@ -181,7 +181,5 @@ print(event: any){
   console.log(this.owlCar.navData)
 
   // console.log(this.owlCar.slidesOutputData)
-
-
 }
 }

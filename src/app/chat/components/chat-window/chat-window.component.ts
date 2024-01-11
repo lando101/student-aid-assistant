@@ -1,10 +1,10 @@
 // Angular Core Modules
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
 // RxJS Imports
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, debounceTime, fromEvent, takeUntil } from 'rxjs';
 
 // Angular Material Modules
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
@@ -54,6 +54,7 @@ import { iconoirTrash } from '@ng-icons/iconoir'
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { BadgeModule } from 'primeng/badge';
 import {NgPipesModule, OrderByPipe} from 'ngx-pipes';
+import { threadId } from 'worker_threads';
 
 @Component({
     selector: 'app-chat-window',
@@ -160,7 +161,7 @@ import {NgPipesModule, OrderByPipe} from 'ngx-pipes';
         NgPipesModule
     ]
 })
-export class ChatWindowComponent implements OnInit {
+export class ChatWindowComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('chatbox') chatbox: ElementRef | null = null;
   @ViewChild('drawer') drawer!: MatDrawer;
   @ViewChild('typed') typed!: NgxTypedJsComponent;
@@ -185,6 +186,12 @@ export class ChatWindowComponent implements OnInit {
 
   stateOptions: any[] = [{label: 'Recent', value: '-last_updated'}, {label: 'Oldest', value: 'last_updated'}];
   value: string = '-last_updated';
+
+  width!: string;
+  widthValue: number = 0;
+  body!: HTMLElement;
+  private resizeSubscription!: Subscription;
+
   constructor(
     private chatService: ChatService,
     private storageService: StorageService,
@@ -214,10 +221,33 @@ export class ChatWindowComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.body = document.body;
+      this.width = `${this.body.clientWidth}px`;
+      this.widthValue = this.body.clientWidth;
+        console.log('body width', this.width);
+        this.setupResizeListener();
+      }, 500);
+  }
+
   hoverUpdate(placeholder: string){
     this.placeholders = [placeholder]
     this.typed.doReset()
+  }
 
+  private setupResizeListener() {
+    const element = this.body;
+  
+    this.resizeSubscription = fromEvent(window, 'resize')
+      .pipe(debounceTime(300)) // Adjust debounceTime as needed to reduce unnecessary updates
+      .subscribe(() => {
+        const width = element.offsetWidth;
+        this.widthValue = width;
+        this.width = `${width}px`
+        // Handle the width change here or emit it to an observable/subject
+        console.log('body width changed', width);
+      });
   }
 
   updateThreads(oldArray: Threads[], newArray: Threads[]) {
@@ -509,8 +539,15 @@ export class ChatWindowComponent implements OnInit {
     return `${formatted_date.format('lll')}`;
   }
 
+  private unsubscribeFromResize() {
+    if (this.resizeSubscription) {
+      this.resizeSubscription.unsubscribe();
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.unsubscribeFromResize();
   }
 }

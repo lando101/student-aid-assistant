@@ -1,5 +1,5 @@
-<mat-drawer-container class="example-container bg-transparent h-full" autosize>
-  <mat-drawer #drawer [opened]="true" class="scroller example-sidenav mr-8 !overflow-x-visible !bg-gray-200 !bg-opacity-30 border-r-solid border-r border-r-gray-300" mode="side" >
+<mat-drawer-container [hasBackdrop]="false" class="example-container bg-transparent h-full" autosize>
+  <mat-drawer #drawer [opened]="widthValue > 900 ? true:false" [mode]="widthValue > 900 ? 'side':'push'" class="scroller example-sidenav mr-8 !overflow-x-visible !bg-gray-200 !bg-opacity-30 border-r-solid border-r border-r-gray-300" mode="side" >
     <div *ngIf="userProfile?.threads?.length ?? 0 > 0">
       <div class="sticky top-0 z-10 bg-!bg-gray-200 !bg-opacity-30 pb-2 pt-8 px-8 backdrop-blur-md">
         <div class="flex justify-between items-center">

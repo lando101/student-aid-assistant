@@ -1,17 +1,38 @@
 <mat-drawer-container class="example-container bg-transparent h-full" autosize>
-  <mat-drawer #drawer [opened]="true" class="example-sidenav py-9 pr-8 mr-8 bg-transparent border-0" mode="side" >
-    <div *ngIf="userProfile?.threads?.length ?? 0 > 0" >
-      <p class="text-gray-600 dark:text-neutral-400 font-black">THREADS ({{userProfile.threads?.length}})</p>
-      <div class="">
-        <div class="mx-2 my-3" *ngFor="let thread of threads?.reverse()" @growShrink>
+  <mat-drawer #drawer [opened]="true" class="scroller example-sidenav mr-8 !overflow-x-visible !bg-gray-200 !bg-opacity-30 border-r-solid border-r border-r-gray-300" mode="side" >
+    <div *ngIf="userProfile?.threads?.length ?? 0 > 0">
+      <div class="sticky top-0 z-10 bg-!bg-gray-200 !bg-opacity-30 pb-2 pt-8 px-8 backdrop-blur-md">
+        <div class="flex justify-between items-center">
+          <!-- <p class="text-neutral-800 dark:text-neutral-400 font-black mb-0">Threads ({{userProfile.threads?.length}})</p> -->
+          <p class="text-neutral-800 text-xl dark:text-neutral-400 font-black mb-0" >Threads
+          </p>
+
+          <!-- <button class="flex items-center justify-center" mat-icon-button (click)="createNewThread()">
+            <mat-icon class="!flex items-center justify-center text-blue-600">
+              <ng-icon [size]="'19px'" name="featherPlusSquare"></ng-icon>
+            </mat-icon>
+          </button> -->
+          <button class="flex items-center justify-center" mat-icon-button (click)="createNewThread()">
+            <mat-icon class="!flex items-center justify-center">
+              <ng-icon [size]="'18px'" name="featherEdit"></ng-icon>
+            </mat-icon>
+          </button>
+        </div>
+        <div>
+          <div class="text-sm mb-2 font-semibold flex gap-1">Sort Threads</div>
+          <p-selectButton [options]="stateOptions" [(ngModel)]="value" optionLabel="label" optionValue="value"></p-selectButton>
+        </div>
+      </div>
+
+      <div class="pb-8 px-8">
+        <div class="mx-0 my-3 overflow-visible" *ngFor="let thread of threads | orderBy: value" @growShrink>
           <div [ngClass]="{'thread-button-active': threadId === thread.thread_id, 'thread-button': threadId !== thread.thread_id}">
             <button class="flex flex-col gap-1 text-left pl-3 py-3" (click)="getThread(thread.thread_id ?? '')">
-              <!-- <div class="truncate max-w-48 text-xs font-semibold text-gray-600">{{thread.thread_name ? thread.thread_name:'Unnamed chat'}}</div> -->
-              <div class="truncate max-w-48 text-xs font-medium text-gray-600 dark:text-neutral-500 uppercase">{{thread.thread_id}}</div>
-              <div *ngIf="thread.last_message_content, else nomessages" class="flex h-8 max-w-48 text-xs font-bold text-gray-700">
-               <div class="truncate line-clamp-2 text-black dark:!text-neutral-200 text-wrap">"{{thread.last_message_content}}</div>
+              <div class="thread-id">{{thread.thread_id}}</div>
+              <div *ngIf="thread.last_message_content, else nomessages" class="flex h-8 max-w-48 text-xs font-bold">
+                <div class="message-text">"{{thread.last_message_content}}</div>
               </div>
-              <div class="truncate max-w-48 text-xs font-semibold text-gray-500 dark:text-neutral-500 mt-1 flex gap-1 items-center justify-start capitalize"><ng-icon [size]="'12px'" name="featherClock"></ng-icon>{{thread.last_updated ? (thread.last_updated.toString() | timeago) : 'Never updated'}}</div>
+              <div class="truncate max-w-48 text-xs font-semibold text-gray-500 dark:text-neutral-500 mt-1 flex gap-1 items-center justify-start"><ng-icon [size]="'12px'" name="featherClock"></ng-icon>{{thread.last_updated ? (thread.last_updated.toString() | timeago) : 'Never updated'}}</div>
             </button>
             <!-- <button pButton type="button" class="pr-3 py-3 flex justify-center items-center"><ng-icon [size]="'20px'" name="cssMoreVertical"></ng-icon></button> -->
             <button  mat-icon-button class="m-1 dark:text-neutral-400" [matMenuTriggerFor]="menu" [disableRipple]="true" aria-label="Example icon-button with a menu">
@@ -45,7 +66,7 @@
   </mat-drawer>
 
   <div class="example-sidenav-content bg-transparent h-full">
-    <div class="flex items-center justify-center py-3 h-full">
+    <div class="flex items-center justify-center p-8 pb-0 h-full">
       <div class="w-full h-full overflow-hidden">
         <!-- <div *ngIf="!threadLoading && !messageLoading; else loading" class="flex flex-col h-full gap-4"> -->
           <div class="flex gap-3 h-full w-full">
@@ -55,7 +76,7 @@
             <div class="flex flex-col h-full gap-4 w-full relative">
             <!-- Display thread details -->
             <div class="flex flex-col gap-2 justify-start items-center w-100 h-100 relative">
-              <div class="flex justify-between items-start w-full flex-wrap">
+              <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg">
                 <div class="flex items-center gap-3">
                   <div class="hidden md:block">
                     <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
@@ -67,16 +88,11 @@
                 </div>
                 <div class="flex items-center gap-1 justify-between md:justify-end">
                   <!-- <button class="flex items-center justify-center gap-2 primary-button-black min-w-44" (click)="createNewThread()"><ng-icon [size]="'18px'" name="featherEdit"></ng-icon>New Thread</button> -->
-                  <button class="flex items-center justify-center" mat-icon-button (click)="createNewThread()">
-                    <mat-icon class="!flex items-center justify-center text-blue-600">
-                      <ng-icon [size]="'19px'" name="featherPlusSquare"></ng-icon>
-                    </mat-icon>
-                  </button>
-                  <button class="flex items-center justify-center" mat-icon-button (click)="createNewThread()">
+                  <!-- <button class="flex items-center justify-center" mat-icon-button (click)="createNewThread()">
                     <mat-icon class="!flex items-center justify-center">
                       <ng-icon [size]="'18px'" name="featherEdit"></ng-icon>
                     </mat-icon>
-                  </button>
+                  </button> -->
                   <button class="flex items-center justify-center" mat-icon-button (click)="openDialog(null)">
                     <mat-icon class="!flex items-center justify-center">
                       <ng-icon [size]="'20px'" name="iconoirTrash"></ng-icon>
@@ -103,19 +119,10 @@
                       <ng-icon [size]="'24px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
                     </button>
                   </div>
-                  <!-- <div class="text-xs font-semibold py-3 w-full text-center text-gray-500 dark:text-neutral-400 flex flex-wrap items-center justify-center gap-1">Built using ChatGPT Assistant Beta // Developed and designed by Landon C. Messmer <ng-icon name="cssCoffee"></ng-icon></div> -->
                 </div>
               </div>
             </div>
-
           </div>
-
-          <!-- <div class="container"> -->
-
-          <!-- </div> -->
-
-
-          <!-- <button class="text-3xl bg-blue-500" (click)="deleteThread()">delete thread</button> -->
         </div>
         <ng-template #loading>Loading...</ng-template>
       </div>
@@ -130,7 +137,7 @@
 
 
 <ng-template #nomessages>
-  <div class="flex justify-start items-center truncate line-clamp-2 text-wrap h-8 max-w-48 text-xs font-bold text-gray-700 dark:!text-neutral-200">
+  <div class="no-message">
     No messages
    </div>
 </ng-template>

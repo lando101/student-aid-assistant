@@ -51,11 +51,14 @@ import { RenameDialogComponent } from '../dialogs/rename-dialog/rename-dialog.co
 import { TimeagoPipe } from "../../../shared/pipes/timeago.pipe";
 import { featherClock, featherEdit, featherTrash, featherPlusSquare, featherSend } from '@ng-icons/feather-icons';
 import { iconoirTrash } from '@ng-icons/iconoir'
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { BadgeModule } from 'primeng/badge';
+import {NgPipesModule, OrderByPipe} from 'ngx-pipes';
 
 @Component({
     selector: 'app-chat-window',
     standalone: true,
-    providers: [HttpClientModule],
+    providers: [HttpClientModule, OrderByPipe],
     animations: [
         trigger('listAnimationTest', [
             transition('* => *', [
@@ -152,6 +155,9 @@ import { iconoirTrash } from '@ng-icons/iconoir'
         NgxTypedJsModule,
         RenameDialogComponent,
         TimeagoPipe,
+        SelectButtonModule,
+        BadgeModule,
+        NgPipesModule
     ]
 })
 export class ChatWindowComponent implements OnInit {
@@ -177,6 +183,8 @@ export class ChatWindowComponent implements OnInit {
 
   placeholders: string[] = []
 
+  stateOptions: any[] = [{label: 'Recent', value: '-last_updated'}, {label: 'Oldest', value: 'last_updated'}];
+  value: string = '-last_updated';
   constructor(
     private chatService: ChatService,
     private storageService: StorageService,

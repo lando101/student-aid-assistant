@@ -24,38 +24,67 @@
   .message
     @apply flex flex-col gap-2
 
-
 .scroller
   overflow: auto
-  height: calc(100vh - 300px)
   display: flex
   scroll-behavior: smooth
-  flex-direction: column-reverse
   overflow-anchor: auto !important /*  See https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor */
 
 .scroller::-webkit-scrollbar
-    width: 10px
+    width: 7px
     cursor: pointer
 
 .scroller::-webkit-scrollbar-track
-    @apply bg-gray-200 mb-1 rounded-sm dark:bg-neutral-900
-    margin-bottom: 85px
+    @apply bg-transparent mt-[145px] dark:bg-neutral-900 transition-all #{!important}
 
 .scroller::-webkit-scrollbar-thumb
-    @apply bg-neutral-400 rounded-sm transition-colors cursor-pointer dark:bg-neutral-800
+    @apply bg-transparent rounded-lg cursor-pointer transition-all dark:bg-neutral-800 #{!important}
 
 .scroller::-webkit-scrollbar-thumb:hover
-    @apply bg-neutral-600 transition-colors cursor-pointer
+    @apply bg-neutral-600 cursor-pointer transition-all #{!important}
 
 .scroller:hover::-webkit-scrollbar-thumb
-    @apply bg-neutral-600 transition-colors cursor-pointer dark:bg-neutral-700
+    @apply bg-neutral-600 cursor-pointer transition-all dark:bg-neutral-700 #{!important}
 
-.scroller:hover::-webkit-scrollbar-track
-    @apply bg-gray-300 transition-colors cursor-pointer dark:bg-neutral-800
+// .scroller:hover::-webkit-scrollbar-track
+//     @apply bg-gray-300 transition-all cursor-pointer dark:bg-neutral-800 #{!important}
 
 // /* width */
 ::-webkit-scrollbar
   cursor: pointer
+
+
+// .scroller
+//   overflow: auto
+//   height: calc(100vh - 300px)
+//   display: flex
+//   scroll-behavior: smooth
+//   flex-direction: column-reverse
+//   overflow-anchor: auto !important /*  See https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor */
+
+// .scroller::-webkit-scrollbar
+//     width: 10px
+//     cursor: pointer
+
+// .scroller::-webkit-scrollbar-track
+//     @apply bg-gray-200 mb-1 rounded-sm dark:bg-neutral-900
+//     margin-bottom: 85px
+
+// .scroller::-webkit-scrollbar-thumb
+//     @apply bg-neutral-400 rounded-sm transition-colors cursor-pointer dark:bg-neutral-800
+
+// .scroller::-webkit-scrollbar-thumb:hover
+//     @apply bg-neutral-600 transition-colors cursor-pointer
+
+// .scroller:hover::-webkit-scrollbar-thumb
+//     @apply bg-neutral-600 transition-colors cursor-pointer dark:bg-neutral-700
+
+// .scroller:hover::-webkit-scrollbar-track
+//     @apply bg-gray-300 transition-colors cursor-pointer dark:bg-neutral-800
+
+// // /* width */
+// ::-webkit-scrollbar
+//   cursor: pointer
 
 
 // /* Track */

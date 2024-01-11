@@ -19,17 +19,17 @@
       margin-bottom: 0px
 
 .message-container
-  &:last-child
-      margin-bottom: 140px
   .message
     @apply flex flex-col gap-2
+
 
 .scroller
   overflow: auto
   display: flex
   scroll-behavior: smooth
   overflow-anchor: auto !important /*  See https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor */
-
+  margin-bottom: 54px
+  margin-top: 104px
 .scroller::-webkit-scrollbar
     width: 7px
     cursor: pointer

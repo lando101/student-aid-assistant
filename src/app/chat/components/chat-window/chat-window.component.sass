@@ -83,7 +83,7 @@
     cursor: pointer
 
 .scroller::-webkit-scrollbar-track
-    @apply bg-transparent mt-[145px] dark:bg-neutral-900 transition-all #{!important}
+    @apply bg-transparent mt-[175px] dark:bg-neutral-900 transition-all #{!important}
 
 .scroller::-webkit-scrollbar-thumb
     @apply bg-transparent rounded-lg cursor-pointer transition-all dark:bg-neutral-800 #{!important}
@@ -104,13 +104,14 @@
   display: flex
   scroll-behavior: smooth
   overflow-anchor: auto !important /*  See https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor */
+  flex-direction: column-reverse
 
 .scroller-messages::-webkit-scrollbar
     width: 7px
     cursor: pointer
 
 .scroller-messages::-webkit-scrollbar-track
-    @apply bg-transparent mt-[90px] mb-[65px] dark:bg-neutral-900 transition-all #{!important}
+    @apply bg-transparent mt-[80px] mb-[40px] dark:bg-neutral-900 transition-all #{!important}
 
 .scroller-messages::-webkit-scrollbar-thumb
     @apply bg-transparent rounded-lg cursor-pointer transition-all dark:bg-neutral-800 #{!important}

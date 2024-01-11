@@ -1,5 +1,5 @@
 <mat-drawer-container [hasBackdrop]="false" class="example-container bg-transparent h-full" autosize>
-  <mat-drawer #drawer [opened]="widthValue > 900 ? true:false" [mode]="widthValue > 900 ? 'side':'push'"
+  <mat-drawer #drawer [opened]="widthValue > 1012 ? true:false" [mode]="widthValue > 1012 ? 'side':'push'"
     class="scroller example-sidenav mr-8 !overflow-x-visible !bg-[#eff0f3] border-r-solid border-r border-r-gray-300"
     mode="side">
     <div *ngIf="userProfile?.threads?.length ?? 0 > 0">
@@ -75,15 +75,16 @@
 
   <div class="example-sidenav-content bg-transparent h-full">
     <div class="flex items-center justify-center h-full">
-      <div class="w-full h-full overflow-hidden">
+      <div class="w-full h-full overflow-hidden flex pt-8 px-8">
         <!-- <div *ngIf="!threadLoading && !messageLoading; else loading" class="flex flex-col h-full gap-4"> -->
-        <div class="flex flex-col h-full w-full overflow-auto scroller-messages">
-          <div class="flex gap-3 pt-8 px-8 pb-2 sticky top-0 backdrop-blur-xl z-10 bg-gradient-to-b from-gray-100 to-[#f3f4f6c4]">
-            <button type="button" class="menu-toggle-btn" (click)="drawer.toggle()">
-              <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
-            </button>
+          <button type="button" class="menu-toggle-btn" (click)="drawer.toggle()">
+            <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
+          </button>
+
+        <div class="flex flex-col h-full w-full overflow-hidden relative">
+          <div class="flex absolute gap-3 w-full top-0 backdrop-blur-xl z-10 bg-gradient-to-b from-gray-100 to-[#f3f4f6c4]">
             <div class="w-full flex justify-center">
-              <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg">
+              <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg pb-4 border-b border-gray-200">
                 <div class="flex items-center gap-3">
                   <div class="hidden md:block">
                     <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
@@ -103,34 +104,11 @@
                 </div>
               </div>
             </div>
-           
           </div>
-          <!-- <button type="button" class="menu-toggle-btn" (click)="drawer.toggle()">
-            <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
-          </button> -->
           <div class="flex flex-col h-full gap-4 w-full relative px-8 pb-8">
             <!-- Display thread details -->
             <div class="flex flex-col gap-2 justify-start items-center w-100 h-100 relative">
-              <!-- <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg">
-                <div class="flex items-center gap-3">
-                  <div class="hidden md:block">
-                    <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
-                    <div
-                      class="text-sm text-gray-700 dark:text-neutral-500 font-semibold uppercase mb-0 flex items-center gap-2 ">
-                      <div class="truncate w-48">{{ thread?.id ?? '' }}</div>
-                      <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-1 justify-between md:justify-end">
-                  <button class="flex items-center justify-center" mat-icon-button (click)="openDialog(null)">
-                    <mat-icon class="!flex items-center justify-center">
-                      <ng-icon [size]="'20px'" name="iconoirTrash"></ng-icon>
-                    </mat-icon>
-                  </button>
-                </div>
-              </div> -->
-              <div class="pl-12 flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg">
+              <div class="flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg scroller-messages">
                 <app-example-prompts class="h-full" *ngIf="messages.length === 0 && !threadLoading && !messageLoading"
                   @fadeInOut></app-example-prompts>
                 <app-message-list *ngIf="messages.length > 0" @fadeInOut

@@ -94,9 +94,29 @@
 .scroller:hover::-webkit-scrollbar-thumb
     @apply bg-neutral-600 cursor-pointer transition-all dark:bg-neutral-700 #{!important}
 
-// .scroller:hover::-webkit-scrollbar-track
-//     @apply bg-gray-300 transition-all cursor-pointer dark:bg-neutral-800 #{!important}
 
 // /* width */
 ::-webkit-scrollbar
   cursor: pointer
+
+.scroller-messages
+  overflow: auto
+  display: flex
+  scroll-behavior: smooth
+  overflow-anchor: auto !important /*  See https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor */
+
+.scroller-messages::-webkit-scrollbar
+    width: 7px
+    cursor: pointer
+
+.scroller-messages::-webkit-scrollbar-track
+    @apply bg-transparent mt-[90px] mb-[65px] dark:bg-neutral-900 transition-all #{!important}
+
+.scroller-messages::-webkit-scrollbar-thumb
+    @apply bg-transparent rounded-lg cursor-pointer transition-all dark:bg-neutral-800 #{!important}
+
+.scroller-messages::-webkit-scrollbar-thumb:hover
+    @apply bg-neutral-600 cursor-pointer transition-all #{!important}
+
+.scroller-messages:hover::-webkit-scrollbar-thumb
+    @apply bg-neutral-600 cursor-pointer transition-all dark:bg-neutral-700 #{!important}

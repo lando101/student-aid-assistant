@@ -1,10 +1,12 @@
 <mat-drawer-container [hasBackdrop]="false" class="example-container bg-transparent h-full" autosize>
-  <mat-drawer #drawer [opened]="widthValue > 900 ? true:false" [mode]="widthValue > 900 ? 'side':'push'" class="scroller example-sidenav mr-8 !overflow-x-visible !bg-gray-200 !bg-opacity-30 border-r-solid border-r border-r-gray-300" mode="side" >
+  <mat-drawer #drawer [opened]="widthValue > 900 ? true:false" [mode]="widthValue > 900 ? 'side':'push'"
+    class="scroller example-sidenav mr-8 !overflow-x-visible !bg-[#eff0f3] border-r-solid border-r border-r-gray-300"
+    mode="side">
     <div *ngIf="userProfile?.threads?.length ?? 0 > 0">
-      <div class="sticky top-0 z-10 bg-!bg-gray-200 !bg-opacity-30 pb-2 pt-8 px-8 backdrop-blur-md">
+      <div class="sticky top-0 z-10 bg-gradient-to-t from-[#eff0f391] to-[#eff0f3] pb-2 pt-6 px-8 backdrop-blur-md">
         <div class="flex justify-between items-center">
           <!-- <p class="text-neutral-800 dark:text-neutral-400 font-black mb-0">Threads ({{userProfile.threads?.length}})</p> -->
-          <p class="text-neutral-800 text-xl dark:text-neutral-400 font-black mb-0" >Threads
+          <p class="text-neutral-800 text-2xl dark:text-neutral-400 font-black mb-0">Threads
           </p>
 
           <!-- <button class="flex items-center justify-center" mat-icon-button (click)="createNewThread()">
@@ -19,23 +21,29 @@
           </button>
         </div>
         <div>
-          <div class="text-sm mb-2 font-semibold flex gap-1">Sort Threads</div>
-          <p-selectButton [options]="stateOptions" [(ngModel)]="value" optionLabel="label" optionValue="value"></p-selectButton>
+          <div class="text-sm text-gray-700 mb-2 font-semibold flex gap-1">Sort threads</div>
+          <p-selectButton [options]="stateOptions" [(ngModel)]="value" optionLabel="label"
+            optionValue="value"></p-selectButton>
         </div>
       </div>
 
       <div class="pb-8 px-8">
         <div class="mx-0 my-3 overflow-visible" *ngFor="let thread of threads | orderBy: value" @growShrink>
-          <div [ngClass]="{'thread-button-active': threadId === thread.thread_id, 'thread-button': threadId !== thread.thread_id}">
+          <div
+            [ngClass]="{'thread-button-active': threadId === thread.thread_id, 'thread-button': threadId !== thread.thread_id}">
             <button class="flex flex-col gap-1 text-left pl-3 py-3" (click)="getThread(thread.thread_id ?? '')">
               <div class="thread-id">{{thread.thread_id}}</div>
               <div *ngIf="thread.last_message_content, else nomessages" class="flex h-8 max-w-48 text-xs font-bold">
                 <div class="message-text">"{{thread.last_message_content}}</div>
               </div>
-              <div class="truncate max-w-48 text-xs font-semibold text-gray-500 dark:text-neutral-500 mt-1 flex gap-1 items-center justify-start"><ng-icon [size]="'12px'" name="featherClock"></ng-icon>{{thread.last_updated ? (thread.last_updated.toString() | timeago) : 'Never updated'}}</div>
+              <div
+                class="truncate max-w-48 text-xs font-semibold text-gray-500 dark:text-neutral-500 mt-1 flex gap-1 items-center justify-start">
+                <ng-icon [size]="'12px'" name="featherClock"></ng-icon>{{thread.last_updated ?
+                (thread.last_updated.toString() | timeago) : 'Never updated'}}</div>
             </button>
             <!-- <button pButton type="button" class="pr-3 py-3 flex justify-center items-center"><ng-icon [size]="'20px'" name="cssMoreVertical"></ng-icon></button> -->
-            <button  mat-icon-button class="m-1 dark:text-neutral-400" [matMenuTriggerFor]="menu" [disableRipple]="true" aria-label="Example icon-button with a menu">
+            <button mat-icon-button class="m-1 dark:text-neutral-400" [matMenuTriggerFor]="menu" [disableRipple]="true"
+              aria-label="Example icon-button with a menu">
               <mat-icon class="dark:text-neutral-400">more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
@@ -66,56 +74,83 @@
   </mat-drawer>
 
   <div class="example-sidenav-content bg-transparent h-full">
-    <div class="flex items-center justify-center p-8 pb-0 h-full">
+    <div class="flex items-center justify-center h-full">
       <div class="w-full h-full overflow-hidden">
         <!-- <div *ngIf="!threadLoading && !messageLoading; else loading" class="flex flex-col h-full gap-4"> -->
-          <div class="flex gap-3 h-full w-full">
+        <div class="flex flex-col h-full w-full overflow-auto scroller-messages">
+          <div class="flex gap-3 pt-8 px-8 pb-2 sticky top-0 backdrop-blur-xl z-10 bg-gradient-to-b from-gray-100 to-[#f3f4f6c4]">
             <button type="button" class="menu-toggle-btn" (click)="drawer.toggle()">
               <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
             </button>
-            <div class="flex flex-col h-full gap-4 w-full relative">
-            <!-- Display thread details -->
-            <div class="flex flex-col gap-2 justify-start items-center w-100 h-100 relative">
+            <div class="w-full flex justify-center">
               <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg">
                 <div class="flex items-center gap-3">
                   <div class="hidden md:block">
                     <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
-                    <div class="text-sm text-gray-700 dark:text-neutral-500 font-semibold uppercase mb-0 flex items-center gap-2 ">
+                    <div
+                      class="text-sm text-gray-700 dark:text-neutral-500 font-semibold uppercase mb-0 flex items-center gap-2 ">
                       <div class="truncate w-48">{{ thread?.id ?? '' }}</div>
                       <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
                     </div>
                   </div>
                 </div>
                 <div class="flex items-center gap-1 justify-between md:justify-end">
-                  <!-- <button class="flex items-center justify-center gap-2 primary-button-black min-w-44" (click)="createNewThread()"><ng-icon [size]="'18px'" name="featherEdit"></ng-icon>New Thread</button> -->
-                  <!-- <button class="flex items-center justify-center" mat-icon-button (click)="createNewThread()">
-                    <mat-icon class="!flex items-center justify-center">
-                      <ng-icon [size]="'18px'" name="featherEdit"></ng-icon>
-                    </mat-icon>
-                  </button> -->
                   <button class="flex items-center justify-center" mat-icon-button (click)="openDialog(null)">
                     <mat-icon class="!flex items-center justify-center">
                       <ng-icon [size]="'20px'" name="iconoirTrash"></ng-icon>
                     </mat-icon>
                   </button>
-                  <!-- <button class="flex items-center justify-center gap-2 delete-button-black min-w-44" (click)="openDialog(null)"><ng-icon [size]="'18px'" name="cssTrashEmpty"></ng-icon>Delete Thread</button> -->
-
                 </div>
               </div>
-              <div class="flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg">
-                <app-example-prompts class="h-full" *ngIf="messages.length === 0 && !threadLoading && !messageLoading" @fadeInOut></app-example-prompts>
-                <app-message-list *ngIf="messages.length > 0" @fadeInOut [messageLoading]="messageLoading"></app-message-list>
+            </div>
+           
+          </div>
+          <!-- <button type="button" class="menu-toggle-btn" (click)="drawer.toggle()">
+            <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
+          </button> -->
+          <div class="flex flex-col h-full gap-4 w-full relative px-8 pb-8">
+            <!-- Display thread details -->
+            <div class="flex flex-col gap-2 justify-start items-center w-100 h-100 relative">
+              <!-- <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg">
+                <div class="flex items-center gap-3">
+                  <div class="hidden md:block">
+                    <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
+                    <div
+                      class="text-sm text-gray-700 dark:text-neutral-500 font-semibold uppercase mb-0 flex items-center gap-2 ">
+                      <div class="truncate w-48">{{ thread?.id ?? '' }}</div>
+                      <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1 justify-between md:justify-end">
+                  <button class="flex items-center justify-center" mat-icon-button (click)="openDialog(null)">
+                    <mat-icon class="!flex items-center justify-center">
+                      <ng-icon [size]="'20px'" name="iconoirTrash"></ng-icon>
+                    </mat-icon>
+                  </button>
+                </div>
+              </div> -->
+              <div class="pl-12 flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg">
+                <app-example-prompts class="h-full" *ngIf="messages.length === 0 && !threadLoading && !messageLoading"
+                  @fadeInOut></app-example-prompts>
+                <app-message-list *ngIf="messages.length > 0" @fadeInOut
+                  [messageLoading]="messageLoading"></app-message-list>
                 <div class="prompt-box" *ngIf="messages.length === 0" @fadeInOut>
                 </div>
               </div>
-              <div class="w-full absolute bottom-0 message-footer prompt-box flex justify-center">
+              <div class="w-full fixed bottom-0 message-footer prompt-box flex justify-center">
                 <div class="max-w-screen-lg w-full">
-                  <app-prompts-carousel (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
+                  <app-prompts-carousel *ngIf="messages?.length === 0" (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
                   <div class="flex items-center gap-2 pb-3">
-                    <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8" [showCursor]="false" [strings]="placeholders">
-                      <input #chatbox [disabled]="messageLoading" [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'" class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full" #inputbox type="text">
+                    <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
+                      [showCursor]="false" [strings]="placeholders">
+                      <input #chatbox [disabled]="messageLoading"
+                        [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'"
+                        class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full"
+                        #inputbox type="text">
                     </ngx-typed-js>
-                    <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" class="send-button" (click)="createMessage(inputbox.value)">
+                    <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" class="send-button"
+                      (click)="createMessage(inputbox.value)">
                       <ng-icon [size]="'24px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
                     </button>
                   </div>
@@ -139,5 +174,5 @@
 <ng-template #nomessages>
   <div class="no-message">
     No messages
-   </div>
+  </div>
 </ng-template>

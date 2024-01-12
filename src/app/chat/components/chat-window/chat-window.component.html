@@ -6,14 +6,7 @@
       <div class="sticky top-0 z-10 bg-gradient-to-t from-[#eff0f391] to-[#eff0f3] pb-2 pt-6 px-8 backdrop-blur-md">
         <div class="flex justify-between items-center">
           <!-- <p class="text-neutral-800 dark:text-neutral-400 font-black mb-0">Threads ({{userProfile.threads?.length}})</p> -->
-          <p class="text-neutral-800 text-2xl dark:text-neutral-400 font-black mb-0">Threads
-          </p>
-
-          <!-- <button class="flex items-center justify-center" mat-icon-button (click)="createNewThread()">
-            <mat-icon class="!flex items-center justify-center text-blue-600">
-              <ng-icon [size]="'19px'" name="featherPlusSquare"></ng-icon>
-            </mat-icon>
-          </button> -->
+          <p class="text-neutral-800 text-2xl dark:text-neutral-400 font-black mb-0">Threads</p>
           <button class="flex items-center justify-center" mat-icon-button (click)="createNewThread()">
             <mat-icon class="!flex items-center justify-center">
               <ng-icon [size]="'18px'" name="featherEdit"></ng-icon>
@@ -75,12 +68,11 @@
 
   <div class="example-sidenav-content bg-transparent h-full">
     <div class="flex items-center justify-center h-full">
-      <div class="w-full h-full overflow-hidden flex pt-8 px-8">
+      <div class="w-full h-full overflow-hidden flex pt-8 px-8 gap-2">
         <!-- <div *ngIf="!threadLoading && !messageLoading; else loading" class="flex flex-col h-full gap-4"> -->
           <button type="button" class="menu-toggle-btn" (click)="drawer.toggle()">
             <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
           </button>
-
         <div class="flex flex-col h-full w-full overflow-hidden relative">
           <div class="flex absolute gap-3 w-full top-0 backdrop-blur-xl z-10 bg-gradient-to-b from-gray-100 to-[#f3f4f6c4]">
             <div class="w-full flex justify-center">
@@ -105,7 +97,7 @@
               </div>
             </div>
           </div>
-          <div class="flex flex-col h-full gap-4 w-full relative px-8 pb-8">
+          <div class="flex flex-col h-full gap-4 w-full relative">
             <!-- Display thread details -->
             <div class="flex flex-col gap-2 justify-start items-center w-100 h-100 relative">
               <div class="flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg scroller-messages">
@@ -116,7 +108,7 @@
                 <div class="prompt-box" *ngIf="messages.length === 0" @fadeInOut>
                 </div>
               </div>
-              <div class="w-full fixed bottom-0 message-footer prompt-box flex justify-center">
+              <div class="w-full absolute bottom-0 message-footer prompt-box flex justify-center">
                 <div class="max-w-screen-lg w-full">
                   <app-prompts-carousel *ngIf="messages?.length === 0" (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
                   <div class="flex items-center gap-2 pb-3">
@@ -140,13 +132,8 @@
         <ng-template #loading>Loading...</ng-template>
       </div>
     </div>
-
   </div>
-
 </mat-drawer-container>
-
-
-
 
 
 <ng-template #nomessages>

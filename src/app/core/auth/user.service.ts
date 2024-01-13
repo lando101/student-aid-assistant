@@ -141,6 +141,16 @@ export class UserService {
    // add threads to user profile
    async addMessages(thread_id: string | null, mesg: Message | null) {
     const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!, 'messages', mesg!.id!);
+
+    await setDoc(docRef, {mesg, liked: 0});
+   }
+
+   async updateMessage(thread_id: string, message_id: string, key: string, value: any) {
+      const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id, 'messages', message_id)
+
+      await updateDoc(docRef, {
+        [key]: value,
+      })
    }
 
   // add threads to user profile

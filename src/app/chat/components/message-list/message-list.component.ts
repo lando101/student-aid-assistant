@@ -13,43 +13,44 @@ import { ChatService } from '../../services/chat.service';
 import { MarkdownPipe } from '../../../shared/pipes/markdown.pipe';
 import { Subscription } from 'rxjs';
 import { NgxTypedJsModule } from 'ngx-typed-js';
+import { MessageBubbleComponent } from "../message-bubble/message-bubble.component";
 @Component({
-  selector: 'app-message-list',
-  standalone: true,
-  imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule],
-  viewProviders: [provideIcons({ cssInfo, cssBot, cssUser, featherThumbsUp, featherThumbsDown })],
-  animations: [
-    trigger('listAnimation', [
-      transition('* => *', [
-        query(':enter', [
-          style({ opacity: 0, transform: 'translateY(100%)' }),
-          stagger('100ms', animate('300ms ease-out', keyframes([
-            style({ opacity: 0, transform: 'translateY(10px)', offset: 0 }),
-            style({ opacity: 1, transform: 'translateY(-7px)', offset: 0.7 }), // Overshoot to 105%
-            style({ opacity: 1, transform: 'translateY(0)', offset: 1 }) // Settle back to 100%
-          ])))
-        ], { optional: true })
-      ])
-    ]),
-    trigger('fadeInOut', [
-      // Fade in up (equivalent to 'enter')
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('300ms 550ms', keyframes([
-          style({ opacity: 0, transform: 'translateY(10px)', offset: 0 }),
-          style({ opacity: 1, transform: 'translateY(-7px)', offset: 0.7 }), // Overshoot to 105%
-          style({ opacity: 1, transform: 'translateY(0)', offset: 1 }) // Settle back to 100%
-        ])),
-      ]),
-      // Fade out down (equivalent to 'leave')
-      transition(':leave', [
-        animate('100ms ease-out', style({ opacity: 0, transform: 'translateY(100%)' }))
-      ])
-    ])
-  ],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './message-list.component.html',
-  styleUrl: './message-list.component.sass'
+    selector: 'app-message-list',
+    standalone: true,
+    viewProviders: [provideIcons({ cssInfo, cssBot, cssUser, featherThumbsUp, featherThumbsDown })],
+    animations: [
+        trigger('listAnimation', [
+            transition('* => *', [
+                query(':enter', [
+                    style({ opacity: 0, transform: 'translateY(100%)' }),
+                    stagger('100ms', animate('300ms ease-out', keyframes([
+                        style({ opacity: 0, transform: 'translateY(10px)', offset: 0 }),
+                        style({ opacity: 1, transform: 'translateY(-7px)', offset: 0.7 }),
+                        style({ opacity: 1, transform: 'translateY(0)', offset: 1 }) // Settle back to 100%
+                    ])))
+                ], { optional: true })
+            ])
+        ]),
+        trigger('fadeInOut', [
+            // Fade in up (equivalent to 'enter')
+            transition(':enter', [
+                style({ opacity: 0, transform: 'translateY(10px)' }),
+                animate('300ms 550ms', keyframes([
+                    style({ opacity: 0, transform: 'translateY(10px)', offset: 0 }),
+                    style({ opacity: 1, transform: 'translateY(-7px)', offset: 0.7 }),
+                    style({ opacity: 1, transform: 'translateY(0)', offset: 1 }) // Settle back to 100%
+                ])),
+            ]),
+            // Fade out down (equivalent to 'leave')
+            transition(':leave', [
+                animate('100ms ease-out', style({ opacity: 0, transform: 'translateY(100%)' }))
+            ])
+        ])
+    ],
+    // changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './message-list.component.html',
+    styleUrl: './message-list.component.sass',
+    imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule, MessageBubbleComponent]
 })
 export class MessageListComponent implements OnInit {
   @ViewChild('sp') messageList!: any;

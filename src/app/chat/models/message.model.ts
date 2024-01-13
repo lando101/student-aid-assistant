@@ -9,6 +9,7 @@ export interface Message {
   role?: string;
   run_id?: string;
   thread_id?: string;
+  liked?: 0 | 1 | 2 | null; // 0 no answer, 1 liked, 2 disliked
 }
 
 export interface MessageContent {

@@ -1,6 +1,6 @@
 <mat-drawer-container [hasBackdrop]="false" class="example-container bg-transparent h-full" autosize>
   <mat-drawer #drawer [opened]="widthValue > 1012 ? true:false" [mode]="widthValue > 1012 ? 'side':'push'"
-    class="scroller example-sidenav mr-8 !overflow-x-visible !bg-[#eff0f3] dark:!bg-[#131313] border-r-solid border-r border-r-gray-300 dark:border-r-neutral-700"
+    class="scroller example-sidenav mr-8 !overflow-x-visible !bg-[#eff0f3] dark:!bg-[#131313] border-r-solid border-r border-r-gray-300 dark:!border-r-neutral-800"
     mode="side">
     <div *ngIf="userProfile?.threads?.length ?? 0 > 0">
       <div class="sticky top-0 z-10 bg-gradient-to-t from-[#eff0f391] to-[#eff0f3] dark:to-[#131313] dark:from-[#13131354] pb-2 pt-6 px-8 backdrop-blur-md">
@@ -19,13 +19,12 @@
             optionValue="value"></p-selectButton>
         </div>
       </div>
-
       <div class="pb-8 px-8">
         <div class="mx-0 my-3 overflow-visible" *ngFor="let thread of threads | orderBy: value" @growShrink>
           <div
             [ngClass]="{'thread-button-active': threadId === thread.thread_id, 'thread-button': threadId !== thread.thread_id}">
-            <button class="flex flex-col gap-1 text-left pl-3 py-3" (click)="getThread(thread.thread_id ?? '')">
-              <div class="thread-id">{{thread.thread_id}}</div>
+            <button class="flex flex-col gap-1 text-left pl-3 py-3 w-full" (click)="getThread(thread.thread_id ?? '')">
+              <!-- <div class="thread-id">{{thread.thread_id}}</div> -->
               <div *ngIf="thread.last_message_content, else nomessages" class="flex h-8 max-w-48 text-xs font-bold">
                 <div class="message-text">{{thread.last_message_content}}</div>
               </div>
@@ -138,6 +137,6 @@
 
 <ng-template #nomessages>
   <div class="no-message">
-    No messages
+    New Thread
   </div>
 </ng-template>

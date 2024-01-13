@@ -1,5 +1,5 @@
 
-<div *ngIf="currentUser" class="h-16 px-6 bg-gray-50 dark:bg-neutral-900 w-full flex justify-center items-center border-b-2 border-gray-950 dark:border-neutral-700">
+<div *ngIf="currentUser" class="h-16 px-6 bg-gray-50 dark:bg-neutral-900 w-full flex justify-center items-center border-b-2 border-gray-950 dark:border-neutral-400">
   <div class="flex-nowrap justify-between w-full flex items-center">
     <div class=" flex flex-nowrap gap-3 items-center">
       <span class="text-sm logo bg-neutral-950 text-gray-100 p-2 hidden lg:block">
@@ -29,11 +29,11 @@
           </button>
         </div>
         <!-- <button class="d-btn rounded-none d-btn-neutral bg-neutral-900" (click)="logOut()">Sign Out</button> -->
-        <button class="d-avatar d-placeholder">
-          <div class="w-9 h-9 bg-neutral-900 rounded-full ring ring-indigo-500 dark:ring-offset-neutral-700 ring-offset-white ring-offset-2">
-            <span class="font-semibold text-neutral-200 text-sm">LM</span>
+        <div class="d-avatar d-placeholder">
+          <div class="w-10 h-10 bg-neutral-900 rounded-full ring ring-indigo-500 ring-offset-white ring-offset-2">
+            <span class="font-semibold text-neutral-200">LM</span>
           </div>
-        </button>
+        </div>
       </div>
       <div class="block md:hidden cursor-pointer">
         <p-button (click)="sidebarVisible = true" class="primary-button flex justify-center items-center h-12"><ng-icon [size]="'18px'" name="cssMenu" class="mr-2"> </ng-icon> Menu

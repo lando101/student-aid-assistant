@@ -83,20 +83,20 @@ import { threadId } from 'worker_threads';
         ]),
         trigger('growShrink', [
             state('void', style({ height: '0', scale: .93, opacity: 0, margin: '0' })),
-            state('*', style({ height: '110px', scale: 1, opacity: 1, margin: '8px' })),
+            state('*', style({ height: '90px', scale: 1, opacity: 1, margin: '8px' })),
             transition('void => *', [
                 animate('280ms ease-in', keyframes([
                     style({ height: '0', scale: .93, opacity: 0, offset: 0, margin: '0' }),
-                    style({ height: '110px', scale: .93, opacity: 0, offset: 0.55 }),
-                    style({ height: '110px', scale: .93, opacity: 1, offset: 0.65 }),
-                    style({ height: '110px', scale: 1, opacity: 1, offset: 1, margin: '8px' }), // Then shrink to final size
+                    style({ height: '90px', scale: .93, opacity: 0, offset: 0.55 }),
+                    style({ height: '90px', scale: .93, opacity: 1, offset: 0.65 }),
+                    style({ height: '90px', scale: 1, opacity: 1, offset: 1, margin: '8px' }), // Then shrink to final size
                 ]))
             ]),
             transition('* => void', [
                 animate('350ms ease-out', keyframes([
-                    style({ height: '110px', scale: 1, opacity: 1, offset: 0, margin: '8px' }),
-                    style({ height: '110px', scale: .93, opacity: 1, offset: 0.35 }),
-                    style({ height: '110px', scale: .93, opacity: 1, offset: 0.6 }),
+                    style({ height: '90px', scale: 1, opacity: 1, offset: 0, margin: '8px' }),
+                    style({ height: '90px', scale: .93, opacity: 1, offset: 0.35 }),
+                    style({ height: '90px', scale: .93, opacity: 1, offset: 0.6 }),
                     style({ height: '0', scale: .93, opacity: 0, offset: 1, margin: '0' }), // Fully disappear
                 ]))
             ])
@@ -238,7 +238,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private setupResizeListener() {
     const element = this.body;
-  
+
     this.resizeSubscription = fromEvent(window, 'resize')
       .pipe(debounceTime(300)) // Adjust debounceTime as needed to reduce unnecessary updates
       .subscribe(() => {
@@ -344,7 +344,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((messages) => {
               // console.log('messages', messages);
-              
+
               messages = messages.sort((a, b) => a.created_at! - b.created_at!);
               this.messages = messages ? messages : [];
               this.chatService._messages.next(this.messages);

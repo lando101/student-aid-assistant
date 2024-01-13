@@ -331,6 +331,9 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getThread(threadId: string) {
+    if(this.widthValue < 1013){
+      this.drawer.close();
+    }
     if (threadId) {
       this.chatService.getThread(threadId).then((thread) => {
         this.threadId = thread.id || '';
@@ -341,6 +344,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((messages) => {
               // console.log('messages', messages);
+              
               messages = messages.sort((a, b) => a.created_at! - b.created_at!);
               this.messages = messages ? messages : [];
               this.chatService._messages.next(this.messages);

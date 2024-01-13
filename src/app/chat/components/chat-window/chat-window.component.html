@@ -1,20 +1,20 @@
 <mat-drawer-container [hasBackdrop]="false" class="example-container bg-transparent h-full" autosize>
   <mat-drawer #drawer [opened]="widthValue > 1012 ? true:false" [mode]="widthValue > 1012 ? 'side':'push'"
-    class="scroller example-sidenav mr-8 !overflow-x-visible !bg-[#eff0f3] border-r-solid border-r border-r-gray-300"
+    class="scroller example-sidenav mr-8 !overflow-x-visible !bg-[#eff0f3] dark:!bg-[#131313] border-r-solid border-r border-r-gray-300 dark:border-r-neutral-700"
     mode="side">
     <div *ngIf="userProfile?.threads?.length ?? 0 > 0">
-      <div class="sticky top-0 z-10 bg-gradient-to-t from-[#eff0f391] to-[#eff0f3] pb-2 pt-6 px-8 backdrop-blur-md">
+      <div class="sticky top-0 z-10 bg-gradient-to-t from-[#eff0f391] to-[#eff0f3] dark:to-[#131313] dark:from-[#13131354] pb-2 pt-6 px-8 backdrop-blur-md">
         <div class="flex justify-between items-center">
           <!-- <p class="text-neutral-800 dark:text-neutral-400 font-black mb-0">Threads ({{userProfile.threads?.length}})</p> -->
-          <p class="text-neutral-800 text-2xl dark:text-neutral-400 font-black mb-0">Threads</p>
-          <button class="flex items-center justify-center" mat-icon-button (click)="createNewThread()">
-            <mat-icon class="!flex items-center justify-center">
+          <p class="text-neutral-800 text-2xl dark:text-neutral-300 font-black mb-0">Threads</p>
+          <button class="flex items-center justify-center " mat-icon-button (click)="createNewThread()">
+            <mat-icon class="!flex items-center justify-center dark:text-neutral-300">
               <ng-icon [size]="'18px'" name="featherEdit"></ng-icon>
             </mat-icon>
           </button>
         </div>
         <div>
-          <div class="text-sm text-gray-700 mb-2 font-semibold flex gap-1">Sort threads</div>
+          <div class="text-sm text-gray-700 dark:text-neutral-500 mb-2 font-medium flex gap-1">Sort threads</div>
           <p-selectButton [options]="stateOptions" [(ngModel)]="value" optionLabel="label"
             optionValue="value"></p-selectButton>
         </div>
@@ -27,7 +27,7 @@
             <button class="flex flex-col gap-1 text-left pl-3 py-3" (click)="getThread(thread.thread_id ?? '')">
               <div class="thread-id">{{thread.thread_id}}</div>
               <div *ngIf="thread.last_message_content, else nomessages" class="flex h-8 max-w-48 text-xs font-bold">
-                <div class="message-text">"{{thread.last_message_content}}</div>
+                <div class="message-text">{{thread.last_message_content}}</div>
               </div>
               <div
                 class="truncate max-w-48 text-xs font-semibold text-gray-500 dark:text-neutral-500 mt-1 flex gap-1 items-center justify-start">
@@ -70,18 +70,18 @@
     <div class="flex items-center justify-center h-full">
       <div class="w-full h-full overflow-hidden flex pt-8 px-8 gap-2">
         <!-- <div *ngIf="!threadLoading && !messageLoading; else loading" class="flex flex-col h-full gap-4"> -->
-          <button type="button" class="menu-toggle-btn" (click)="drawer.toggle()">
+          <button type="button" class="d-btn d-btn-circle hover:bg-gray-300 dark:hover:bg-neutral-900 bg-gray-200 shadow-none text-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 border-0" (click)="drawer.toggle()">
             <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
           </button>
-        <div class="flex flex-col h-full w-full overflow-hidden relative">
-          <div class="flex absolute gap-3 w-full top-0 backdrop-blur-xl z-10 bg-gradient-to-b from-gray-100 to-[#f3f4f6c4]">
+        <div (click)="widthValue < 1013 ? drawer.close():null" class="flex flex-col h-full w-full overflow-hidden relative">
+          <div class="flex absolute gap-3 w-full top-0 backdrop-blur-xl z-10 bg-gradient-to-b from-gray-100 to-[#f3f4f6c4] dark:from-neutral-950 dark:to-[#0a0a0a82]">
             <div class="w-full flex justify-center">
-              <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg pb-4 border-b border-gray-200">
+              <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg pb-4 border-b border-gray-200 dark:border-neutral-800">
                 <div class="flex items-center gap-3">
                   <div class="hidden md:block">
                     <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
                     <div
-                      class="text-sm text-gray-700 dark:text-neutral-500 font-semibold uppercase mb-0 flex items-center gap-2 ">
+                      class="text-sm text-gray-700 dark:text-neutral-400 font-semibold uppercase mb-0 flex items-center gap-2 ">
                       <div class="truncate w-48">{{ thread?.id ?? '' }}</div>
                       <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
                     </div>
@@ -89,7 +89,7 @@
                 </div>
                 <div class="flex items-center gap-1 justify-between md:justify-end">
                   <button class="flex items-center justify-center" mat-icon-button (click)="openDialog(null)">
-                    <mat-icon class="!flex items-center justify-center">
+                    <mat-icon class="!flex items-center justify-center dark:text-neutral-300">
                       <ng-icon [size]="'20px'" name="iconoirTrash"></ng-icon>
                     </mat-icon>
                   </button>
@@ -119,7 +119,7 @@
                         class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full"
                         #inputbox type="text">
                     </ngx-typed-js>
-                    <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" class="send-button"
+                    <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" class="d-btn d-btn-circle bg-indigo-600 hover:bg-indigo-700 text-neutral-100 border-0"
                       (click)="createMessage(inputbox.value)">
                       <ng-icon [size]="'24px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
                     </button>

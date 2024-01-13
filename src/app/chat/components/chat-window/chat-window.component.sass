@@ -28,7 +28,7 @@
 
 
 .thread-button
-  @apply flex flex-nowrap gap-1 border-gray-300 bg-gray-50 dark:border-neutral-600 border rounded-xl dark:bg-neutral-900 transition
+  @apply flex flex-nowrap gap-1 border-gray-300 bg-gray-50 dark:border-neutral-800 border rounded-xl dark:bg-neutral-900 transition
   .thread-id
     @apply truncate max-w-48 text-xs font-medium text-neutral-500 uppercase
   .message-text
@@ -83,10 +83,10 @@
     cursor: pointer
 
 .scroller::-webkit-scrollbar-track
-    @apply bg-transparent mt-[136px] dark:bg-neutral-900 transition-all #{!important}
+    @apply bg-transparent mt-[136px] transition-all #{!important}
 
 .scroller::-webkit-scrollbar-thumb
-    @apply bg-transparent rounded-lg cursor-pointer transition-all dark:bg-neutral-800 #{!important}
+    @apply bg-transparent rounded-lg cursor-pointer transition-all #{!important}
 
 .scroller::-webkit-scrollbar-thumb:hover
     @apply bg-neutral-600 cursor-pointer transition-all #{!important}
@@ -111,10 +111,10 @@
     cursor: pointer
 
 .scroller-messages::-webkit-scrollbar-track
-    @apply bg-transparent mt-[80px] mb-[78px] dark:bg-neutral-900 transition-all #{!important}
+    @apply bg-transparent mt-[80px] mb-[78px] transition-all #{!important}
 
 .scroller-messages::-webkit-scrollbar-thumb
-    @apply bg-transparent rounded-lg cursor-pointer transition-all dark:bg-neutral-800 #{!important}
+    @apply bg-transparent rounded-lg cursor-pointer transition-all #{!important}
 
 .scroller-messages::-webkit-scrollbar-thumb:hover
     @apply bg-neutral-600 cursor-pointer transition-all #{!important}

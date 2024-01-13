@@ -67,7 +67,7 @@
 
   <div class="example-sidenav-content bg-transparent h-full">
     <div class="flex items-center justify-center h-full">
-      <div class="w-full h-full overflow-hidden flex pt-8 px-8 gap-2">
+      <div class="w-full h-full overflow-hidden flex pt-8 px-8 gap-4">
         <!-- <div *ngIf="!threadLoading && !messageLoading; else loading" class="flex flex-col h-full gap-4"> -->
           <button type="button" class="d-btn d-btn-circle hover:bg-gray-300 dark:hover:bg-neutral-900 bg-gray-200 shadow-none text-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 border-0" (click)="drawer.toggle()">
             <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
@@ -109,7 +109,7 @@
               </div>
               <div class="w-full absolute bottom-0 message-footer prompt-box flex justify-center">
                 <div class="max-w-screen-lg w-full">
-                  <app-prompts-carousel *ngIf="messages?.length === 0" (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
+                  <app-prompts-carousel *ngIf="messages?.length === 0" (searchString)="createMessage($event)" (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
                   <div class="flex items-center gap-2 pb-3">
                     <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
                       [showCursor]="false" [strings]="placeholders">

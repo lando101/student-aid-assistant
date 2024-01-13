@@ -50,6 +50,8 @@ export class PromptsCarouselComponent implements OnInit, AfterViewInit, OnDestro
 @ViewChild('owlCar', { static: true }) owlCar!: CarouselComponent;
 @ViewChild('container', { static: true }) container!: ElementRef;
 @Output() hoverString = new EventEmitter<string>();
+@Output() searchString = new EventEmitter<string>();
+
 
 private resizeSubscription!: Subscription;
 width!: string;
@@ -168,6 +170,10 @@ private unsubscribeFromResize() {
 promptHover(event: string){
   this.hoverString.emit(event);
   // console.log('hover', event)
+}
+
+usePrompt(event: string){
+  this.searchString.emit(event)
 }
 
 ngOnDestroy() {

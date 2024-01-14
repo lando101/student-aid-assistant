@@ -250,6 +250,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
+  // this is how the threads animate properly :: add and remove thread from array based on updates
   updateThreads(oldArray: Threads[], newArray: Threads[]) {
     // Creating a map of thread IDs for easy lookup
     if(oldArray.length !== newArray.length) {

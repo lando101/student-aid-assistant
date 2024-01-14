@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Auth, signInAnonymously, createUserWithEmailAndPassword } from '@angular/fire/auth';
 import {MatDividerModule} from '@angular/material/divider';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../../core/auth/user.service';
 import { AuthenticationService } from '../../../core/authentication/authentication.service';
 
@@ -19,6 +19,8 @@ export class SignupFormComponent {
   signupForm!: FormGroup;
   image: string = 'https://firebasestorage.googleapis.com/v0/b/federal-student-aid-assistant.appspot.com/o/site_images%2Fhuman_chillin.svg?alt=media&token=8607d36b-9eec-4609-a650-a7c9a16f6994'
   uid: string | null = null;
+  router = inject(Router)
+
   constructor(private formBuilder: FormBuilder, private auth: Auth, private userService: UserService, private authNew: AuthenticationService) { }
 
   ngOnInit(): void {
@@ -84,7 +86,7 @@ export class SignupFormComponent {
       this.authNew.createAccountEmail(profile).then((user)=>{
         this.userService.createUserProfile(profile, user!.uid)
         .then((data)=>{
-
+          this.router.navigate(['/home']);
         })
       });
     }

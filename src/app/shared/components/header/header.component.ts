@@ -17,11 +17,14 @@ import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api/menuitem';
 import { SidebarModule } from 'primeng/sidebar';
 import { AuthenticationService } from '../../../core/authentication/authentication.service';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, SplitButtonModule, RatingModule, FormsModule, SelectButtonModule, NgIconComponent, MenuModule, SidebarModule ],
+  imports: [CommonModule, RouterModule, ButtonModule, SplitButtonModule, RatingModule, FormsModule, SelectButtonModule, NgIconComponent, MenuModule, SidebarModule, MatMenuModule, MatButtonModule, MatIconModule ],
   viewProviders: [provideIcons({ cssSun, cssMoon, cssMenu })],
   templateUrl: './header.component.html',
   styleUrl: './header.component.sass'

@@ -25,22 +25,38 @@
         <div>
           <button class="primary-button border-2 border-neutral-900 capitalize flex items-center gap-2" (click)="toggleTheme()">
             <ng-icon *ngIf="theme === 'light';else dark" [size]="'18px'" name="cssSun"></ng-icon>
-            {{theme}} 
+            {{theme}}
           </button>
-          
+
         </div>
-        <div class="d-dropdown d-dropdown-end">
+
           <!-- <div tabindex="0" role="button" class="d-btn m-1">Click</div> -->
-          <div tabindex="0" role="button" class="d-avatar d-placeholder">
+          <button [matMenuTriggerFor]="menu" tabindex="0" role="button" class="d-avatar d-placeholder">
           <div class="w-10 h-10 bg-neutral-900 rounded-full ring ring-indigo-500 ring-offset-white ring-offset-2">
             <span class="font-semibold text-neutral-200">LM</span>
           </div>
-        </div>
-          <ul tabindex="0" class="d-dropdown-content z-10 d-menu mt-2 p-2 d-shadow bg-base-100 rounded-box w-52">
-            <li><a>Item 1</a></li>
-            <li><a>Item 2</a></li>
-          </ul>
-        </div>
+          </button>
+          <mat-menu #menu="matMenu">
+            <!-- <button mat-menu-item>
+              <mat-icon>
+                <ng-icon [size]="'24px'" name="cssPlayButtonO"></ng-icon>
+              </mat-icon>
+              <span>View</span>
+            </button>
+            <button mat-menu-item (click)="renameDialog(thread)">
+              <mat-icon>
+                <ng-icon [size]="'24px'" name="cssPen"></ng-icon>
+              </mat-icon>
+              <span>Edit name</span>
+            </button> -->
+            <button mat-menu-item (click)="logOut()">
+              <mat-icon>
+                <ng-icon [size]="'24px'" name="cssTrashEmpty"></ng-icon>
+              </mat-icon>
+              <span>Sign Out</span>
+            </button>
+          </mat-menu>
+
         <!-- <button class="d-btn rounded-none d-btn-neutral bg-neutral-900" (click)="logOut()">Sign Out</button> -->
         <!-- <div class="d-avatar d-placeholder">
           <div class="w-10 h-10 bg-neutral-900 rounded-full ring ring-indigo-500 ring-offset-white ring-offset-2">

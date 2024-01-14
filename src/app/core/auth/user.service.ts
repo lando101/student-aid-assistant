@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Firestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove, collection } from '@angular/fire/firestore';
 import { Threads, UserProfile } from '../../chat/models/user_profile.model';
 import { StringFormat } from 'firebase/storage';
-import { Timestamp, addDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { Timestamp, addDoc, deleteDoc, getDoc, getDocs } from 'firebase/firestore';
 import { StorageService } from '../../chat/services/storage.service';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Message } from '../../chat/models/message.model';
@@ -138,19 +138,33 @@ export class UserService {
     })
    }
 
-   // add threads to user profile
+   // add message to user profile
    async addMessages(thread_id: string | null, mesg: Message | null) {
     const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!, 'messages', mesg!.id!);
+    mesg!.liked = 0;
 
-    await setDoc(docRef, {mesg, liked: 0});
+    await setDoc(docRef, mesg);
    }
 
+   // update message
    async updateMessage(thread_id: string, message_id: string, key: string, value: any) {
       const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id, 'messages', message_id)
 
       await updateDoc(docRef, {
         [key]: value,
       })
+   }
+
+   async getMessages(thread_id: string){
+    const querySnapshot = await getDocs(collection(this.firestore, 'users', this.user.uid, 'threads', thread_id, 'messages'));
+    let messages:any[] = []
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      messages.push(doc.data() as any)
+      // console.log(doc.id, " => ", doc.data());
+    });
+
+    return messages
    }
 
   // add threads to user profile

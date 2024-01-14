@@ -2,7 +2,7 @@
   <mat-drawer #drawer [opened]="widthValue > 1012 ? true:false" [mode]="widthValue > 1012 ? 'side':'push'"
     class="scroller example-sidenav mr-8 !overflow-x-visible !bg-[#eff0f3] dark:!bg-[#131313] border-r-solid border-r border-r-gray-300 dark:!border-r-neutral-800"
     mode="side">
-    <div *ngIf="userProfile?.threads?.length ?? 0 > 0">
+    <div >
       <div class="sticky top-0 z-10 bg-gradient-to-t from-[#eff0f391] to-[#eff0f3] dark:to-[#131313] dark:from-[#13131354] pb-2 pt-6 px-8 backdrop-blur-md">
         <div class="flex justify-between items-center">
           <!-- <p class="text-neutral-800 dark:text-neutral-400 font-black mb-0">Threads ({{userProfile.threads?.length}})</p> -->
@@ -19,7 +19,7 @@
             optionValue="value"></p-selectButton>
         </div>
       </div>
-      <div class="pb-8 px-8">
+      <div class="pb-8 px-8" *ngIf="userProfile?.threads?.length ?? 0 > 0">
         <div class="mx-0 my-3 overflow-visible" *ngFor="let thread of threads | orderBy: value" @growShrink>
           <div
             [ngClass]="{'thread-button-active': threadId === thread.thread_id, 'thread-button': threadId !== thread.thread_id}">
@@ -103,7 +103,7 @@
                 <app-example-prompts class="h-full" *ngIf="messages.length === 0 && !threadLoading && !messageLoading"
                   @fadeInOut></app-example-prompts>
                 <app-message-list *ngIf="messages.length > 0" @fadeInOut
-                  [messageLoading]="messageLoading"></app-message-list>
+                  [messageLoading]="messageLoading" [threadId]="thread.id!" [uid]="userProfile.uid!"></app-message-list>
                 <div class="prompt-box" *ngIf="messages.length === 0" @fadeInOut>
                 </div>
               </div>

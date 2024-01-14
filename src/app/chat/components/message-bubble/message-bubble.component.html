@@ -1,4 +1,4 @@
-<div class="flex flex-col" [ngClass]="{'items-end': message.role !== 'assistant'}">
+<div class="flex flex-col" [ngClass]="{'items-end': message?.role !== 'assistant'}">
   <div class="flex gap-1 items-center capitalize font-bold dark:text-neutral-400" *ngIf="message">
     <ng-icon *ngIf="message.role === 'assistant'" class="ml-1" [size]="'20px'" name="cssBot"></ng-icon>{{message.role === 'assistant' ? 'assistant': 'you'}}
   </div>
@@ -8,7 +8,7 @@
       <p class="mb-0 text-gray-600 dark:text-neutral-600 font-bold text-xs py-2 w-full text-end">{{(message.created_at! * 1000) | date:'short'}}</p>
     </div>
     <div class="flex flex-col gap-2 pt-1 dark:text-neutral-600" *ngIf="message.role === 'assistant'">
-      <button (click)="likeMessage(1)" class="opacity-70 hover:opacity-100">
+      <button [ngClass]="{'text-red-500': message.liked === 1}" (click)="likeMessage(1)" class="opacity-70 hover:opacity-100">
         <ng-icon class="ml-1" [size]="'16px'" name="featherThumbsUp"></ng-icon>
       </button>
       <button (click)="likeMessage(2)" class="opacity-70 hover:opacity-100">

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { Message } from '../../models/message.model';
 import { CommonModule } from '@angular/common';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
@@ -14,9 +14,12 @@ import { MarkdownPipe } from '../../../shared/pipes/markdown.pipe';
 import { Subscription } from 'rxjs';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { MessageBubbleComponent } from "../message-bubble/message-bubble.component";
+import { UserService } from '../../../core/auth/user.service';
+import { OrderByPipe } from 'ngx-pipes';
 @Component({
     selector: 'app-message-list',
     standalone: true,
+    providers: [OrderByPipe],
     viewProviders: [provideIcons({ cssInfo, cssBot, cssUser, featherThumbsUp, featherThumbsDown })],
     animations: [
         trigger('listAnimation', [
@@ -52,14 +55,25 @@ import { MessageBubbleComponent } from "../message-bubble/message-bubble.compone
     styleUrl: './message-list.component.sass',
     imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule, MessageBubbleComponent]
 })
-export class MessageListComponent implements OnInit {
+export class MessageListComponent implements OnInit, OnChanges {
   @ViewChild('sp') messageList!: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
   @Input() messageLoading: boolean = false;
+  @Input() threadId: string = '';
+  @Input() uid: string  = '';
+
+  private userService = inject(UserService);
+  private orderPipe = inject(OrderByPipe)
+
   private messagesSubscription!: Subscription;
 
-  messages: Message[] | null = null;
+  messages: Message[] | null = null; // messages from open ai
+  userMessages: Message[] | null = null; // messages saved to user in firebase
+  mergedMsgs: Message[] | null = null; // messages saved to user in firebase
+
+  firebaseMessagesLoading: boolean = false;
+
   initialLoad: boolean = true;
   constructor(private chatService: ChatService){
 
@@ -69,17 +83,55 @@ export class MessageListComponent implements OnInit {
       (messages: Message[]) => {
         if (messages) {
           this.messages = messages;
+          this.mergeMessages()
         }
         setTimeout(() => {
           this.initialLoad = false;
         }, 50);
 
-        console.log('messages list', this.messages);
+        // console.log('messages list', this.messages);
       },
       error => {
         // handle error
       }
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('changes', changes)
+    let threadId = changes['threadId']?.currentValue;
+    if(threadId) {
+      // alert('new thread' + threadId)
+      this.firebaseMessagesLoading = true;
+      this.userService.getMessages(threadId).then((messages)=>{
+        if(messages) {
+          this.userMessages = [];
+          messages.forEach((message)=>{
+            this.userMessages?.push(message)
+          })
+          console.log('messages from firebase', messages)
+          // this.userMessages = messages;
+          this.firebaseMessagesLoading = false;
+          this.mergeMessages()
+        }
+      })
+    }
+  }
+
+  // merge messages from firebase and open ai
+  mergeMessages(){
+    const fireMessages:Message[] = this.orderPipe.transform(this.userMessages!, 'created_at');
+    const aiMessages:Message[] = this.orderPipe.transform(this.messages!, 'created_at');
+
+    if(!this.firebaseMessagesLoading && !this.messageLoading) {
+      if(this.mergedMsgs){
+        this.mergedMsgs?.push(this.messages![this.messages!.length-1])
+      } else {
+        this.mergedMsgs = fireMessages; // if init fire messages become visible messages
+      }
+      // console.log('fire', fireMessages)
+      // console.log('ai', aiMessages)
+    }
   }
 
   getMessageContainerHeight(): number {

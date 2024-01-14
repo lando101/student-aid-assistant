@@ -28,6 +28,7 @@ export class MessageBubbleComponent implements OnInit, OnChanges {
   }
 
   likeMessage(liked: 1 | 2) {
+    this.message.liked = liked;
     this.userService.updateMessage(this.message.thread_id!, this.message.id!, 'liked', liked)
   }
 }

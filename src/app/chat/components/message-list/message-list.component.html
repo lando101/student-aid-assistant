@@ -1,28 +1,7 @@
-<div *ngIf="mergedMsgs" class="relative">
-  <!-- <div class="mb-3">
-    <p class="dark:text-neutral-400 text-gray-700 font-semibold mb-0">Current Thread</p>
-    <p class="dark:text-neutral-400 text-sm text-gray-600 font-semibold mb-0 flex items-center">Showing last {{messages.length}} messages <ng-icon class="ml-1" [size]="'16px'" name="cssInfo"></ng-icon></p>
-  </div> -->
-    <div class="scroller w-full">
-      <div [@listAnimation]="initialLoad ? undefined : mergedMsgs.length" id="messagesContainer" #messagesContainer class="flex flex-col gap-0 pr-5 w-full message-container">
-          <div *ngFor="let message of mergedMsgs, let i = index" [ngClass]="{'items-end': message.role !== 'assistant'}" class="message" >
-            <!-- <div class="flex gap-1 items-center capitalize font-bold dark:text-neutral-400" *ngIf="message">
-              <ng-icon *ngIf="message.role === 'assistant'" class="ml-1" [size]="'20px'" name="cssBot"></ng-icon>{{message.role === 'assistant' ? 'assistant': 'you'}}
-            </div>
-            <div class="message-width ml-7 flex gap-2">
-              <div>
-                <div [innerHTML]="message.content[0].text.value | markdown" [ngClass]="{'rounded-tl-none bg-white dark:!text-neutral-200 dark:!bg-neutral-800 border border-gray-300 dark:!border-neutral-700':message.role === 'assistant', 'rounded-tr-none bg-neutral-800 dark:bg-neutral-900 text-neutral-200':message.role !== 'assistant'}" class="p-6 rounded-xl font-medium"></div>
-                <p class="mb-0 text-gray-600 dark:text-neutral-600 font-bold text-xs py-2 w-full text-end">{{(message.created_at! * 1000) | date:'short'}}</p>
-              </div>
-              <div class="flex flex-col gap-2 pt-1 dark:text-neutral-600" *ngIf="message.role === 'assistant'">
-                <button class="opacity-70 hover:opacity-100">
-                  <ng-icon class="ml-1" [size]="'16px'" name="featherThumbsUp"></ng-icon>
-                </button>
-                <button class="opacity-70 hover:opacity-100">
-                  <ng-icon class="ml-1" [size]="'16px'" name="featherThumbsDown"></ng-icon>
-                </button>
-              </div>
-            </div> -->
+<div *ngIf="messages?.length ?? 0 > 0" class="relative">
+    <div class="w-full scroller flex-col-reverse">
+      <div [@listAnimation]="initialLoad ? undefined : messages?.length" id="messagesContainer" #messagesContainer class="flex flex-col gap-0 pr-5 w-full message-container">
+          <div *ngFor="let message of messages, let i = index" [ngClass]="{'items-end': message.role !== 'assistant'}" class="message" >
             <app-message-bubble [message]="message"></app-message-bubble>
           </div>
       </div>
@@ -45,40 +24,9 @@
         </div>
       </div>
     </div>
-  <!-- <p-scrollPanel #sp [style]="{ width: '100%', height: 'calc(100vh - 381px)' }">
-      <div id="messagesContainer" #messagesContainer class="flex flex-col gap-3">
-        <div *ngFor="let message of messages" class="message-container">
-          <div [ngClass]="{'items-end': message.role !== 'assistant'}" class="message" *ngIf="message">
-            <div class="flex gap-1 items-center capitalize font-bold">
-              <ng-icon *ngIf="message.role === 'assistant'" class="ml-1" [size]="'20px'" name="cssBot"></ng-icon>{{message.role === 'assistant' ? 'assistant': 'you'}}
-            </div>
-            <div class="message-width ml-7">
-              <div [ngClass]="{'rounded-tl-none bg-white border border-gray-300':message.role === 'assistant', 'rounded-tr-none bg-neutral-800 text-neutral-200':message.role !== 'assistant'}" class="p-6 rounded-xl">
-                {{ message.content[0].text.value }}
-              </div>
-              <p class="mb-0 text-gray-600 font-bold text-xs py-2 w-full text-end">{{(message.created_at! * 1000) | date:'short'}}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-  </p-scrollPanel> -->
 </div>
 
 <ng-template #user>
   <ng-icon class="ml-1" [size]="'20px'" name="cssUser"></ng-icon>
 </ng-template>
 
-<!-- <ng-template #messageLoading>
-  <div class="message-container">
-    <div class="message">
-      <div class="flex gap-1 items-center capitalize font-bold">
-        <ng-icon class="ml-1" [size]="'20px'" name="cssBot"></ng-icon>assistant
-      </div>
-      <div class="message-width ml-7">
-        <div class="rounded-tl-none bg-white border border-gray-300 p-6 rounded-xl">
-          Thinking!
-        </div>
-      </div>
-    </div>
-  </div>
-</ng-template> -->

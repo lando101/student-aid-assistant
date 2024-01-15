@@ -20,7 +20,6 @@ export const routes: Routes = [
   { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
   { path: 'auth', component: AuthComponent },
   { path: 'sign-up', component: SignupComponent }
-
 ];
 
 @NgModule({

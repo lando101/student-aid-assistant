@@ -75,12 +75,12 @@ export class UserService {
     const unsub = onSnapshot(collection(this.firestore, 'users', this.user.uid, 'threads'), (docs)=>{
       this.userProfile.threads = []; // might need to fix for animations
       docs.forEach((doc)=>{
-        console.log("threads data: ", doc.data());
+        // console.log("threads data: ", doc.data());
         this.userProfile.threads.push(doc.data())
       });
       this.storageService.setItem(this.userProfileKey, JSON.stringify(this.userProfile));
       this._userProfile.next(this.userProfile);
-      console.log('user profile with trheads', this.userProfile)
+      // console.log('user profile with trheads', this.userProfile)
     });
    }
 
@@ -156,12 +156,13 @@ export class UserService {
    }
 
    async getMessages(thread_id: string){
+    // console.log('trying to get messages from firebase')
     const querySnapshot = await getDocs(collection(this.firestore, 'users', this.user.uid, 'threads', thread_id, 'messages'));
     let messages:any[] = []
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       messages.push(doc.data() as any)
-      // console.log(doc.id, " => ", doc.data());
+      console.log(doc.id, " => ", doc.data());
     });
 
     return messages

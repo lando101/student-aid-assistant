@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Signal, ViewChild, computed, inject } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
 import { UserService } from '../../core/auth/user.service';
 import { AssistantService } from '../../chat/services/assistant.service';
 import { Threads, UserProfile } from '../../chat/models/user_profile.model';
@@ -27,6 +27,8 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 import { animate, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
 import { NgxTypedJsModule } from 'ngx-typed-js';
+import { Message } from '../../chat/models/message.model';
+import { Router } from 'express';
 
 @Component({
   selector: 'app-assistant',
@@ -130,22 +132,20 @@ import { NgxTypedJsModule } from 'ngx-typed-js';
   styleUrl: './assistant.component.sass'
 })
 export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('chatbox') chatbox: ElementRef | null = null;
   @ViewChild('drawer') drawer!: MatDrawer;
 
   chatService = inject(AssistantService);
   userService = inject(UserService);
+  router = inject(ActivatedRoute)
 
   threads: Threads[] = [];
-  activeThreadId: string = '';
   userProfile!: UserProfile;
+  activeThreadId: string | null = null;
 
   width!: string;
   widthValue: number = 0;
   body!: HTMLElement;
   private resizeSubscription!: Subscription;
-
-  placeholders: string[] = []
 
   stateOptions: any[] = [{label: 'Recent', value: 'last_updated'}, {label: 'Oldest', value: '-last_updated'}];
   value: string = 'last_updated';
@@ -161,7 +161,9 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
         this.updateThreads(this.threads, userProfile.threads)
       }
     });
-
+    this.router.params.subscribe((params)=>{
+      this.activeThreadId = params['threadId']
+    })
   }
 
   ngAfterViewInit(): void {
@@ -230,8 +232,48 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chatService.createThread()
   }
 
-  search(){
-    this.chatService.messageLoading.set(true)
+  // creating message
+  // createMessage(message: string) {
+  //   const userMessage: Message = {
+  //     assistant_id: undefined,
+  //     content: [{ text: { value: message, annotations: [] } }],
+  //     created_at: this.createUnixTime(),
+  //     file_ids: [],
+  //     id: undefined,
+  //     metadata: {},
+  //     object: undefined,
+  //     role: 'user',
+  //     run_id: undefined,
+  //     thread_id: this.activeThreadId!,
+  //   };
+  //   if (this.chatbox) {
+  //     this.chatbox.nativeElement.value = '';
+  //   }
+
+  //   this.messages.push(userMessage);
+  //   this.chatService._messages.next(this.messages);
+
+  //   this.chatService.createMessage(message).subscribe(
+  //     (response) => {
+  //       // console.log('Message sent response', response);
+  //       this.runAssistant(
+  //         'you are a assistant that is an expert with student aid in the united states. only answer questions related to student aid. '
+  //       ); // update this to say "address user as first name last name"
+  //     },
+  //     (error) => {
+  //       alert('Error creating message');
+  //     }
+  //   );
+  // }
+
+  createUnixTime(): number {
+    // Get the current date and time
+    const now = new Date();
+
+    // Convert to Unix timestamp
+    const unixTime = Math.floor(now.getTime() / 1000);
+
+    return unixTime;
   }
 
   ngOnDestroy(): void {

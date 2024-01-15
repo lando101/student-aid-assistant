@@ -41,7 +41,7 @@ export class AssistantService {
 
   public _messageLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public $messageLoading: Observable<boolean> = this._messageLoading.asObservable();
-
+  public messages: WritableSignal<Message[] | null> = signal(null)
 
   constructor() { }
 
@@ -113,12 +113,15 @@ export class AssistantService {
         this.http.post<Message[]>(url, {content}).pipe(
           tap((messages)=>{
             this._messages.next(messages);
+            if(messages){
+              this.runAssistant(thread_id, this.instructions)
+            }
           })
         )
       )
-      if(messages){
-        this.runAssistant(thread_id, this.instructions)
-      }
+      // if(messages){
+      //   this.runAssistant(thread_id, this.instructions)
+      // }
       return messages
     } catch (error) {
       this.messageLoading.set(false);
@@ -126,27 +129,29 @@ export class AssistantService {
     }
   }
   // 4) run assistant
-  async runAssistant(thread_id: string, instructions?: string): Promise<AssistantRun> {
+  async runAssistant(thread_id: string, instructions?: string): Promise<any> {
     try {
-      const url = `${this.apiUrl}/runassistant/${this.thread.id}`;
+      const url = `${this.apiUrl}/runassistant/${thread_id}`;
 
       const run = await firstValueFrom(
         this.http.post<AssistantRun>(url, {instructions})
-      )
-      if(run) {
-        this.pollStatus(run.id!).pipe(
-          map(
-            (response)=>{
-              if (response.status === 'completed'){
-                this.listMessages(thread_id)
+      ).then((run)=>{
+        if(run) {
+          this.pollStatus(run.id!).pipe(
+            map(
+              (response)=>{
+                if (response.status === 'completed'){
+                  this.listMessages(thread_id)
+                }
+              },
+              (error: any) =>{
+                  throw error;
               }
-            },
-            (error: any) =>{
-                throw error;
-            }
+            )
           )
-        )
-      }
+        }
+      })
+
 
       return run
     } catch (error) {
@@ -186,6 +191,7 @@ export class AssistantService {
         this.http.get<Message[]>(url)
       )
       this._messages.next(messages);
+      this.messages.set(messages)
       this.messageLoading.set(false);
       return messages
     } catch (error) {

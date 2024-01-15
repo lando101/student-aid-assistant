@@ -60,6 +60,7 @@ export class MessageListComponent implements OnInit, OnChanges {
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
   @Input() messageLoading: boolean = false;
+  @Input() messages: Message[] | null = null;
   @Input() threadId: string = '';
   @Input() uid: string  = '';
 
@@ -68,7 +69,7 @@ export class MessageListComponent implements OnInit, OnChanges {
 
   private messagesSubscription!: Subscription;
 
-  messages: Message[] | null = null; // messages from open ai
+  // messages: Message[] | null = null; // messages from open ai
   userMessages: Message[] | null = null; // messages saved to user in firebase
   mergedMsgs: Message[] | null = null; // messages saved to user in firebase
 
@@ -79,59 +80,61 @@ export class MessageListComponent implements OnInit, OnChanges {
 
   }
   ngOnInit(): void {
-    this.messagesSubscription = this.chatService.$messages.subscribe(
-      (messages: Message[]) => {
-        if (messages) {
-          this.messages = messages;
-          this.mergeMessages()
-        }
-        setTimeout(() => {
-          this.initialLoad = false;
-        }, 50);
+    // this.messagesSubscription = this.chatService.$messages.subscribe(
+    //   (messages: Message[]) => {
+    //     if (messages) {
+    //       this.messages = messages;
+    //       this.mergeMessages()
+    //     }
+    //     setTimeout(() => {
+    //       this.initialLoad = false;
+    //     }, 50);
 
-        // console.log('messages list', this.messages);
-      },
-      error => {
-        // handle error
-      }
-    );
+    //     // console.log('messages list', this.messages);
+    //   },
+    //   error => {
+    //     // handle error
+    //   }
+    // );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes', changes)
-    let threadId = changes['threadId']?.currentValue;
-    if(threadId) {
-      // alert('new thread' + threadId)
-      this.firebaseMessagesLoading = true;
-      this.userService.getMessages(threadId).then((messages)=>{
-        if(messages) {
-          this.userMessages = [];
-          messages.forEach((message)=>{
-            this.userMessages?.push(message)
-          })
-          console.log('messages from firebase', messages)
-          // this.userMessages = messages;
-          this.firebaseMessagesLoading = false;
-          this.mergeMessages()
-        }
-      })
-    }
+    console.log('changes messages', changes['messages'].currentValue)
+
+    // let messages: Message[] = changes['rawMessages'].currentValue;
+    // let threadId = changes['threadId']?.currentValue;
+    // if(threadId) {
+    //   // alert('new thread' + threadId)
+    //   this.firebaseMessagesLoading = true;
+    //   this.userService.getMessages(threadId).then((messages)=>{
+    //     if(messages) {
+    //       this.userMessages = [];
+    //       messages.forEach((message)=>{
+    //         this.userMessages?.push(message)
+    //       })
+    //       console.log('messages from firebase', messages)
+    //       // this.userMessages = messages;
+    //       this.firebaseMessagesLoading = false;
+    //       this.mergeMessages()
+    //     }
+    //   })
+    // }
   }
 
   // merge messages from firebase and open ai
   mergeMessages(){
-    const fireMessages:Message[] = this.orderPipe.transform(this.userMessages!, 'created_at');
-    const aiMessages:Message[] = this.orderPipe.transform(this.messages!, 'created_at');
+    // const fireMessages:Message[] = this.orderPipe.transform(this.userMessages!, 'created_at');
+    // const aiMessages:Message[] = this.orderPipe.transform(this.messages!, 'created_at');
 
-    if(!this.firebaseMessagesLoading && !this.messageLoading) {
-      if(this.mergedMsgs){
-        this.mergedMsgs?.push(this.messages![this.messages!.length-1])
-      } else {
-        this.mergedMsgs = fireMessages; // if init fire messages become visible messages
-      }
-      // console.log('fire', fireMessages)
-      // console.log('ai', aiMessages)
-    }
+    // if(!this.firebaseMessagesLoading && !this.messageLoading) {
+    //   if(this.mergedMsgs){
+    //     this.mergedMsgs?.push(this.messages![this.messages!.length-1])
+    //   } else {
+    //     this.mergedMsgs = fireMessages; // if init fire messages become visible messages
+    //   }
+    //   // console.log('fire', fireMessages)
+    //   // console.log('ai', aiMessages)
+    // }
   }
 
   getMessageContainerHeight(): number {

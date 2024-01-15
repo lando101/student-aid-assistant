@@ -1,36 +1,50 @@
-<div class="flex absolute gap-3 w-full top-0 backdrop-blur-xl z-10 bg-gradient-to-b from-gray-100 to-[#f3f4f6c4] dark:from-neutral-950 dark:to-[#0a0a0a82]">
-  <div class="w-full flex justify-center">
-    <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg pb-4 border-b border-gray-200 dark:border-neutral-800">
-      <div class="flex items-center gap-3">
-        <div class="hidden md:block">
-          <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
-          <div
-            class="text-sm text-gray-700 dark:text-neutral-400 font-semibold uppercase mb-0 flex items-center gap-2 ">
-            <div class="truncate w-48">{{threadId}}</div>
-            <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
+<div class="">
+  <div class="flex absolute gap-3 w-full top-0 backdrop-blur-xl z-10 bg-gradient-to-b from-gray-100 to-[#f3f4f6c4] dark:from-neutral-950 dark:to-[#0a0a0a82]">
+    <div class="w-full flex justify-center">
+      <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg pb-4 border-b border-gray-200 dark:border-neutral-800">
+        <div class="flex items-center gap-3">
+          <div class="hidden md:block">
+            <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
+            <div
+              class="text-sm text-gray-700 dark:text-neutral-400 font-semibold uppercase mb-0 flex items-center gap-2 ">
+              <div class="truncate w-48">{{threadId}}</div>
+              <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="flex items-center gap-1 justify-between md:justify-end">
-        <button class="flex items-center justify-center" mat-icon-button>
-          <mat-icon class="!flex items-center justify-center dark:text-neutral-300">
-            <ng-icon [size]="'20px'" name="iconoirTrash"></ng-icon>
-          </mat-icon>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="flex flex-col h-full gap-4 w-full relative">
-  <!-- Display thread details -->
-  <div class="flex flex-col gap-2 justify-start items-center w-100 h-100 relative">
-    <div class="flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg scroller-messages">
-      </div>
-    </div>
-    <div class="w-full absolute bottom-0 message-footer prompt-box flex justify-center">
-      <div class="max-w-screen-lg w-full">
-        <div class="flex items-center gap-2 pb-3">
+        <div class="flex items-center gap-1 justify-between md:justify-end">
+          <button class="flex items-center justify-center" mat-icon-button>
+            <mat-icon class="!flex items-center justify-center dark:text-neutral-300">
+              <ng-icon [size]="'20px'" name="iconoirTrash"></ng-icon>
+            </mat-icon>
+          </button>
         </div>
       </div>
     </div>
   </div>
+  <div class="flex flex-col h-full gap-4 w-full relative">
+    <div class="flex flex-col gap-2 justify-start items-center w-100 h-100 relative">
+      <div class="flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg scroller-messages">
+        <app-message-list *ngIf="mergedMsgs?.length ?? 0 > 0" [messages]="mergedMsgs"></app-message-list>
+        </div>
+      </div>
+      <!-- <div class="w-full absolute bottom-0 message-footer prompt-box flex justify-center">
+        <div class="max-w-screen-lg w-full">
+          <div class="flex items-center gap-2 pb-3">
+          </div>
+        </div>
+      </div> -->
+    </div>
+</div>
+<div class="flex items-center gap-2 pb-3 absolute bottom-0 w-full">
+  <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
+    [showCursor]="false" [strings]="placeholders">
+    <input #chatbox [disabled]="messageLoading"
+      [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'"
+      class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full"
+      #inputbox type="text">
+  </ngx-typed-js>
+  <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" (click)="createMessage(inputbox.value)" class="d-btn d-btn-circle bg-indigo-600 hover:bg-indigo-700 text-neutral-100 border-0">
+    <ng-icon [size]="'24px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
+  </button>
+</div>

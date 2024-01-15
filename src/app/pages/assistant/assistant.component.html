@@ -1,2 +1,99 @@
-<p>assistant works!</p>
-<router-outlet></router-outlet>
+<mat-drawer-container [hasBackdrop]="false" class="example-container bg-transparent drawer-container" autosize>
+  <mat-drawer #drawer [opened]="widthValue > 1012 ? true:false" [mode]="widthValue > 1012 ? 'side':'push'"
+    class="scroller example-sidenav mr-8 !overflow-x-visible !bg-[#eff0f3] dark:!bg-[#131313] border-r-solid border-r border-r-gray-300 dark:!border-r-neutral-800"
+    mode="side">
+    <div >
+      <div class="sticky top-0 z-10 bg-gradient-to-t from-[#eff0f391] to-[#eff0f3] dark:to-[#131313] dark:from-[#13131354] pb-2 pt-6 px-8 backdrop-blur-md">
+        <div class="flex justify-between items-center">
+          <!-- <p class="text-neutral-800 dark:text-neutral-400 font-black mb-0">Threads ({{userProfile.threads?.length}})</p> -->
+          <p class="text-neutral-800 text-2xl dark:text-neutral-300 font-black mb-0">Threads</p>
+          <button class="flex items-center justify-center " mat-icon-button (click)="createNewThread()">
+            <mat-icon class="!flex items-center justify-center dark:text-neutral-300">
+              <ng-icon [size]="'18px'" name="featherEdit"></ng-icon>
+            </mat-icon>
+          </button>
+        </div>
+        <div>
+          <div class="text-sm text-gray-700 dark:text-neutral-500 mb-2 font-medium flex gap-1">Sort threads</div>
+          <p-selectButton [options]="stateOptions" [(ngModel)]="value" optionLabel="label"
+            optionValue="value"></p-selectButton>
+        </div>
+      </div>
+      <div class="pb-8 px-8" *ngIf="userProfile?.threads?.length ?? 0 > 0">
+        <div class="mx-0 my-3 overflow-visible" *ngFor="let thread of threads | orderBy: value" @growShrink>
+          <div
+            [ngClass]="{'thread-button-active': activeThreadId === thread.thread_id, 'thread-button': activeThreadId !== thread.thread_id}">
+            <button class="flex flex-col gap-1 text-left pl-3 py-3 w-full" [routerLink]="['/assistant', thread.thread_id]" routerLinkActive="router-link-active">
+              <!-- <div class="thread-id">{{thread.thread_id}}</div> -->
+
+              <div class="flex h-8 max-w-48 text-xs font-bold">
+                @if (thread.last_message_content) {
+                  <div class="message-text">{{thread.last_message_content}}</div>
+                } @else {
+                  <div class="message-text">New Thread</div>
+                }
+              </div>
+              <div
+                class="truncate max-w-48 text-xs font-semibold text-gray-500 dark:text-neutral-500 mt-1 flex gap-1 items-center justify-start">
+                <ng-icon [size]="'12px'" name="featherClock"></ng-icon>{{thread.last_updated ?
+                (thread.last_updated.toString() | timeago) : 'Never updated'}}</div>
+            </button>
+            <!-- <button pButton type="button" class="pr-3 py-3 flex justify-center items-center"><ng-icon [size]="'20px'" name="cssMoreVertical"></ng-icon></button> -->
+            <button mat-icon-button class="m-1 dark:text-neutral-400" [matMenuTriggerFor]="menu" [disableRipple]="true"
+              aria-label="Example icon-button with a menu">
+              <mat-icon class="dark:text-neutral-400">more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item>
+                <mat-icon>
+                  <ng-icon [size]="'24px'" name="cssPlayButtonO"></ng-icon>
+                </mat-icon>
+                <span>View</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>
+                  <ng-icon [size]="'24px'" name="cssPen"></ng-icon>
+                </mat-icon>
+                <span>Edit name</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>
+                  <ng-icon [size]="'24px'" name="cssTrashEmpty"></ng-icon>
+                </mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </div>
+          <!-- <button (click)="getThread(thread.thread_id ?? '')">{{thread.thread_id}}</button> -->
+        </div>
+      </div>
+    </div>
+  </mat-drawer>
+  <div class="example-sidenav-content bg-transparent h-full">
+    <div class="example-sidenav-content bg-transparent h-full">
+      <div class="flex items-center justify-center h-full">
+        <div class="w-full h-full overflow-hidden flex pt-8 px-8 gap-4">
+          <!-- <div *ngIf="!threadLoading && !messageLoading; else loading" class="flex flex-col h-full gap-4"> -->
+            <button type="button" class="d-btn d-btn-circle hover:bg-gray-300 dark:hover:bg-neutral-900 bg-gray-200 shadow-none text-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 border-0" (click)="drawer.toggle()">
+              <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
+            </button>
+            <div (click)="widthValue < 1013 ? drawer.close():null" class="flex flex-col h-full w-full overflow-hidden relative">
+              <router-outlet></router-outlet>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 pb-3">
+          <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
+            [showCursor]="false" [strings]="placeholders">
+            <input #chatbox [disabled]="messageLoading()"
+              [placeholder]="messageLoading() ? 'Assistant is responding...':'Enter a prompt here...'"
+              class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full"
+              #inputbox type="text">
+          </ngx-typed-js>
+          <button [disabled]="messageLoading()" [ngClass]="{'bg-gray-500': messageLoading()}" (click)="search()" class="d-btn d-btn-circle bg-indigo-600 hover:bg-indigo-700 text-neutral-100 border-0">
+            <ng-icon [size]="'24px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+</mat-drawer-container>

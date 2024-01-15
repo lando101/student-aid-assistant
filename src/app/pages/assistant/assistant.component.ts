@@ -147,8 +147,8 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
 
   placeholders: string[] = []
 
-  stateOptions: any[] = [{label: 'Recent', value: '-last_updated'}, {label: 'Oldest', value: 'last_updated'}];
-  value: string = '-last_updated';
+  stateOptions: any[] = [{label: 'Recent', value: 'last_updated'}, {label: 'Oldest', value: '-last_updated'}];
+  value: string = 'last_updated';
 
   messageLoading: Signal<boolean> = computed(()=>this.chatService.messageLoading());
 

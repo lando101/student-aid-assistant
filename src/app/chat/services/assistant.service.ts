@@ -132,37 +132,29 @@ export class AssistantService {
   async runAssistant(thread_id: string, instructions?: string): Promise<any> {
     try {
       const url = `${this.apiUrl}/runassistant/${thread_id}`;
+      const run = await firstValueFrom(this.http.post<AssistantRun>(url, {instructions}));
 
-      const run = await firstValueFrom(
-        this.http.post<AssistantRun>(url, {instructions})
-      ).then((run)=>{
-        if(run) {
-          this.pollStatus(run.id!).pipe(
-            map(
-              (response)=>{
-                if (response.status === 'completed'){
-                  this.listMessages(thread_id)
-                }
-              },
-              (error: any) =>{
-                  throw error;
-              }
-            )
-          )
-        }
-      })
+      console.log('run', run);
 
+      if (run) {
+        // Call the new polling function and wait for it to complete
+        await this.pollRunStatusUntilCompleted(run);
 
-      return run
+        // Once polling is complete, list messages
+        console.log('Polling complete, listing messages.');
+        await this.listMessages(thread_id);
+      }
+
+      return run;
     } catch (error) {
       throw error;
     }
-
   }
 
   // 5) check run status
-  async checkRunStatus(runId: string): Promise<any>{
-    const url = `${this.apiUrl}/retrieve-run/${this.thread.id}/${runId}`;
+  async checkRunStatus(run: AssistantRun): Promise<any>{
+    console.log('checking run status')
+    const url = `${this.apiUrl}/retrieve-run/${run.thread_id}/${run.id}`;
     try {
       const runStatus = await firstValueFrom(
         this.http.get(url)
@@ -174,12 +166,23 @@ export class AssistantService {
     }
   }
   // 6) poll status :: will run status check api
-  pollStatus(runId: string): Observable<AssistantRun> {
-    // console.log('running polling')
-    return interval(500).pipe(
-      switchMap(() => this.checkRunStatus(runId)),
-      takeWhile((response: AssistantRun) => response.status !== 'completed', true)
-    );
+  async pollRunStatusUntilCompleted(run: AssistantRun): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const intervalId = setInterval(async () => {
+        try {
+          const runStatus = await this.checkRunStatus(run);
+          console.log('Polling status:', runStatus.status);
+
+          if (runStatus.status === 'completed') {
+            clearInterval(intervalId);
+            resolve();
+          }
+        } catch (error) {
+          clearInterval(intervalId);
+          reject(error);
+        }
+      }, 500); // Poll every half second
+    });
   }
 
   // get messages after status completed
@@ -191,7 +194,8 @@ export class AssistantService {
         this.http.get<Message[]>(url)
       )
       this._messages.next(messages);
-      this.messages.set(messages)
+      this.messages.set(messages);
+      // this.updateMessages(messages)
       this.messageLoading.set(false);
       return messages
     } catch (error) {
@@ -199,5 +203,28 @@ export class AssistantService {
       throw error;
     }
   }
+
+
+
+    // update message list
+    // updateMessages(newMessages: Message[]): void {
+    //   if (this.messages.length === 0) {
+    //     this.messages.set(newMessages);
+    //     this._messages.next(this.messages);
+    //   } else {
+    //     // Assuming newMessages are sorted with the newest first
+    //     this.messages()![this.messages.length - 1].id = newMessages[1].id; // replacing locally created message with open ai message
+    //     this.messages()!.push(newMessages[0]);
+    //     try {
+    //       this.userService.updateThread(newMessages[0].thread_id!, 'last_message_content', newMessages[0].content[0].text.value)
+    //       this.userService.addMessages(newMessages[0].thread_id!, newMessages[0]).then(()=>{ // adding messages to user in firestore
+    //         this.userService.addMessages(newMessages[1].thread_id!, newMessages[1]);
+    //       });
+    //     } catch (error) {
+
+    //     }
+
+    //     this.chatService._messages.next(this.messages);
+    //   }
 
 }

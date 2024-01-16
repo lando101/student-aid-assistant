@@ -232,50 +232,6 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chatService.createThread()
   }
 
-  // creating message
-  // createMessage(message: string) {
-  //   const userMessage: Message = {
-  //     assistant_id: undefined,
-  //     content: [{ text: { value: message, annotations: [] } }],
-  //     created_at: this.createUnixTime(),
-  //     file_ids: [],
-  //     id: undefined,
-  //     metadata: {},
-  //     object: undefined,
-  //     role: 'user',
-  //     run_id: undefined,
-  //     thread_id: this.activeThreadId!,
-  //   };
-  //   if (this.chatbox) {
-  //     this.chatbox.nativeElement.value = '';
-  //   }
-
-  //   this.messages.push(userMessage);
-  //   this.chatService._messages.next(this.messages);
-
-  //   this.chatService.createMessage(message).subscribe(
-  //     (response) => {
-  //       // console.log('Message sent response', response);
-  //       this.runAssistant(
-  //         'you are a assistant that is an expert with student aid in the united states. only answer questions related to student aid. '
-  //       ); // update this to say "address user as first name last name"
-  //     },
-  //     (error) => {
-  //       alert('Error creating message');
-  //     }
-  //   );
-  // }
-
-  createUnixTime(): number {
-    // Get the current date and time
-    const now = new Date();
-
-    // Convert to Unix timestamp
-    const unixTime = Math.floor(now.getTime() / 1000);
-
-    return unixTime;
-  }
-
   ngOnDestroy(): void {
 
   }

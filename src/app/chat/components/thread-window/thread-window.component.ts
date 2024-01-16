@@ -11,6 +11,7 @@ import {
   computed,
   effect,
   inject,
+  signal,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
@@ -51,9 +52,12 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
   userMessages: Message[] | null = null; // messages saved to user in firebase
   mergedMsgs: Message[] | null = null; // messages saved to user in firebase
   firebaseMessagesLoading: boolean = false;
+  $messages!: Subscription;
   messagesLoading: boolean = false;
 
   placeholders: string[] = []
+
+  init = true;
 
   constructor(private route: ActivatedRoute) {
     effect(()=>{
@@ -77,6 +81,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     //   // this.loadAndMergeMessages();
     // });
 
+
     this.$route = this.route.params.subscribe((params)=>{
       if(this.threadId) {
         if(this.threadId !== params['threadId']){
@@ -90,16 +95,45 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
         this.userProfile = user;
       })
       if(this.threadId && this.userProfile){
-        this.loadAndMergeMessages();
+        this.loadAndMergeMessages()
+        this.$messages = this.chatService.$messages.subscribe((messages)=>{
+          console.log('new messages', messages)
+
+          // if(!this.init){
+          //   if(this.mergedMsgs?.length ?? 0 > 0){
+          //     // this.updateMessages(messages)
+          //   }
+          // }
+        })
       }
     })
   }
 
-  ngOnChanges(changes: SimpleChanges): void {}
+  ngOnChanges(changes: SimpleChanges): void {
+
+  }
 
   ngAfterViewInit(): void {
-    this.messages = this.chatService.messages()
+    // this.messages = this.chatService.messages()
   }
+
+  // updateMessages(newMessages: Message[]): void {
+  //   console.log('new messages', newMessages)
+  //   // Assuming newMessages are sorted with the newest first
+  //   if(this.mergedMsgs){
+  //     this.mergedMsgs[this.mergedMsgs.length - 1].id = newMessages[1].id; // replacing locally created message with open ai message
+  //     this.mergedMsgs.push(newMessages[0]);
+  //     try {
+  //       this.userService.updateThread(newMessages[0].thread_id!, 'last_message_content', newMessages[0].content[0].text.value)
+  //       this.userService.addMessages(newMessages[0].thread_id!, newMessages[0]).then(()=>{ // adding messages to user in firestore
+  //         this.userService.addMessages(newMessages[1].thread_id!, newMessages[1]);
+  //       });
+  //     } catch (error) {
+
+  //     }
+  //   }
+
+  // }
 
 
   // creating message
@@ -123,9 +157,6 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     this.mergedMsgs!.push(userMessage);
     this.chatService._messages.next(this.mergedMsgs);
     this.chatService.messages.set(this.mergedMsgs)
-    // computed(()=>{
-    //   this.chatService.messages()?.push()
-    // })
 
     this.chatService.createMessage(this.threadId!, message)
   }
@@ -218,7 +249,31 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
       // console.log('ai', aiMessages)
       console.log('merged messages', this.mergedMsgs);
     }
+
+    this.init = false;
   }
+
+  // updateMessages(newMessages: Message[]): void {
+  //   if (this.messages.length === 0) {
+  //     this.messages = newMessages;
+  //     this.chatService._messages.next(this.messages);
+  //   } else {
+  //     // Assuming newMessages are sorted with the newest first
+  //     this.messages[this.messages.length - 1].id = newMessages[1].id; // replacing locally created message with open ai message
+  //     this.messages.push(newMessages[0]);
+  //     try {
+  //       this.userService.updateThread(newMessages[0].thread_id!, 'last_message_content', newMessages[0].content[0].text.value)
+  //       this.userService.addMessages(newMessages[0].thread_id!, newMessages[0]).then(()=>{ // adding messages to user in firestore
+  //         this.userService.addMessages(newMessages[1].thread_id!, newMessages[1]);
+  //       });
+  //     } catch (error) {
+
+  //     }
+
+  //     this.chatService._messages.next(this.messages);
+  //   }
+  //   // console.log('messages list:', this.messages)
+  // }
 
   reset(){
     this.messages = null;

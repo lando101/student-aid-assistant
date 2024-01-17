@@ -86,7 +86,7 @@ export class SignupFormComponent {
       this.authNew.createAccountEmail(profile).then((user)=>{
         this.userService.createUserProfile(profile, user!.uid)
         .then((data)=>{
-          this.router.navigate(['/home']);
+          this.router.navigate(['/assistant']);
         })
       });
     }

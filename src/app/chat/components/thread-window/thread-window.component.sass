@@ -26,3 +26,31 @@
 // /* width */
 ::-webkit-scrollbar
   cursor: pointer
+
+
+.prompt-box
+  @apply bg-gradient-to-t from-gray-100 to-[#f3f4f6c4] dark:from-neutral-950 dark:to-[#0a0a0a82] backdrop-blur-xl pt-4 border-t border-gray-200 dark:border-neutral-800
+  // background: linear-gradient(181deg, #f3f4f687, #f3f4f6f2, rgb(243 244 246))
+  // @apply bg-gradient-to-t from-gray-100 via-[#f3f4f6f2] to-transparent dark:bg-gradient-to-t dark:from-neutral-950 dark:via-[#0a0a0ae3] dark:to-transparent
+  input
+    // background-color: #ffffff57 !important
+    // backdrop-filter: brightness(1.5)
+    @apply bg-white bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-90 backdrop-brightness-150 dark:backdrop-brightness-0
+
+
+
+
+.animate_up
+  animation: animateUp .3s
+
+@keyframes animateUp
+  0%
+    opacity: 0
+    transform: translateY(10px)
+
+  100%
+    opacity: 1
+    transform: translateY(0px)
+
+
+/* Sliding exits */

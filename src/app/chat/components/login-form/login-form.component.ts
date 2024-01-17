@@ -53,7 +53,7 @@ export class LoginFormComponent {
       // })
       this.authNew.emailLogin(email, password).then((data)=>{
         console.log('login', data);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/assistant']);
       });
     }
   }

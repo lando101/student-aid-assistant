@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { StorageService } from './storage.service';
 import { UserService } from '../../core/auth/user.service';
 import { AssistantRun } from '../models/assistantrun.model';
+import { Threads } from '../models/user_profile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,7 @@ export class AssistantService {
 
   public _thread: BehaviorSubject<any> = new BehaviorSubject<Thread | null>(null);
   public $thread: Observable<any> = this._thread.asObservable();
+  public activeThread: WritableSignal<Threads | null> = signal(null)
 
   public _threadLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public $threadLoading: Observable<boolean> = this._threadLoading.asObservable();
@@ -112,7 +114,7 @@ export class AssistantService {
       const messages = await firstValueFrom(
         this.http.post<Message[]>(url, {content}).pipe(
           tap((messages)=>{
-            this._messages.next(messages);
+            // this._messages.next(messages);
             if(messages){
               this.runAssistant(thread_id, this.instructions)
             }

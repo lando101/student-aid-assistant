@@ -19,6 +19,7 @@
       margin-bottom: 0px
 
 .message-container
+  content-visibility: auto
   &:first-child
     margin-top: 92px
   &:last-child
@@ -37,7 +38,7 @@
     cursor: pointer
 
 .scroller::-webkit-scrollbar-track
-    @apply bg-transparent mt-[80px] mb-[70px] transition-all #{!important}
+    @apply bg-transparent mt-[80px] mb-[80px] transition-all #{!important}
 
 .scroller::-webkit-scrollbar-thumb
     @apply bg-transparent rounded-lg cursor-pointer transition-all #{!important}

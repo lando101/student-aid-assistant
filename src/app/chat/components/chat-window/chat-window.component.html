@@ -102,8 +102,7 @@
               <div class="flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg scroller-messages">
                 <app-example-prompts class="h-full" *ngIf="messages.length === 0 && !threadLoading && !messageLoading"
                   @fadeInOut></app-example-prompts>
-                <app-message-list *ngIf="messages.length > 0" @fadeInOut
-                  [messageLoading]="messageLoading" [threadId]="thread.id!" [uid]="userProfile.uid!"></app-message-list>
+                <app-message-list *ngIf="messages.length > 0" @fadeInOut [threadId]="thread.id!" [uid]="userProfile.uid!"></app-message-list>
                 <div class="prompt-box" *ngIf="messages.length === 0" @fadeInOut>
                 </div>
               </div>

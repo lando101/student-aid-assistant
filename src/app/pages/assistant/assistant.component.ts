@@ -232,6 +232,10 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chatService.createThread()
   }
 
+  setActiveThread(thread: Threads){
+    this.chatService.activeThread.set(thread ?? null)
+  }
+
   ngOnDestroy(): void {
 
   }

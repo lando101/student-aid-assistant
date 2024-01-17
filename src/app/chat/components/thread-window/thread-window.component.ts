@@ -22,7 +22,7 @@ import { MessageListComponent } from '../message-list/message-list.component';
 import { AssistantService } from '../../services/assistant.service';
 import { Message } from '../../models/message.model';
 import { UserService } from '../../../core/auth/user.service';
-import { UserProfile } from '../../models/user_profile.model';
+import { Threads, UserProfile } from '../../models/user_profile.model';
 import { OrderByPipe } from 'ngx-pipes';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 
@@ -41,6 +41,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
   userService = inject(UserService);
   orderPipe = inject(OrderByPipe);
   messageLoading = this.chatService.messageLoading();
+  activeThread: Threads | null = null
 
   userProfile: UserProfile | null = null;
   userSubscription!: Subscription;
@@ -61,11 +62,16 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
 
   constructor(private route: ActivatedRoute) {
     effect(()=>{
-      console.log('signal messages', this.chatService.messages())
+      if(this.init === false){
+        console.log('signal messages', this.chatService.messages())
+      }
     });
   }
 
   ngOnInit(): void {
+
+
+    this.$messages
     // this.userSubscription = this.userService.$userProfile.subscribe((user) => {
     //   this.userProfile = user;
     //   this.$route = this.route.params.subscribe((params) => {
@@ -93,11 +99,22 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
       }
       this.userSubscription = this.userService.$userProfile.subscribe((user)=>{
         this.userProfile = user;
+        this.activeThread = this.userProfile?.threads?.find((thread)=>thread.thread_id === this.threadId) ?? null
       })
       if(this.threadId && this.userProfile){
         this.loadAndMergeMessages()
-        this.$messages = this.chatService.$messages.subscribe((messages)=>{
-          console.log('new messages', messages)
+        this.$messages = this.chatService.$messages.subscribe((messages: Message[])=>{
+          if(this.init === false){
+            console.log('new messages', messages)
+            if(messages.length>0){
+              this.mergedMsgs?.push(messages[0]);
+              // this.userService.addMessages(messages[0].thread_id ?? '', messages[0])
+              this.userService.updateThread(messages[0].thread_id!, 'last_message_content', messages[0].content[0].text.value)
+              this.userService.addMessages(messages[0].thread_id!, messages[0]).then(()=>{ // adding messages to user in firestore
+                this.userService.addMessages(messages[1].thread_id!, messages[1]);
+              });
+            }
+          }
 
           // if(!this.init){
           //   if(this.mergedMsgs?.length ?? 0 > 0){
@@ -153,9 +170,12 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     if (this.chatbox) {
       this.chatbox.nativeElement.value = '';
     }
-
-    this.mergedMsgs!.push(userMessage);
-    this.chatService._messages.next(this.mergedMsgs);
+    if(this.mergedMsgs?.length ?? 0>0){
+      this.mergedMsgs!.push(userMessage);
+    } else {
+      this.mergedMsgs = [userMessage]
+    }
+    // this.chatService._messages.next(this.mergedMsgs);
     this.chatService.messages.set(this.mergedMsgs)
 
     this.chatService.createMessage(this.threadId!, message)
@@ -231,27 +251,37 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
 
   // merge messages from firebase and open ai
   mergeMessages() {
-    const fireMessages: Message[] = this.orderPipe.transform(
-      this.userMessages!,
-      'created_at'
-    );
+    const fireMessages = this.orderPipe.transform(this.userMessages!, 'created_at');
+    console.log('user messages', fireMessages);
+    console.log('openai messages', this.messages);
 
     if (!this.firebaseMessagesLoading && !this.messagesLoading) {
-      if (this.mergedMsgs) {
-        this.mergedMsgs?.push(this.messages![this.messages!.length - 1]);
-      } else {
-        if(fireMessages.length > 0){
-          // this.mergedMsgs = fireMessages; // if init fire messages become visible messages
-          this.mergedMsgs = this.chatService.messages()
+        if (this.mergedMsgs) {
+            this.mergedMsgs.push(this.messages![this.messages!.length - 1]);
+        } else {
+            if (fireMessages.length > 0) {
+                let mergedMessages = [...fireMessages];
+
+                if (this.messages!.length > this.userMessages!.length) {
+                    this.messages?.forEach((message) => {
+                        // Check if the message is not already in the userMessages
+                        const isPresent = this.userMessages?.some(userMessage => userMessage.id === message.id);
+                        if (!isPresent) {
+                            mergedMessages.push(message);
+                        }
+                    });
+                } else {
+                    this.mergedMsgs = mergedMessages;
+                }
+
+                this.mergedMsgs = this.orderPipe.transform(mergedMessages, 'created_at');
+            }
         }
-      }
-      // console.log('fire', fireMessages)
-      // console.log('ai', aiMessages)
-      console.log('merged messages', this.mergedMsgs);
+        console.log('merged messages', this.mergedMsgs);
     }
 
     this.init = false;
-  }
+}
 
   // updateMessages(newMessages: Message[]): void {
   //   if (this.messages.length === 0) {
@@ -280,6 +310,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     this.userMessages = null;
     this.mergedMsgs = null;
     this.threadId = null;
+    this.init = true;
     // this.$route.unsubscribe();
     // this.userSubscription.unsubscribe();
     this.firebaseMessagesLoading = false;

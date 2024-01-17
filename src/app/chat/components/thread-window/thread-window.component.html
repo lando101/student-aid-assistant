@@ -1,4 +1,4 @@
-<div class="">
+<div class="h-full">
   <div class="flex absolute gap-3 w-full top-0 backdrop-blur-xl z-10 bg-gradient-to-b from-gray-100 to-[#f3f4f6c4] dark:from-neutral-950 dark:to-[#0a0a0a82]">
     <div class="w-full flex justify-center">
       <div class="flex justify-between items-start w-full flex-wrap max-w-screen-lg pb-4 border-b border-gray-200 dark:border-neutral-800">
@@ -7,7 +7,7 @@
             <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
             <div
               class="text-sm text-gray-700 dark:text-neutral-400 font-semibold uppercase mb-0 flex items-center gap-2 ">
-              <div class="truncate w-48">{{threadId}}</div>
+              <div class="truncate w-48">{{activeThread?.thread_id}}</div>
               <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
             </div>
           </div>
@@ -25,9 +25,28 @@
   <div class="flex flex-col h-full gap-4 w-full relative">
     <div class="flex flex-col gap-2 justify-start items-center w-100 h-100 relative">
       <div class="flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg scroller-messages">
-        <app-message-list *ngIf="mergedMsgs?.length ?? 0 > 0" [messages]="mergedMsgs"></app-message-list>
+        @if (mergedMsgs?.length ?? 0 > 0) {
+          <app-message-list class="animate_up " [messages]="mergedMsgs" [thread]="activeThread"></app-message-list>
+        } @else {
+          <div class="w-full flex flex-col justify-center items-center h-full">
+            <div class="max-w-xl flex flex-col">
+              <div class="w-full">
+                <img loading="lazy" src="https://firebasestorage.googleapis.com/v0/b/federal-student-aid-assistant.appspot.com/o/site_images%2Fai_pointing.webp?alt=media&token=1c621a3c-b589-41bb-933d-a3453d9677a3">
+              </div>
+              <div class="text-center">
+                <h3 class="font-semibold">You haven't sent a message yet.</h3>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- <video loading="lazy" muted="muted" src="https://firebasestorage.googleapis.com/v0/b/federal-student-aid-assistant.appspot.com/o/site_videos%2Fautomatic-talk-9010274-7357939.mp4?alt=media&token=7e76d02e-41ba-4c36-83b6-e3b000850f24" type="video/mp4" autoplay="autoplay" loop="loop"></video> -->
+        }
         </div>
       </div>
+
+
+
       <!-- <div class="w-full absolute bottom-0 message-footer prompt-box flex justify-center">
         <div class="max-w-screen-lg w-full">
           <div class="flex items-center gap-2 pb-3">
@@ -36,7 +55,7 @@
       </div> -->
     </div>
 </div>
-<div class="flex items-center gap-2 pb-3 absolute bottom-0 w-full">
+<div class="flex items-center gap-2 pb-3 absolute bottom-0 w-full prompt-box">
   <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
     [showCursor]="false" [strings]="placeholders">
     <input #chatbox [disabled]="messageLoading"

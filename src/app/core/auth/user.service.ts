@@ -134,7 +134,7 @@ export class UserService {
    async addThread(thread_id: string | null, thread_name: string | null) {
     const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!);
     await setDoc(docRef,{
-      thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toTimeString(), last_message_content: '', last_updated: new Date().toUTCString()
+      thread_id: thread_id, thread_name: thread_name, creation_date: new Date().toUTCString(), last_message_content: '', last_updated: new Date().toUTCString()
     })
    }
 

@@ -16,6 +16,9 @@ import { NgxTypedJsModule } from 'ngx-typed-js';
 import { MessageBubbleComponent } from "../message-bubble/message-bubble.component";
 import { UserService } from '../../../core/auth/user.service';
 import { OrderByPipe } from 'ngx-pipes';
+import { AssistantComponent } from '../../../pages/assistant/assistant.component';
+import { Threads } from '../../models/user_profile.model';
+import { PrettyDatePipe } from '../../../shared/pipes/pretty-date.pipe';
 @Component({
     selector: 'app-message-list',
     standalone: true,
@@ -53,19 +56,22 @@ import { OrderByPipe } from 'ngx-pipes';
     // changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './message-list.component.html',
     styleUrl: './message-list.component.sass',
-    imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule, MessageBubbleComponent]
+    imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule, MessageBubbleComponent, PrettyDatePipe]
 })
 export class MessageListComponent implements OnInit, OnChanges {
   @ViewChild('sp') messageList!: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
-  @Input() messageLoading: boolean = false;
   @Input() messages: Message[] | null = null;
+  @Input() thread: Threads | null = null;
   @Input() threadId: string = '';
   @Input() uid: string  = '';
 
   private userService = inject(UserService);
   private orderPipe = inject(OrderByPipe)
+  private chatService = inject(AssistantComponent)
+
+  messageLoading = this.chatService.messageLoading
 
   private messagesSubscription!: Subscription;
 
@@ -76,7 +82,7 @@ export class MessageListComponent implements OnInit, OnChanges {
   firebaseMessagesLoading: boolean = false;
 
   initialLoad: boolean = true;
-  constructor(private chatService: ChatService){
+  constructor(){
 
   }
   ngOnInit(): void {

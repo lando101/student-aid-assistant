@@ -23,7 +23,7 @@
         <div class="mx-0 my-3 overflow-visible" *ngFor="let thread of threads | orderBy: value" @growShrink>
           <div
             [ngClass]="{'thread-button-active': activeThreadId === thread.thread_id, 'thread-button': activeThreadId !== thread.thread_id}" routerLinkActive="thread-button-active">
-            <button class="flex flex-col gap-1 text-left pl-3 py-3 w-full" [routerLink]="['/assistant', thread.thread_id]" >
+            <button class="flex flex-col gap-1 text-left pl-3 py-3 w-full" (click)="setActiveThread(thread)" [routerLink]="['/assistant', thread.thread_id]" >
               <!-- <div class="thread-id">{{thread.thread_id}}</div> -->
 
               <div class="flex h-8 max-w-48 text-xs font-bold">

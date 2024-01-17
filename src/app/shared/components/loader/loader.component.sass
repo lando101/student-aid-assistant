@@ -1,0 +1,29 @@
+.loader
+  // width: 100%
+  @apply w-full bg-gray-200 rounded-lg max-w-96
+  height: 4.8px
+  display: inline-block
+  position: relative
+  // background: rgba(255, 255, 255, 0.15)
+  overflow: hidden
+
+  &::after
+    content: ''
+    width: 192px
+    height: 4.8px
+    // background: #FFF
+    @apply bg-neutral-800 rounded-lg
+    position: absolute
+    top: 0
+    left: 0
+    box-sizing: border-box
+    animation: animloader 1.05s linear infinite
+
+@keyframes animloader
+  0%
+    left: 0
+    transform: translateX(-100%)
+
+  100%
+    left: 100%
+    transform: translateX(0%)

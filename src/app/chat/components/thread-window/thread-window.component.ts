@@ -25,13 +25,14 @@ import { UserService } from '../../../core/auth/user.service';
 import { Threads, UserProfile } from '../../models/user_profile.model';
 import { OrderByPipe } from 'ngx-pipes';
 import { NgxTypedJsModule } from 'ngx-typed-js';
+import { LoaderComponent } from "../../../shared/components/loader/loader.component";
 
 @Component({
-  selector: 'app-thread-window',
-  standalone: true,
-  templateUrl: './thread-window.component.html',
-  styleUrl: './thread-window.component.sass',
-  imports: [CommonModule, NgIconComponent, MatIconModule, MessageListComponent, NgxTypedJsModule],
+    selector: 'app-thread-window',
+    standalone: true,
+    templateUrl: './thread-window.component.html',
+    styleUrl: './thread-window.component.sass',
+    imports: [CommonModule, NgIconComponent, MatIconModule, MessageListComponent, NgxTypedJsModule, LoaderComponent]
 })
 export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy{
   @ViewChild('chatbox') chatbox: ElementRef | null = null;

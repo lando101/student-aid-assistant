@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { LoaderComponent } from "../../../shared/components/loader/loader.component";
 import { ExamplePromptsComponent } from "../example-prompts/example-prompts.component";
 import { AssistantService } from '../../services/assistant.service';
@@ -19,6 +19,7 @@ export class NoThreadComponent implements OnInit {
   chatService = inject(AssistantService)
   placeholders: string[] = []
   @ViewChild('typed') typed!: NgxTypedJsComponent;
+  @ViewChild('inputbox') inputBox!: ElementRef;
 
   constructor(private nav: Router){
 
@@ -29,8 +30,11 @@ export class NoThreadComponent implements OnInit {
   }
 
   hoverUpdate(placeholder: string){
-    this.placeholders = [placeholder]
-    this.typed.doReset()
+    const inputValue = this.inputBox.nativeElement.value;
+    if(!inputValue){
+      this.placeholders = [placeholder]
+      this.typed.doReset()
+    }
   }
 
   createNewThread(message: string){

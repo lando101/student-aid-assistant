@@ -52,7 +52,7 @@ export class PromptsCarouselComponent implements OnInit, AfterViewInit, OnDestro
 @Output() hoverString = new EventEmitter<string>();
 @Output() searchString = new EventEmitter<string>();
 
-
+dragging: boolean = false;
 private resizeSubscription!: Subscription;
 width!: string;
 

@@ -184,7 +184,7 @@ export class AssistantService {
           clearInterval(intervalId);
           reject(error);
         }
-      }, 500); // Poll every half second
+      }, 750); // Poll every half second
     });
   }
 

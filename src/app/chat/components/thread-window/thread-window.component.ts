@@ -297,8 +297,9 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     this.mergedMsgs = null;
     this.threadId = null;
     this.init = true;
-    // this.$route.unsubscribe();
-    // this.userSubscription.unsubscribe();
+    this.$route.unsubscribe();
+    this.userSubscription.unsubscribe();
+    this.$messages.unsubscribe();
     this.firebaseMessagesLoading = false;
     this.messagesLoading = false;
    }

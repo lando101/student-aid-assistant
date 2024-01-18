@@ -32,11 +32,11 @@
 
 
     <div #container class="overflow-hidden">
-      <owl-carousel-o (change)="print($event)" [options]="customOptions" #owlCar>
+      <owl-carousel-o (dragging)="dragging = $event.dragging" (change)="print($event)" [options]="customOptions" #owlCar>
         <ng-container *ngFor="let prompt of prompts">
           <ng-template [width]="prompt.prompt!.length * 8.2" carouselSlide [id]="prompt.id!" []>
             <div class="mb-2 h-16">
-              <button (mouseenter)="promptHover(prompt.prompt!)" (mouseleave)="promptHover('')" (click)="usePrompt(prompt.prompt!)" class="prompt-button h-full">
+              <button [disabled]="dragging" (mouseenter)="promptHover(prompt.prompt!)" (mouseleave)="promptHover('')" (click)="usePrompt(prompt.prompt!)" class="prompt-button h-full">
                 <div class="text-left flex flex-col items-start justify-between h-100 py-1">
                   <p class="mb-0 text-xs font-semibold opacity-65">{{ prompt.title }}</p>
                   <p class="mb-0 text-sm font-semibold flex justify-start items-center h-full truncate">{{ prompt.prompt }}</p>

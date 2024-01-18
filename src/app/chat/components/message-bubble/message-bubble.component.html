@@ -1,6 +1,6 @@
 <div class="flex flex-col" [ngClass]="{'items-end': message?.role !== 'assistant'}">
   <div class="flex gap-1 items-center capitalize font-bold dark:text-neutral-400" *ngIf="message">
-    <ng-icon *ngIf="message.role === 'assistant'" class="ml-1" [size]="'20px'" name="cssBot"></ng-icon>{{message.role === 'assistant' ? 'assistant': 'you'}}
+    <ng-icon *ngIf="message.role === 'assistant'" class="ml-1" [size]="'20px'" name="cssBot"></ng-icon>{{message.role === 'assistant' ? 'aid assistant': 'you'}}
   </div>
   <div class="message-width ml-7 flex gap-2">
     <div>

@@ -21,7 +21,7 @@ export class AssistantService {
   thread: Thread = {}; // thread id
 
   //assistant instructions
-  instructions: string = 'you are a assistant that is an expert with student aid in the united states. only answer questions related to student aid.'
+  instructions: string = "Focus exclusively on federal student aid topics, such as FAFSA, student loans, grants, scholarships, eligibility, and repayment options, while avoiding unrelated subjects. Strive for clear, straightforward, and easy-to-understand responses, avoiding complex jargon and providing brief but informative answers that directly address the user's queries. Responses should be based on the most recent information from reliable sources like the U.S. Department of Education and updated regularly. For complex questions, use a structured response format starting with a summary, followed by a detailed explanation. Include references to official sources for further information. Maintain user privacy by not collecting personal data and remind users to avoid sharing sensitive information. Engage users with a friendly tone and offer assistance with related queries. Clearly state the assistant's limitations and provide contact information for human advisors for complex issues. Incorporate a feedback option to continually improve the assistant's performance and regularly review and update the assistant in response to new policies and user feedback."
 
   // services
   http = inject(HttpClient);
@@ -35,6 +35,8 @@ export class AssistantService {
   public _thread: BehaviorSubject<any> = new BehaviorSubject<Thread | null>(null);
   public $thread: Observable<any> = this._thread.asObservable();
   public activeThread: WritableSignal<Threads | null> = signal(null)
+  public initThreadMsg: WritableSignal<string | null> = signal(null)
+
 
   public _threadLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public $threadLoading: Observable<boolean> = this._threadLoading.asObservable();

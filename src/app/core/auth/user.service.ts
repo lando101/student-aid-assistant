@@ -166,7 +166,6 @@ export class UserService {
       messages.push(doc.data() as any)
       console.log(doc.id, " => ", doc.data());
     });
-
     return messages
    }
 

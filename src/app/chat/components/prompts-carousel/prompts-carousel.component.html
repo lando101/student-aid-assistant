@@ -32,7 +32,7 @@
 
 
     <div #container class="overflow-hidden">
-      <owl-carousel-o (dragging)="dragging = $event.dragging" (change)="print($event)" [options]="customOptions" #owlCar>
+      <owl-carousel-o (dragging)="dragging = $event.dragging" [options]="customOptions" #owlCar>
         <ng-container *ngFor="let prompt of prompts">
           <ng-template [width]="prompt.prompt!.length * 8.2" carouselSlide [id]="prompt.id!" []>
             <div class="mb-2 h-16">

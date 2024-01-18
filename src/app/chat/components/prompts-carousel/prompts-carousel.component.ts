@@ -157,7 +157,6 @@ private setupResizeListener() {
       const width = element.offsetWidth;
       this.width = `${width}px`
       // Handle the width change here or emit it to an observable/subject
-      console.log('Element width changed:', width);
     });
 }
 
@@ -178,14 +177,5 @@ usePrompt(event: string){
 
 ngOnDestroy() {
   this.unsubscribeFromResize();
-}
-
-print(event: any){
-  console.log(event)
-  // console.log(this.owlCar.slides)
-  console.log(this.owlCar.slidesData)
-  console.log(this.owlCar.navData)
-
-  // console.log(this.owlCar.slidesOutputData)
 }
 }

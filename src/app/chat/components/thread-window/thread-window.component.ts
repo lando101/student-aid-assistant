@@ -50,6 +50,9 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
 
   messageLoading = this.chatService.messageLoading();
   activeThread: Threads | null = null
+  initMsg = this.chatService.initThreadMsg
+  // initMsg = true
+
 
   userProfile: UserProfile | null = null;
   userSubscription!: Subscription;
@@ -82,6 +85,9 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
         if(this.threadId !== params['threadId']){
           this.reset();
           this.threadId = params['threadId'];
+          // if(sub){
+          //   sub.unsubscribe()
+          // }
         }
       } else {
         this.threadId = params['threadId'];
@@ -92,22 +98,30 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
         this.chatService.activeThread.set(this.activeThread);
       })
       if(this.threadId && this.userProfile){
-        this.loadAndMergeMessages()
-        this.$messages = this.chatService.$messages.subscribe((messages: Message[])=>{
-          if(this.init === false){
-            console.log('new messages', messages)
-            if(messages.length>0){
-              this.mergedMsgs?.push(messages[0]);
-              // this.userService.addMessages(messages[0].thread_id ?? '', messages[0])
-              this.userService.updateThread(messages[0].thread_id!, 'last_message_content', messages[0].content[0].text.value)
-              this.userService.addMessages(messages[0].thread_id!, messages[0]).then(()=>{ // adding messages to user in firestore
-                this.userService.addMessages(messages[1].thread_id!, messages[1]);
-              });
-            }
+        this.loadAndMergeMessages().then((loading: boolean)=>{
+          if(!loading){
+            this.$messages = this.chatService.$messages.subscribe((messages: Message[])=>{
+              if(this.init === false){
+                console.log('new messages', messages)
+                if(messages.length>0){
+                  const match = this.mergedMsgs?.find((message)=>message.id === messages[0].id);
+                  if(!match){
+                    this.mergedMsgs?.push(messages[0]);
+                    // this.userService.addMessages(messages[0].thread_id ?? '', messages[0])
+                    this.userService.updateThread(messages[0].thread_id!, 'last_message_content', messages[0].content[0].text.value)
+                    this.userService.addMessages(messages[0].thread_id!, messages[0]).then(()=>{ // adding messages to user in firestore
+                      this.userService.addMessages(messages[1].thread_id!, messages[1]);
+                    });
+                  }
+                }
+              }
+            })
           }
         })
+
       }
     })
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -116,6 +130,12 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
 
   ngAfterViewInit(): void {
     // this.messages = this.chatService.messages()
+    const initMsg = this.chatService.initThreadMsg();
+    setTimeout(() => {
+      if(initMsg) {
+        this.createMessage(initMsg);
+      }
+    }, 2000);
   }
 
   deleteThread(threadId: string) {
@@ -179,7 +199,11 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
       this.mergedMsgs = [userMessage]
     }
     // this.chatService._messages.next(this.mergedMsgs);
-    this.chatService.messages.set(this.mergedMsgs)
+    this.chatService.messages.set(this.mergedMsgs);
+
+    if(this.chatService.initThreadMsg()){
+      this.chatService.initThreadMsg.set(null)
+    }
 
     this.chatService.createMessage(this.threadId!, message)
   }
@@ -237,18 +261,25 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
   }
 
   // New method to handle both
-  loadAndMergeMessages() {
+  async loadAndMergeMessages(): Promise<boolean> {
+    let loading: boolean = true;
     const threadId = this.threadId;
     if (threadId) {
-      Promise.all([this.getMessages(threadId), this.getUserMessages()])
+     await Promise.all([this.getMessages(threadId), this.getUserMessages()])
         .then(() => {
           this.mergeMessages(); // Call mergeMessages after both promises resolve
+          loading = false;
+          return loading;
         })
         .catch((error) => {
+          loading = false;
+          return loading;
           // Handle errors from either promise
           console.error('Error loading messages', error);
         });
     }
+
+    return loading;
   }
 
   // merge messages from firebase and open ai
@@ -297,7 +328,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     this.mergedMsgs = null;
     this.threadId = null;
     this.init = true;
-    this.$route.unsubscribe();
+    // this.$route.unsubscribe();
     this.userSubscription.unsubscribe();
     this.$messages.unsubscribe();
     this.firebaseMessagesLoading = false;

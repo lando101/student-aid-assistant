@@ -13,59 +13,73 @@
             </mat-icon>
           </button>
         </div>
-        <div>
-          <div class="text-sm text-gray-700 dark:text-neutral-500 mb-2 font-medium flex gap-1">Sort threads</div>
-          <p-selectButton [options]="stateOptions" [(ngModel)]="value" optionLabel="label"
-            optionValue="value"></p-selectButton>
-        </div>
-      </div>
-      <div class="pb-8 px-8" *ngIf="userProfile?.threads?.length ?? 0 > 0">
-        <div class="mx-0 my-3 overflow-visible" *ngFor="let thread of threads | orderBy: value" @growShrink>
-          <div
-            [ngClass]="{'thread-button-active': activeThreadId === thread.thread_id, 'thread-button': activeThreadId !== thread.thread_id}" routerLinkActive="thread-button-active">
-            <button class="flex flex-col gap-1 text-left pl-3 py-3 w-full" (click)="setActiveThread(thread)" [routerLink]="['/assistant', thread.thread_id]" >
-              <!-- <div class="thread-id">{{thread.thread_id}}</div> -->
-
-              <div class="flex h-8 max-w-48 text-xs font-bold">
-                @if (thread.last_message_content) {
-                  <div class="message-text">{{thread.last_message_content}}</div>
-                } @else {
-                  <div class="message-text">New Thread</div>
-                }
-              </div>
-              <div
-                class="truncate max-w-48 text-xs font-semibold text-gray-500 dark:text-neutral-500 mt-1 flex gap-1 items-center justify-start">
-                <ng-icon [size]="'12px'" name="featherClock"></ng-icon>{{thread.last_updated ?
-                (thread.last_updated.toString() | timeago) : 'Never updated'}}</div>
-            </button>
-            <!-- <button pButton type="button" class="pr-3 py-3 flex justify-center items-center"><ng-icon [size]="'20px'" name="cssMoreVertical"></ng-icon></button> -->
-            <button mat-icon-button class="m-1 dark:text-neutral-400" [matMenuTriggerFor]="menu" [disableRipple]="true"
-              aria-label="Example icon-button with a menu">
-              <mat-icon class="dark:text-neutral-400">more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item>
-                <mat-icon>
-                  <ng-icon [size]="'24px'" name="cssPlayButtonO"></ng-icon>
-                </mat-icon>
-                <span>View</span>
-              </button>
-              <button mat-menu-item>
-                <mat-icon>
-                  <ng-icon [size]="'24px'" name="cssPen"></ng-icon>
-                </mat-icon>
-                <span>Edit name</span>
-              </button>
-              <button (click)="openDialog(thread)" mat-menu-item>
-                <mat-icon>
-                  <ng-icon [size]="'24px'" name="cssTrashEmpty"></ng-icon>
-                </mat-icon>
-                <span>Delete</span>
-              </button>
-            </mat-menu>
+        @if (!this.threadsLoading && threads.length > 0) {
+          <div>
+            <div class="text-sm text-gray-700 dark:text-neutral-500 mb-2 font-medium flex gap-1">Sort threads</div>
+            <p-selectButton [options]="stateOptions" [(ngModel)]="value" optionLabel="label"
+              optionValue="value"></p-selectButton>
           </div>
-          <!-- <button (click)="getThread(thread.thread_id ?? '')">{{thread.thread_id}}</button> -->
-        </div>
+        }
+      </div>
+
+      <div class="pb-8 px-8">
+        @if (!this.threadsLoading && threads.length > 0) {
+          <div class="mx-0 my-3 overflow-visible" *ngFor="let thread of threads | orderBy: value" @growShrink>
+            <div
+              [ngClass]="{'thread-button-active': activeThreadId === thread.thread_id, 'thread-button': activeThreadId !== thread.thread_id}" routerLinkActive="thread-button-active">
+              <button class="flex flex-col gap-1 text-left pl-3 py-3 w-full" (click)="setActiveThread(thread)" [routerLink]="['/assistant', thread.thread_id]" >
+                <!-- <div class="thread-id">{{thread.thread_id}}</div> -->
+
+                <div class="flex h-8 max-w-48 text-xs font-bold">
+                  @if (thread.last_message_content) {
+                    <div class="message-text">{{thread.last_message_content}}</div>
+                  } @else {
+                    <div class="message-text">New Thread</div>
+                  }
+                </div>
+                <div
+                  class="truncate max-w-48 text-xs font-semibold text-gray-500 dark:text-neutral-500 mt-1 flex gap-1 items-center justify-start">
+                  <ng-icon [size]="'12px'" name="featherClock"></ng-icon>{{thread.last_updated ?
+                  (thread.last_updated.toString() | timeago) : 'Never updated'}}</div>
+              </button>
+              <!-- <button pButton type="button" class="pr-3 py-3 flex justify-center items-center"><ng-icon [size]="'20px'" name="cssMoreVertical"></ng-icon></button> -->
+              <button mat-icon-button class="m-1 dark:text-neutral-400" [matMenuTriggerFor]="menu" [disableRipple]="true"
+                aria-label="Example icon-button with a menu">
+                <mat-icon class="dark:text-neutral-400">more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item>
+                  <mat-icon>
+                    <ng-icon [size]="'24px'" name="cssPlayButtonO"></ng-icon>
+                  </mat-icon>
+                  <span>View</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>
+                    <ng-icon [size]="'24px'" name="cssPen"></ng-icon>
+                  </mat-icon>
+                  <span>Edit name</span>
+                </button>
+                <button (click)="openDialog(thread)" mat-menu-item>
+                  <mat-icon>
+                    <ng-icon [size]="'24px'" name="cssTrashEmpty"></ng-icon>
+                  </mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
+            </div>
+            <!-- <button (click)="getThread(thread.thread_id ?? '')">{{thread.thread_id}}</button> -->
+          </div>
+        } @else if (!threadsLoading && threads) {
+          <div class="empty-threads-container w-full animate__fadeIn animate__animated animate__delay-1s animate__faster">
+            <div class="font-bold text-gray-600 text-lg text-center">Threads empty</div>
+            <div class="font-medium text-gray-500 text-sm text-center">Your threads will appear here.</div>
+            <button class="d-btn bg-gray-200 text-black border border-gray-400 hover:bg-gray-300 mt-7 w-full shadow-none" (click)="createNewThread()">
+              Create Thread
+            </button>
+          </div>
+        }
+
       </div>
     </div>
   </mat-drawer>

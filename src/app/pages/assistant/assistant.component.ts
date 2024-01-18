@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Signal, ViewChild, computed, inject } from '@angular/core';
-import { ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { UserService } from '../../core/auth/user.service';
 import { AssistantService } from '../../chat/services/assistant.service';
 import { Threads, UserProfile } from '../../chat/models/user_profile.model';
-import { Subscription, debounceTime, fromEvent, map } from 'rxjs';
+import { Subscription, debounceTime, filter, fromEvent, map } from 'rxjs';
 
 // material imports
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
@@ -28,8 +28,8 @@ import { FormsModule } from '@angular/forms';
 import { animate, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { Message } from '../../chat/models/message.model';
-import { Router } from 'express';
 import { DeleteDialogComponent } from '../../chat/components/dialogs/delete-dialog/delete-dialog.component';
+import { Thread } from '../../chat/models/thread.model';
 
 @Component({
   selector: 'app-assistant',
@@ -133,39 +133,63 @@ import { DeleteDialogComponent } from '../../chat/components/dialogs/delete-dial
   styleUrl: './assistant.component.sass'
 })
 export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
+
   @ViewChild('drawer') drawer!: MatDrawer;
 
   chatService = inject(AssistantService);
   userService = inject(UserService);
   router = inject(ActivatedRoute);
-  dialog = inject(MatDialog)
+  dialog = inject(MatDialog);
+  resizeSubscription: Subscription = new Subscription();
 
   threads: Threads[] = [];
+  threadsLoading: boolean = true;
   userProfile!: UserProfile;
   activeThreadId: string | null = null;
 
   width!: string;
   widthValue: number = 0;
   body!: HTMLElement;
-  private resizeSubscription!: Subscription;
 
   stateOptions: any[] = [{label: 'Recent', value: 'last_updated'}, {label: 'Oldest', value: '-last_updated'}];
   value: string = 'last_updated';
 
   messageLoading: Signal<boolean> = computed(()=>this.chatService.messageLoading());
 
+  constructor(private nav: Router){
+
+  }
+
   ngOnInit(): void {
     this.userService.$userProfile.subscribe((userProfile) => {
       if (userProfile) {
         this.userProfile = userProfile;
         // this.threads = userProfile.threads
-
+        this.threadsLoading = true;
         this.updateThreads(this.threads, userProfile.threads)
+
+        const threads = userProfile.threads;
+        let activeThread: Threads | null = this.chatService.activeThread()
+        let activeThreadPresent: any;
+        if(activeThread){
+          activeThreadPresent = threads.find((thread: Threads) => { return thread.thread_id === activeThread?.thread_id; });
+          if(!activeThreadPresent){
+            this.nav.navigateByUrl('/assistant')
+          }
+        }
       }
     });
-    this.router.params.subscribe((params)=>{
-      this.activeThreadId = params['threadId']
-    })
+    this.router.params.subscribe(params => {
+      const threadId = params['threadId'];
+    });
+
+
+    this.nav.events
+  .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+  .subscribe((ev: NavigationEnd) => {
+    let url = ev.url;
+    console.log('active thread id', url)
+  });
   }
 
   ngAfterViewInit(): void {
@@ -264,10 +288,16 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
         //  console.log('match index', index)
       });
     }
+    this.threadsLoading = false;
   }
 
   createNewThread(){
-    this.chatService.createThread()
+    this.chatService.createThread().then((thread: Thread)=>{
+      if(thread) {
+        this.nav.navigateByUrl(`assistant/${thread.id}`);
+      }
+      console.log('new thread', thread)
+    })
   }
 
   setActiveThread(thread: Threads){

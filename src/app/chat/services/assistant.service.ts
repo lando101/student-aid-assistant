@@ -7,7 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { StorageService } from './storage.service';
 import { UserService } from '../../core/auth/user.service';
 import { AssistantRun } from '../models/assistantrun.model';
-import { Threads } from '../models/user_profile.model';
+import { Threads, UserProfile } from '../models/user_profile.model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,7 @@ export class AssistantService {
   public $messageLoading: Observable<boolean> = this._messageLoading.asObservable();
   public messages: WritableSignal<Message[] | null> = signal(null)
 
-  constructor() { }
+  constructor(private router: Router) { }
 
 
 
@@ -214,7 +215,17 @@ export class AssistantService {
     try {
       // Wrap the Observable in a Promise
       const response = await firstValueFrom(this.http.get(url)).then(()=>{
-        this.userService.removeThread(threadId)
+        this.userService.removeThread(threadId).then((data: any)=>{
+          console.log('updated user profile', this.userService.userThreads())
+          const threads = this.userService.userThreads();
+          const activeThreadDeleted = threads?.find((thread)=>thread.thread_id === threadId);
+          // console.log('active thread present', activeThreadDeleted)
+          if(threads?.length === 0 || threads === null || threads === undefined) {
+            this.router.navigateByUrl('assistant');
+          }
+          // if active thread deleted navigate to assistant :: going to do that from assistant component
+
+        })
       })
 
       return response;

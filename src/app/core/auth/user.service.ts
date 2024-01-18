@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, WritableSignal, inject, signal } from '@angular/core';
 import { User } from 'firebase/auth';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Firestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove, collection } from '@angular/fire/firestore';
@@ -22,6 +22,7 @@ export class UserService {
 
   public _userProfile: BehaviorSubject<any> = new BehaviorSubject<UserProfile | null | any>(null);
   public $userProfile: Observable<UserProfile | null | any> = this._userProfile.asObservable();
+  public userThreads: WritableSignal<Threads[] | null> = signal(null)
 
   public userProfile!: UserProfile | null | any;
 
@@ -78,6 +79,7 @@ export class UserService {
         // console.log("threads data: ", doc.data());
         this.userProfile.threads.push(doc.data())
       });
+      this.userThreads.set(this.userProfile.threads as Threads[])
       this.storageService.setItem(this.userProfileKey, JSON.stringify(this.userProfile));
       this._userProfile.next(this.userProfile);
       // console.log('user profile with trheads', this.userProfile)
@@ -181,7 +183,7 @@ export class UserService {
    async removeThread(thread_id: string | null) {
     const docRef = doc(this.firestore, 'users', this.user.uid, 'threads', thread_id!);
 
-    await deleteDoc(docRef)
+    return await deleteDoc(docRef)
    }
 
   //  async getMessages()

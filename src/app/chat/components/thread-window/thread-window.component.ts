@@ -88,7 +88,8 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
       }
       this.userSubscription = this.userService.$userProfile.subscribe((user)=>{
         this.userProfile = user;
-        this.activeThread = this.userProfile?.threads?.find((thread)=>thread.thread_id === this.threadId) ?? null
+        this.activeThread = this.userProfile?.threads?.find((thread)=>thread.thread_id === this.threadId) ?? null;
+        this.chatService.activeThread.set(this.activeThread);
       })
       if(this.threadId && this.userProfile){
         this.loadAndMergeMessages()

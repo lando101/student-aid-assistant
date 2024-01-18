@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="flex items-center gap-1 justify-between md:justify-end">
-          <button class="flex items-center justify-center" mat-icon-button>
+          <button (click)="openDialog(activeThread)" class="flex items-center justify-center" mat-icon-button>
             <mat-icon class="!flex items-center justify-center dark:text-neutral-300">
               <ng-icon [size]="'20px'" name="iconoirTrash"></ng-icon>
             </mat-icon>
@@ -29,10 +29,21 @@
           @if (mergedMsgs?.length ?? 0 > 0) {
             <app-message-list class="animate_up" [messages]="mergedMsgs" [thread]="activeThread"></app-message-list>
           } @else {
-            <div class="mt-28">no messages</div>
+            <!-- <div class="mt-28">no messages</div> -->
+          <div class="w-full flex flex-col justify-center items-center h-full -mt-44">
+            <div class="max-w-md flex flex-col">
+              <div class="w-full max-w-xs ">
+                <img #nomessage loading="eager" class="dark:invert" [src]="'https://firebasestorage.googleapis.com/v0/b/federal-student-aid-assistant.appspot.com/o/site_images%2Fai_pointing.webp?alt=media&token=1c621a3c-b589-41bb-933d-a3453d9677a3'">
+              </div>
+              <div class="text-center mt-8">
+                <h3 class="font-black text-2xl dark:text-neutral-300">This thread looks fresh!</h3>
+                <p class="text-base text-gray-700 dark:text-neutral-400 font-medium">Messages will appear here. Use a prompt below or send a message to get started.</p>
+              </div>
+            </div>
+          </div>
           }
-          
-        } 
+
+        }
         @else if (messageLoading || firebaseMessagesLoading) {
           <div class="h-full">
             <app-loader></app-loader>
@@ -68,6 +79,14 @@
         </div>
       </div> -->
     </div>
+</div>
+<div>
+  @if (mergedMsgs === null && !firebaseMessagesLoading && !messageLoading) {
+    <div class="flex items-center gap-2 pb-3 absolute bottom-16 w-full animate__fadeInUp animate__animated animate__faster animate__delay-1s">
+      <app-prompts-carousel class="w-full" (searchString)="createMessage($event)" (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
+    </div>
+  }
+
 </div>
 <div class="flex items-center gap-2 pb-3 absolute bottom-0 w-full prompt-box">
   <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"

@@ -56,7 +56,7 @@
                 </mat-icon>
                 <span>Edit name</span>
               </button>
-              <button mat-menu-item>
+              <button (click)="openDialog(thread)" mat-menu-item>
                 <mat-icon>
                   <ng-icon [size]="'24px'" name="cssTrashEmpty"></ng-icon>
                 </mat-icon>

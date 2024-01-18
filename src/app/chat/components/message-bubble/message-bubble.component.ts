@@ -1,9 +1,10 @@
-import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { Message } from '../../models/message.model';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent } from '@ng-icons/core';
 import { MarkdownPipe } from "../../../shared/pipes/markdown.pipe";
 import { UserService } from '../../../core/auth/user.service';
+import { AssistantService } from '../../services/assistant.service';
 
 @Component({
     selector: 'app-message-bubble',
@@ -14,6 +15,7 @@ import { UserService } from '../../../core/auth/user.service';
 })
 export class MessageBubbleComponent implements OnInit, OnChanges {
   @Input() message!: Message;
+  chatService = inject(AssistantService)
 
   constructor(private userService: UserService) {
 
@@ -31,4 +33,6 @@ export class MessageBubbleComponent implements OnInit, OnChanges {
     this.message.liked = liked;
     this.userService.updateMessage(this.message.thread_id!, this.message.id!, 'liked', liked)
   }
+
+
 }

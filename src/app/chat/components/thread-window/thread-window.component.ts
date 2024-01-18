@@ -24,23 +24,30 @@ import { Message } from '../../models/message.model';
 import { UserService } from '../../../core/auth/user.service';
 import { Threads, UserProfile } from '../../models/user_profile.model';
 import { OrderByPipe } from 'ngx-pipes';
-import { NgxTypedJsModule } from 'ngx-typed-js';
+import { NgxTypedJsComponent, NgxTypedJsModule } from 'ngx-typed-js';
 import { LoaderComponent } from "../../../shared/components/loader/loader.component";
+import { ExamplePromptsComponent } from "../example-prompts/example-prompts.component";
+import { PromptsCarouselComponent } from "../prompts-carousel/prompts-carousel.component";
+import { DeleteDialogComponent } from '../dialogs/delete-dialog/delete-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-thread-window',
     standalone: true,
     templateUrl: './thread-window.component.html',
     styleUrl: './thread-window.component.sass',
-    imports: [CommonModule, NgIconComponent, MatIconModule, MessageListComponent, NgxTypedJsModule, LoaderComponent]
+    imports: [CommonModule, NgIconComponent, MatIconModule, MessageListComponent, NgxTypedJsModule, LoaderComponent, ExamplePromptsComponent, PromptsCarouselComponent]
 })
 export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy{
   @ViewChild('chatbox') chatbox: ElementRef | null = null;
+  @ViewChild('typed') typed!: NgxTypedJsComponent;
 
 
   chatService = inject(AssistantService);
   userService = inject(UserService);
   orderPipe = inject(OrderByPipe);
+  dialog = inject(MatDialog);
+
   messageLoading = this.chatService.messageLoading();
   activeThread: Threads | null = null
 
@@ -70,25 +77,6 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
   }
 
   ngOnInit(): void {
-
-
-    this.$messages
-    // this.userSubscription = this.userService.$userProfile.subscribe((user) => {
-    //   this.userProfile = user;
-    //   this.$route = this.route.params.subscribe((params) => {
-    //     if(params['threadId'] !== this.threadId){
-    //       this.reset()
-    //     }
-    //     console.log('params', params);
-    //     this.threadId = params['threadId'];
-    //     if (this.threadId && this.userProfile) {
-    //       this.loadAndMergeMessages();
-    //     }
-    //   });
-    //   // this.loadAndMergeMessages();
-    // });
-
-
     this.$route = this.route.params.subscribe((params)=>{
       if(this.threadId) {
         if(this.threadId !== params['threadId']){
@@ -116,12 +104,6 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
               });
             }
           }
-
-          // if(!this.init){
-          //   if(this.mergedMsgs?.length ?? 0 > 0){
-          //     // this.updateMessages(messages)
-          //   }
-          // }
         })
       }
     })
@@ -135,23 +117,42 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     // this.messages = this.chatService.messages()
   }
 
-  // updateMessages(newMessages: Message[]): void {
-  //   console.log('new messages', newMessages)
-  //   // Assuming newMessages are sorted with the newest first
-  //   if(this.mergedMsgs){
-  //     this.mergedMsgs[this.mergedMsgs.length - 1].id = newMessages[1].id; // replacing locally created message with open ai message
-  //     this.mergedMsgs.push(newMessages[0]);
-  //     try {
-  //       this.userService.updateThread(newMessages[0].thread_id!, 'last_message_content', newMessages[0].content[0].text.value)
-  //       this.userService.addMessages(newMessages[0].thread_id!, newMessages[0]).then(()=>{ // adding messages to user in firestore
-  //         this.userService.addMessages(newMessages[1].thread_id!, newMessages[1]);
-  //       });
-  //     } catch (error) {
+  deleteThread(threadId: string) {
+    this.chatService.deleteThread(threadId).then(
+      (respsone) => {
+        if (this.userProfile?.threads) {
+          if (this.userProfile.threads.length > 1) {
+            // route to the next thread
+          }
+        }
+        this.chatService._messages.next(this.messages);
+      },
+      (error) => {
+        alert('Error deleting thread');
+      }
+    );
+  }
 
-  //     }
-  //   }
+  openDialog(thread: Threads | null): void {
+    if (thread) {
+      const dialogRef = this.dialog.open(DeleteDialogComponent, {
+        data: {
+          thread_name: thread.thread_name,
+          thread_id: thread.thread_id,
+          creation_date: thread.creation_date,
+        },
+      });
 
-  // }
+      dialogRef.afterClosed().subscribe((result: boolean) => {
+        // console.log('The dialog was closed');
+        if (result === true) {
+          this.deleteThread(thread.thread_id ?? '');
+        }
+      });
+    } else {
+      alert('error deleting thread');
+    }
+  }
 
 
   // creating message
@@ -217,7 +218,6 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     const threadId = this.threadId;
 
     if (threadId) {
-      console;
       this.firebaseMessagesLoading = true;
       return this.userService
         .getMessages(threadId) // Return the promise here
@@ -284,27 +284,11 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     this.init = false;
 }
 
-  // updateMessages(newMessages: Message[]): void {
-  //   if (this.messages.length === 0) {
-  //     this.messages = newMessages;
-  //     this.chatService._messages.next(this.messages);
-  //   } else {
-  //     // Assuming newMessages are sorted with the newest first
-  //     this.messages[this.messages.length - 1].id = newMessages[1].id; // replacing locally created message with open ai message
-  //     this.messages.push(newMessages[0]);
-  //     try {
-  //       this.userService.updateThread(newMessages[0].thread_id!, 'last_message_content', newMessages[0].content[0].text.value)
-  //       this.userService.addMessages(newMessages[0].thread_id!, newMessages[0]).then(()=>{ // adding messages to user in firestore
-  //         this.userService.addMessages(newMessages[1].thread_id!, newMessages[1]);
-  //       });
-  //     } catch (error) {
 
-  //     }
-
-  //     this.chatService._messages.next(this.messages);
-  //   }
-  //   // console.log('messages list:', this.messages)
-  // }
+  hoverUpdate(placeholder: string){
+    this.placeholders = [placeholder]
+    this.typed.doReset()
+  }
 
   reset(){
     this.messages = null;

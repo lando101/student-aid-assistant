@@ -29,6 +29,7 @@ import { animate, keyframes, query, stagger, state, style, transition, trigger }
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { Message } from '../../chat/models/message.model';
 import { Router } from 'express';
+import { DeleteDialogComponent } from '../../chat/components/dialogs/delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-assistant',
@@ -136,7 +137,8 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
 
   chatService = inject(AssistantService);
   userService = inject(UserService);
-  router = inject(ActivatedRoute)
+  router = inject(ActivatedRoute);
+  dialog = inject(MatDialog)
 
   threads: Threads[] = [];
   userProfile!: UserProfile;
@@ -174,6 +176,42 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log('body width', this.width);
         this.setupResizeListener();
       }, 500);
+  }
+
+  deleteThread(threadId: string) {
+    this.chatService.deleteThread(threadId).then(
+      (respsone) => {
+        if (this.userProfile?.threads) {
+          if (this.userProfile.threads.length > 1) {
+            // route to the next thread
+          }
+        }
+      },
+      (error) => {
+        alert('Error deleting thread');
+      }
+    );
+  }
+
+  openDialog(thread: Threads | null): void {
+    if (thread) {
+      const dialogRef = this.dialog.open(DeleteDialogComponent, {
+        data: {
+          thread_name: thread.thread_name,
+          thread_id: thread.thread_id,
+          creation_date: thread.creation_date,
+        },
+      });
+
+      dialogRef.afterClosed().subscribe((result: boolean) => {
+        // console.log('The dialog was closed');
+        if (result === true) {
+          this.deleteThread(thread.thread_id ?? '');
+        }
+      });
+    } else {
+      alert('error deleting thread');
+    }
   }
 
   private setupResizeListener() {

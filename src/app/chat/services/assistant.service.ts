@@ -206,27 +206,21 @@ export class AssistantService {
     }
   }
 
+  async deleteThread(threadId: string): Promise<any> {
 
+    const url = `${this.apiUrl}/delete-thread/${threadId}`;
+    // this.userService.removeThread(threadId!);
 
-    // update message list
-    // updateMessages(newMessages: Message[]): void {
-    //   if (this.messages.length === 0) {
-    //     this.messages.set(newMessages);
-    //     this._messages.next(this.messages);
-    //   } else {
-    //     // Assuming newMessages are sorted with the newest first
-    //     this.messages()![this.messages.length - 1].id = newMessages[1].id; // replacing locally created message with open ai message
-    //     this.messages()!.push(newMessages[0]);
-    //     try {
-    //       this.userService.updateThread(newMessages[0].thread_id!, 'last_message_content', newMessages[0].content[0].text.value)
-    //       this.userService.addMessages(newMessages[0].thread_id!, newMessages[0]).then(()=>{ // adding messages to user in firestore
-    //         this.userService.addMessages(newMessages[1].thread_id!, newMessages[1]);
-    //       });
-    //     } catch (error) {
+    try {
+      // Wrap the Observable in a Promise
+      const response = await firstValueFrom(this.http.get(url)).then(()=>{
+        this.userService.removeThread(threadId)
+      })
 
-    //     }
-
-    //     this.chatService._messages.next(this.messages);
-    //   }
-
+      return response;
+    } catch (error) {
+      console.error('Error deleting thread:', error);
+      throw error;
+    }
+  }
 }

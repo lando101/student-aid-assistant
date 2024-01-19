@@ -24,9 +24,9 @@
 
       <div class="pb-8 px-8">
         @if (!this.threadsLoading && threads.length > 0) {
-          <div class="mx-0 my-3 overflow-visible" *ngFor="let thread of threads | orderBy: value" @growShrink>
+          <div class="mx-0 overflow-visible" [ngClass]="{'shrink-thread': thread.deleted === true, 'my-3': !thread.deleted}" *ngFor="let thread of threads | orderBy: value">
             <div
-              [ngClass]="{'thread-button-active': activeThreadId === thread.thread_id, 'thread-button': activeThreadId !== thread.thread_id}" routerLinkActive="thread-button-active">
+              [ngClass]="{'thread-button-active': activeThreadId === thread.thread_id, 'thread-button': activeThreadId !== thread.thread_id, 'slide-out-blurred-left': thread.deleted === true}" routerLinkActive="thread-button-active">
               <button class="flex flex-col gap-1 text-left pl-3 py-3 w-full" (click)="setActiveThread(thread)" [routerLink]="['/assistant', thread.thread_id]" >
                 <!-- <div class="thread-id">{{thread.thread_id}}</div> -->
 

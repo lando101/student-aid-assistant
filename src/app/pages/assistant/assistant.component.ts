@@ -203,18 +203,25 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   deleteThread(threadId: string) {
-    this.chatService.deleteThread(threadId).then(
-      (respsone) => {
-        if (this.userProfile?.threads) {
-          if (this.userProfile.threads.length > 1) {
-            // route to the next thread
+    const thread = this.threads.find((thread)=>thread.thread_id === threadId);
+    thread!.deleted = true;
+
+    setTimeout(() => {
+      this.chatService.deleteThread(threadId).then(
+        (respsone) => {
+          if (this.userProfile?.threads) {
+            if (this.userProfile.threads.length > 1) {
+              // route to the next thread
+            }
           }
+        },
+        (error) => {
+          alert('Error deleting thread');
         }
-      },
-      (error) => {
-        alert('Error deleting thread');
-      }
-    );
+      );
+    }, 150000);
+
+
   }
 
   openDialog(thread: Threads | null): void {

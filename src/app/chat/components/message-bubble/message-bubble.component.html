@@ -4,17 +4,39 @@
   </div>
   <div class="message-width ml-7 flex gap-2">
     <div>
-      <div [innerHTML]="liveMessage.message! | markdown" [ngClass]="{'assistant-message':liveMessage.role === 'assistant', 'user-message':liveMessage.role !== 'assistant'}" class="p-6 rounded-xl font-medium"></div>
-      <div class="flex justify-between w-full">
-        <div class="flex gap-2 pt-1 dark:text-neutral-600" *ngIf="liveMessage.role === 'assistant'">
-          <button [ngClass]="{'liked': liveMessage.liked === 1}" (click)="likeMessage(1)" class="opacity-70 hover:opacity-100">
-            <ng-icon class="ml-1" [size]="'16px'" name="featherThumbsUp"></ng-icon>
-          </button>
-          <button [ngClass]="{'disliked': liveMessage.liked === 2}" (click)="likeMessage(2)" class="opacity-70 hover:opacity-100">
-            <ng-icon class="ml-1" [size]="'16px'" name="featherThumbsDown"></ng-icon>
-          </button>
+      <div class="inline-block">
+        <div [innerHTML]="liveMessage.message! | markdown" [ngClass]="{'assistant-message':liveMessage.role === 'assistant', 'user-message':liveMessage.role !== 'assistant'}" class="p-6 rounded-xl font-medium"></div>
+        <div class="flex justify-between w-full">
+          <div class="flex gap-2 pt-1 dark:text-neutral-600" *ngIf="liveMessage.role === 'assistant'">
+            <button [ngClass]="{'liked': liveMessage.liked === 1}" (click)="likeMessage(1)" class="opacity-70 hover:opacity-100">
+              <ng-icon class="ml-1" [size]="'16px'" name="featherThumbsUp"></ng-icon>
+            </button>
+            <button [ngClass]="{'disliked': liveMessage.liked === 2}" (click)="likeMessage(2)" class="opacity-70 hover:opacity-100">
+              <ng-icon class="ml-1" [size]="'16px'" name="featherThumbsDown"></ng-icon>
+            </button>
+          </div>
+          <p class="mb-0 text-gray-500 dark:text-neutral-600 font-bold text-xs py-2 w-full text-end">{{(liveMessage.time_stamp) | date:'short'}}</p>
         </div>
-        <p class="mb-0 text-gray-600 dark:text-neutral-600 font-bold text-xs py-2 w-full text-end">{{(liveMessage.time_stamp) | date:'short'}}</p>
+      </div>
+
+      <div>
+        <div *ngIf="isPanelOpen" [ngClass]="{'fade-out-bck': aniamte}" class="flex flex-col gap-3 feedback-container fade-in-fwd">
+          <div class="flex flex-col gap-2">
+            <div class="text-sm font-medium text-gray-700">Thanks for your response! Have more feedback?</div>
+            <textarea #textArea class="p-3 rounded-lg shadow-sm shadow-neutral-100" placeholder="Explain why you {{liveMessage.liked === 1 ? 'liked':'disliked'}} the response..." [(ngModel)]="feedbackText" rows="4" cols="50"></textarea>
+            <div [ngClass]="{'text-red-700': textArea.value.length > 180}" class="text-xs text-gray-500 w-full text-right font-medium">{{textArea.value ? textArea.value.length:0 }}/180</div>
+        </div>
+          <div class="flex gap-3 w-full">
+            <button [disabled]="textArea.value.length === 0 || textArea.value === null" [ngClass]="{'bg-gray-400 hover:bg-gray-400 !cursor-not-allowed': textArea.value.length === 0}" class="d-btn bg-blue-600 max-w-48 text-white border-none hover:bg-blue-700 w-full" (click)="submitFeedback()">Submit</button>
+            <button class="d-btn bg-gray-300 text-black max-w-40 border-none hover:bg-gray-400" (click)="closePanel()">Dimiss</button>
+          </div>
+
+      </div>
+
+      <p *ngIf="showThankYouMessage" [ngClass]="{'text-fade-out-bck': aniamteThanks}" class="text-fade-in-fwd text-sm text-gray-700 font-medium flex gap-1 items-center">
+        <ng-icon class="text-sky-600" [strokeWidth]="3" name="featherCheckCircle"></ng-icon>
+        Thanks for your feedback!
+      </p>
       </div>
     </div>
 

@@ -85,9 +85,9 @@
   </mat-drawer>
   <div class="sidenav-content bg-transparent h-full">
     <div class="flex items-center justify-center h-full">
-      <div class="w-full h-full overflow-hidden flex pt-8 px-8 gap-4">
+      <div class="w-full h-full overflow-hidden flex px-0 md:px-8 pt-8 gap-4">
         <!-- <div *ngIf="!threadLoading && !messageLoading; else loading" class="flex flex-col h-full gap-4"> -->
-          <button type="button" class="d-btn d-btn-circle hover:bg-gray-300 dark:hover:bg-neutral-900 bg-gray-200 shadow-none text-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 border-0" (click)="drawer.toggle()">
+          <button type="button" class="-mr-[72px] -mt-2 md:ml-3 md:mt-0 z-20 md:mr-0 d-btn d-btn-circle hover:bg-gray-300 dark:hover:bg-neutral-900 bg-gray-200 shadow-none text-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 border-0" (click)="drawer.toggle()">
             <ng-icon [size]="'24px'" name="cssMenu"></ng-icon>
           </button>
           <div class="flex justify-center w-full">

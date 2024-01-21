@@ -15,7 +15,7 @@
         </div>
         @if (!this.threadsLoading && liveThreads.length > 0) {
           <div>
-            <div class="text-sm text-gray-700 dark:text-neutral-500 mb-2 font-medium flex gap-1">Sort threads</div>
+            <div class="text-sm text-gray-700 dark:text-neutral-500 mb-2 font-semibold flex gap-1">Sort threads</div>
             <p-selectButton [options]="stateOptions" [(ngModel)]="value" optionLabel="label"
               optionValue="value"></p-selectButton>
           </div>
@@ -38,7 +38,7 @@
                   }
                 </div>
                 <div
-                  class="truncate max-w-48 text-xs font-semibold text-gray-500 dark:text-neutral-500 mt-1 flex gap-1 items-center justify-start">
+                  class="time-stamp">
                   <ng-icon [size]="'12px'" name="featherClock"></ng-icon>{{thread.last_updated ?
                   (thread.last_updated.toString() | timeago) : 'Never updated'}}</div>
               </button>

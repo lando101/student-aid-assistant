@@ -94,6 +94,14 @@ export class MessageListComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes['liveMessages'].currentValue);
+
+    // const messages = changes['liveMessages'].currentValue;
+    // if(messages){
+    //   setTimeout(() => {
+    //     this.initialLoad = false;
+    //   }, 500);
+    // }
     // if(changes['liveMessages'].currentValue){
     //   const messages = changes['liveMessages'].currentValue;
     //   // console.log('live messages changes',changes['liveMessages'].currentValue)

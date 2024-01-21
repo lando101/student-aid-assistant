@@ -196,16 +196,22 @@ export class UserService {
    }
 
   // add message to user profile
-  async addLiveMessage(mesg: LiveMessage | null) {
+  async addLiveMessage(mesg: LiveMessage | null, user: boolean) {
     // const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', mesg?.thread_id!, 'live_messages', mesg!.id!);
     // const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', mesg?.thread_id!, 'live_messages', 'asdf')
-    const docRef = await addDoc(collection(this.firestore, 'users', this.user.uid, 'live_threads', mesg!.thread_id!, 'live_messages'), mesg)
+    if(user){
+        const docRef = await addDoc(collection(this.firestore, 'users', this.user.uid, 'live_threads', mesg!.thread_id!, 'live_messages'), mesg)
 
     const id = docRef.id;
 
     await updateDoc(docRef, {
       id: id
     })
+    } else {
+      const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', mesg!.thread_id!, 'live_messages', mesg!.id!);
+      await setDoc(docRef, mesg)
+    }
+
    }
 
    // update message

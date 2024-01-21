@@ -25,6 +25,7 @@ export interface LiveMessage {
     liked: 0 | 1 | 2;
     user_feedback: string | null;
     uid: string | null;
+    animate?: boolean | null;
 }
 
 export interface OpenAIMesg {

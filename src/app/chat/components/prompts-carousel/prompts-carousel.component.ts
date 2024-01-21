@@ -168,7 +168,7 @@ private unsubscribeFromResize() {
 
 promptHover(event: string){
   this.hoverString.emit(event);
-  // console.log('hover', event)
+  // // console.log('hover', event)
 }
 
 usePrompt(event: string){

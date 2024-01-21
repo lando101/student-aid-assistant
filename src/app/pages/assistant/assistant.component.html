@@ -13,7 +13,7 @@
             </mat-icon>
           </button>
         </div>
-        @if (!this.threadsLoading && threads.length > 0) {
+        @if (!this.threadsLoading && liveThreads.length > 0) {
           <div>
             <div class="text-sm text-gray-700 dark:text-neutral-500 mb-2 font-medium flex gap-1">Sort threads</div>
             <p-selectButton [options]="stateOptions" [(ngModel)]="value" optionLabel="label"
@@ -23,16 +23,16 @@
       </div>
 
       <div class="pb-8 px-8">
-        @if (!this.threadsLoading && threads.length > 0) {
-          <div class="mx-0 overflow-visible" [ngClass]="{'shrink-thread': thread.deleted === true, 'my-3': !thread.deleted}" *ngFor="let thread of threads | orderBy: value">
+        @if (!this.threadsLoading && liveThreads.length > 0) {
+          <div class="mx-0 overflow-visible" [ngClass]="{'shrink-thread': thread.deleted === true, 'my-3': !thread.deleted}" *ngFor="let thread of liveThreads | orderBy: value">
             <div
               [ngClass]="{'thread-button-active': activeThreadId === thread.thread_id, 'thread-button': activeThreadId !== thread.thread_id, 'slide-out-blurred-left': thread.deleted === true}" routerLinkActive="thread-button-active">
               <button class="flex flex-col gap-1 text-left pl-3 py-3 w-full" (click)="setActiveThread(thread)" [routerLink]="['/assistant', thread.thread_id]" >
                 <!-- <div class="thread-id">{{thread.thread_id}}</div> -->
 
                 <div class="flex h-8 max-w-48 text-xs font-bold">
-                  @if (thread.last_message_content) {
-                    <div class="message-text">{{thread.last_message_content}}</div>
+                  @if (thread.last_message) {
+                    <div class="message-text">{{thread.last_message}}</div>
                   } @else {
                     <div class="message-text">New Thread</div>
                   }

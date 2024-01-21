@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate{
     //   map(user => !!user), // map to boolean
     //   tap(loggedIn => {
     //     if (!loggedIn) {
-    //       // console.log('access denied');
+    //       // // console.log('access denied');
     //       this.router.navigate(['/auth']);
     //     }
     //   }
@@ -51,7 +51,7 @@ export class AuthGuard implements CanActivate{
     //   return false
     // }
     // const isLoggedIn = this.auth.currentUser;
-    // // console.log('current user from auth', this.auth.currentUser);
+    // // // console.log('current user from auth', this.auth.currentUser);
 
     // if (!isLoggedIn) {
     //   this.router.navigate(['/auth']);

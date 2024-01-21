@@ -45,14 +45,14 @@ export class LoginFormComponent {
     if (this.loginForm.valid) {
       // Handle the form submission
       // this.authService.emailLogin(email, password).subscribe(data =>{
-      //     console.log('login state', data)
+      //     // console.log('login state', data)
 
       //   if(data){
       //     this.router.navigate(['/home']);
       //   }
       // })
       this.authNew.emailLogin(email, password).then((data)=>{
-        console.log('login', data);
+        // console.log('login', data);
         this.router.navigate(['/assistant']);
       });
     }

@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import { LiveThread } from "./chat.model";
 
 export interface UserProfile {
   email: string | null,
@@ -7,6 +8,7 @@ export interface UserProfile {
   image: string | null,
   last_login: string | null,
   threads: Threads[] | null,
+  live_threads: LiveThread[] | null,
   uid: string | null,
 }
 

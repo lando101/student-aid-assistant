@@ -37,7 +37,7 @@ export class ChatService {
   //   if (existingThread) {
   //     this.thread = JSON.parse(existingThread) as Thread;
   //      // Deserialize the thread JSON string to an object
-  //      // console.log('saved thread', existingThread)
+  //      // // console.log('saved thread', existingThread)
   //     this._threadLoading.next(false);
   //      return of(JSON.parse(existingThread) as Thread);
   //   } else {
@@ -62,7 +62,7 @@ export class ChatService {
     if (existingThread) {
       // Deserialize the thread JSON string to an object
       this.thread = JSON.parse(existingThread) as Thread;
-      // console.log('saved thread', existingThread);
+      // // console.log('saved thread', existingThread);
       this._threadLoading.next(false);
       return JSON.parse(existingThread) as Thread;
     } else {
@@ -181,7 +181,7 @@ export class ChatService {
 
   // poll status
   pollStatus(runId: string): Observable<AssistantRun> {
-    // console.log('running polling')
+    // // console.log('running polling')
     return interval(500).pipe(
       switchMap(() => this.checkRunStatus(runId)),
       takeWhile((response: AssistantRun) => response.status !== 'completed', true)

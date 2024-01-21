@@ -41,11 +41,11 @@ export class HeaderComponent {
   constructor(private auth: AuthService, private userService: UserService, private themeService: ThemeService, private authService: AuthenticationService) {
     // this.userService.$user.subscribe((user)=>{
     //   this.currentUser = user;
-    //   // console.log('header', this.currentUser)
+    //   // // console.log('header', this.currentUser)
     // });
 
     this.authService.$currentUser.subscribe((user)=>{
-      console.log('header user', user)
+      // console.log('header user', user)
       if(!!user) {
         this.currentUser = user;
       } else {
@@ -56,7 +56,7 @@ export class HeaderComponent {
     try{
       this.themeService.themeSubject.subscribe((theme)=>{
         this.theme = theme;
-        // console.log('theme', this.theme)
+        // // console.log('theme', this.theme)
       })
     } catch(error){
       this.theme = 'light'

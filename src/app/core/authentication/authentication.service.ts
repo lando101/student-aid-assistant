@@ -21,7 +21,7 @@ export class AuthenticationService {
     try {
       const user = this.storageService.getItem(this.userKey);
       // const userJSON = JSON.parse(user ?? '')
-      // console.log('storage', userJSON)
+      // // console.log('storage', userJSON)
       if(!!user){
         this.currentUser = JSON.parse(user);
         this.currentUserSubject.next(this.currentUser);
@@ -46,7 +46,7 @@ export class AuthenticationService {
   async emailLogin(email: string, password: string): Promise<User | null> {
    return await signInWithEmailAndPassword(this.auth, email, password).then((user)=>{
       const userRef = user.user;
-      console.log('email login', userRef);
+      // console.log('email login', userRef);
       if(!!userRef){
         this.storageService.setItem(this.userKey, JSON.stringify(userRef));
         this.currentUserSubject.next(userRef);

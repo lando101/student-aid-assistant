@@ -8,6 +8,7 @@ import { Timestamp, addDoc, deleteDoc, getDoc, getDocs } from 'firebase/firestor
 import { StorageService } from '../../chat/services/storage.service';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Message } from '../../chat/models/message.model';
+import { LiveMessage, LiveThread } from '../../chat/models/chat.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,21 +24,22 @@ export class UserService {
   public _userProfile: BehaviorSubject<any> = new BehaviorSubject<UserProfile | null | any>(null);
   public $userProfile: Observable<UserProfile | null | any> = this._userProfile.asObservable();
   public userThreads: WritableSignal<Threads[] | null> = signal(null)
+  public userLiveThreads: WritableSignal<LiveThread[] | null> = signal(null)
 
-  public userProfile!: UserProfile | null | any;
+  public userProfile!: UserProfile | null;
 
   userProfileKey: string = "userProfile";
 
 
   constructor(private storageService: StorageService, private authService: AuthenticationService) {
-    console.log('user service')
+    // console.log('user service')
     this.authService.$currentUser.subscribe((user) => {
-      console.log('Received user in UserService:', user);
+      // console.log('Received user in UserService:', user);
       if (user) {
         this.user = user;
         try {
           const userProfile = this.storageService.getItem(this.userProfileKey);
-          console.log('Retrieved userProfile from storage:', userProfile);
+          // console.log('Retrieved userProfile from storage:', userProfile);
           if (userProfile) {
             this.userProfile = JSON.parse(userProfile);
             this._userProfile.next(this.userProfile);
@@ -46,14 +48,15 @@ export class UserService {
             this._userProfile.next(null);
           }
           this.subUserProfile();
-          this.subUserThreads();
+          // this.subUserThreads();
+          this.subUserLiveThreads();
         } catch (error) {
           console.error('Error parsing userProfile:', error);
           this.userProfile = null;
           this._userProfile.next(null);
         }
       } else {
-        console.log('User object is falsy in UserService.');
+        // console.log('User object is falsy in UserService.');
       }
     });
   }
@@ -62,10 +65,10 @@ export class UserService {
    subUserProfile() {
     const unsub = onSnapshot(doc(this.firestore, 'users', this.user.uid), (doc)=>{
       const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
-      console.log(source, " data: ", doc.data());
+      // console.log(source, " data: ", doc.data());
       if(doc.data()){
         this._userProfile.next(doc.data())
-        this.userProfile = doc.data();
+        this.userProfile = doc.data() as UserProfile;
       } else {
         // this._userProfile.next(this.createUserProfile())
       }
@@ -74,15 +77,32 @@ export class UserService {
 
    subUserThreads() {
     const unsub = onSnapshot(collection(this.firestore, 'users', this.user.uid, 'threads'), (docs)=>{
-      this.userProfile.threads = []; // might need to fix for animations
+      this.userProfile!.threads = []; // might need to fix for animations
       docs.forEach((doc)=>{
-        // console.log("threads data: ", doc.data());
-        this.userProfile.threads.push(doc.data())
+        // // console.log("threads data: ", doc.data());
+        this.userProfile!.threads!.push(doc.data() as Threads)
       });
-      this.userThreads.set(this.userProfile.threads as Threads[])
+      this.userThreads.set(this.userProfile!.threads as Threads[])
       this.storageService.setItem(this.userProfileKey, JSON.stringify(this.userProfile));
       this._userProfile.next(this.userProfile);
-      // console.log('user profile with trheads', this.userProfile)
+      // // console.log('user profile with trheads', this.userProfile)
+    });
+   }
+
+   subUserLiveThreads() {
+    const unsub = onSnapshot(collection(this.firestore, 'users', this.user.uid, 'live_threads'), (docs)=>{
+      this.userProfile!.live_threads = []; // might need to fix for animations
+      docs.forEach((doc)=>{
+        console.log("live threads data: ", doc.data());
+        let thread = doc.data() as LiveThread
+        if(thread.thread_id){
+          this.userProfile!.live_threads!.push(doc.data() as LiveThread)
+        }
+      });
+      this.userLiveThreads.set(this.userProfile!.live_threads as LiveThread[])
+      // this.storageService.setItem(this.userProfileKey, JSON.stringify(this.userProfile));
+      this._userProfile.next(this.userProfile);
+      // // console.log('user profile with trheads', this.userProfile)
     });
    }
 
@@ -105,12 +125,12 @@ export class UserService {
       // Fetch the newly created/updated document
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data());
-        this.userProfile = docSnap.data();
+        // console.log('Document data:', docSnap.data());
+        this.userProfile = docSnap.data() as UserProfile;
         this.storageService.setItem(this.userProfileKey, JSON.stringify(docSnap.data()));
         return docSnap.data();
       } else {
-        console.log('No such document!');
+        // console.log('No such document!');
         try {
           this.storageService.removeItem(this.userProfileKey);
         } catch (error) {
@@ -131,6 +151,85 @@ export class UserService {
       this.userProfile = null;
     }
    }
+
+
+
+
+// EVERYTHING BELOW IS FOR OPENAI CHAT
+
+  // add threads to user profile
+  async addLiveThread(thread: LiveThread | null) {
+    const docRef = await addDoc(collection(this.firestore, 'users', this.user.uid, 'live_threads'), {
+      thread_name: 'new thread',
+      creation_date: new Date().toISOString(),
+      last_updated: new Date().toISOString(),
+      uid: this.user.uid,
+      thread_length: 0,
+      last_message: null,
+      model: null,
+      user_feedback: null
+    })
+
+    const id = docRef.id;
+
+    await updateDoc(docRef, {
+      thread_id: id
+    })
+
+    return id;
+  }
+
+   // add threads to user profile
+   async updateLiveThread(thread_id: string, key: string, value: string | Timestamp | number | null) {
+    const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', thread_id!);
+
+    await updateDoc(docRef, {
+      [key]: value,
+      last_updated: new Date().toISOString()
+    })
+  }
+
+  async removeLiveThread(thread_id: string | null) {
+    const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', thread_id!);
+
+    return await deleteDoc(docRef)
+   }
+
+  // add message to user profile
+  async addLiveMessage(mesg: LiveMessage | null) {
+    // const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', mesg?.thread_id!, 'live_messages', mesg!.id!);
+    // const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', mesg?.thread_id!, 'live_messages', 'asdf')
+    const docRef = await addDoc(collection(this.firestore, 'users', this.user.uid, 'live_threads', mesg!.thread_id!, 'live_messages'), mesg)
+
+    const id = docRef.id;
+
+    await updateDoc(docRef, {
+      id: id
+    })
+   }
+
+   // update message
+   async updateLiveMessage(thread_id: string, message_id: string, key: string, value: any) {
+      const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', thread_id, 'live_messages', message_id)
+
+      await updateDoc(docRef, {
+        [key]: value,
+      })
+   }
+
+   async getLiveMessages(thread_id: string){
+    // // console.log('trying to get messages from firebase')
+    const querySnapshot = await getDocs(collection(this.firestore, 'users', this.user.uid, 'live_threads', thread_id, 'live_messages'));
+    let messages:LiveMessage[] = []
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      messages.push(doc.data() as LiveMessage)
+      // console.log(doc.id, " => ", doc.data());
+    });
+    return messages
+   }
+
+   // EVERYTHING BELOW IS FOR ASSISTANTS BETA
 
    // add threads to user profile
    async addThread(thread_id: string | null, thread_name: string | null) {
@@ -158,13 +257,13 @@ export class UserService {
    }
 
    async getMessages(thread_id: string){
-    // console.log('trying to get messages from firebase')
+    // // console.log('trying to get messages from firebase')
     const querySnapshot = await getDocs(collection(this.firestore, 'users', this.user.uid, 'threads', thread_id, 'messages'));
     let messages:any[] = []
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       messages.push(doc.data() as any)
-      console.log(doc.id, " => ", doc.data());
+      // console.log(doc.id, " => ", doc.data());
     });
     return messages
    }
@@ -197,4 +296,14 @@ export class UserService {
       return 'error'
     }
    }
+
+   createUnixTime(): number {
+    // Get the current date and time
+    const now = new Date();
+
+    // Convert to Unix timestamp
+    const unixTime = Math.floor(now.getTime() / 1000);
+
+    return unixTime;
+  }
 }

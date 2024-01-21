@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
     // this.credentialService.$credState.subscribe((state)=>{
     //   this.authenticated = state;
 
-    //   console.log('state app', state)
+    //   // console.log('state app', state)
     //  })
   }
 }

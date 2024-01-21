@@ -47,7 +47,7 @@ export class RenameDialogComponent implements  OnInit {
 
   onSubmit() {
     if (this.threadNameControl.valid) {
-      console.log('Thread Name:', this.threadNameControl.value);
+      // console.log('Thread Name:', this.threadNameControl.value);
       // Additional submit logic
     }
   }

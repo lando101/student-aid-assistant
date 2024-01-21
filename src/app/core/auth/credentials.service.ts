@@ -48,7 +48,7 @@ export class CredentialsService {
    */
   isAuthenticated(): boolean {
     if(this._credentials && this._user){
-      // console.log("cred", this._user)
+      // // console.log("cred", this._user)
       this._credState.next(true);
       return true;
     } else {

@@ -18,7 +18,7 @@ export class AuthService {
 
   constructor(private auth: Auth, private credentialService: CredentialsService, private router: Router, private userService: UserService) {
     // this.auth.onAuthStateChanged((state) => {
-    //   // console.log('Auth state changed', state)
+    //   // // console.log('Auth state changed', state)
     // })
     authState(this.auth).subscribe((data)=>{
       if(!data){

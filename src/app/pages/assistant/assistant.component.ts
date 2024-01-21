@@ -30,6 +30,7 @@ import { NgxTypedJsModule } from 'ngx-typed-js';
 import { Message } from '../../chat/models/message.model';
 import { DeleteDialogComponent } from '../../chat/components/dialogs/delete-dialog/delete-dialog.component';
 import { Thread } from '../../chat/models/thread.model';
+import { LiveThread } from '../../chat/models/chat.model';
 
 @Component({
   selector: 'app-assistant',
@@ -143,6 +144,7 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
   resizeSubscription: Subscription = new Subscription();
 
   threads: Threads[] = [];
+  liveThreads: LiveThread[] = []
   threadsLoading: boolean = true;
   userProfile!: UserProfile;
   activeThreadId: string | null = null;
@@ -161,18 +163,21 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userService.$userProfile.subscribe((userProfile) => {
+    this.userService.$userProfile.subscribe((userProfile: UserProfile) => {
       if (userProfile) {
         this.userProfile = userProfile;
         // this.threads = userProfile.threads
         this.threadsLoading = true;
-        this.updateThreads(this.threads, userProfile.threads)
+        if(this.userProfile.live_threads){
+          console.log('threads before merge', this.userProfile.live_threads)
+          this.updateThreads(this.liveThreads, this.userProfile.live_threads)
+        }
 
-        const threads = userProfile.threads;
-        let activeThread: Threads | null = this.chatService.activeThread()
+        const threads = userProfile.live_threads ?? [];
+        let activeThread: LiveThread | null = this.chatService.activeThread()
         let activeThreadPresent: any;
         if(activeThread){
-          activeThreadPresent = threads.find((thread: Threads) => { return thread.thread_id === activeThread?.thread_id; });
+          activeThreadPresent = threads.find((thread: LiveThread) => { return thread.thread_id === activeThread?.thread_id; });
           if(!activeThreadPresent){
             this.nav.navigateByUrl('/assistant')
           }
@@ -188,7 +193,7 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
   .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
   .subscribe((ev: NavigationEnd) => {
     let url = ev.url;
-    console.log('active thread id', url)
+    // console.log('active thread id', url)
   });
   }
 
@@ -197,34 +202,36 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
       this.body = document.body;
       this.width = `${this.body.clientWidth}px`;
       this.widthValue = this.body.clientWidth;
-        console.log('body width', this.width);
+        // console.log('body width', this.width);
         this.setupResizeListener();
       }, 500);
   }
 
   deleteThread(threadId: string) {
-    const thread = this.threads.find((thread)=>thread.thread_id === threadId);
+    const thread = this.liveThreads.find((thread)=>thread.thread_id === threadId);
     thread!.deleted = true;
 
     setTimeout(() => {
-      this.chatService.deleteThread(threadId).then(
-        (respsone) => {
-          if (this.userProfile?.threads) {
-            if (this.userProfile.threads.length > 1) {
-              // route to the next thread
-            }
-          }
-        },
-        (error) => {
-          alert('Error deleting thread');
-        }
-      );
-    }, 150000);
+      this.userService.removeLiveThread(threadId)
+
+      // this.chatService.deleteThread(threadId).then(
+      //   (respsone) => {
+      //     if (this.userProfile?.threads) {
+      //       if (this.userProfile.threads.length > 1) {
+      //         // route to the next thread
+      //       }
+      //     }
+      //   },
+      //   (error) => {
+      //     alert('Error deleting thread');
+      //   }
+      // );
+    }, 850);
 
 
   }
 
-  openDialog(thread: Threads | null): void {
+  openDialog(thread: LiveThread | null): void {
     if (thread) {
       const dialogRef = this.dialog.open(DeleteDialogComponent, {
         data: {
@@ -235,7 +242,7 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
       dialogRef.afterClosed().subscribe((result: boolean) => {
-        // console.log('The dialog was closed');
+        // // console.log('The dialog was closed');
         if (result === true) {
           this.deleteThread(thread.thread_id ?? '');
         }
@@ -255,12 +262,12 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
         this.widthValue = width;
         this.width = `${width}px`
         // Handle the width change here or emit it to an observable/subject
-        console.log('body width changed', width);
+        // console.log('body width changed', width);
       });
   }
 
   // this is how the threads animate properly :: add and remove thread from array based on updates
-  updateThreads(oldArray: Threads[], newArray: Threads[]) {
+  updateThreads(oldArray: LiveThread[], newArray: LiveThread[]) {
     // Creating a map of thread IDs for easy lookup
     if (oldArray.length !== newArray.length) {
       const oldThreadMap = new Map(
@@ -275,39 +282,46 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
       // Filter out deleted threads from the old array
-      this.threads = oldArray.filter((thread) =>
+      this.liveThreads = oldArray.filter((thread) =>
         newArray.some((newThread) => newThread.thread_id === thread.thread_id)
       );
     } else if (oldArray.length === newArray.length) {
       newArray.forEach((arrayItem) => {
-        const index = this.threads.findIndex(
+        const index = this.liveThreads.findIndex(
           (thread) => thread.thread_id === arrayItem.thread_id
         );
-        // console.log('new content', this.threads[index].last_message_content)
+        // // console.log('new content', this.threads[index].last_message_content)
 
         if (index >= 0) {
-          console.log('new content', this.threads[index].last_message_content);
-          this.threads[index].last_message_content =
-            arrayItem.last_message_content;
-          this.threads[index].last_updated = arrayItem.last_updated;
-          this.threads[index].thread_name = arrayItem.thread_name;
+          // console.log('new content', this.threads[index].last_message_content);
+          this.liveThreads[index].last_message = arrayItem.last_message;
+          this.liveThreads[index].last_updated = arrayItem.last_updated;
+          this.liveThreads[index].thread_name = arrayItem.thread_name;
         }
-        //  console.log('match index', index)
+        //  // console.log('match index', index)
       });
     }
+    console.log('threads', this.liveThreads)
     this.threadsLoading = false;
   }
 
   createNewThread(){
-    this.chatService.createThread().then((thread: Thread)=>{
-      if(thread) {
-        this.nav.navigateByUrl(`assistant/${thread.id}`);
+    // this.chatService.createThread().then((thread: Thread)=>{
+    //   if(thread) {
+    //     this.nav.navigateByUrl(`assistant/${thread.id}`);
+    //   }
+    //   // console.log('new thread', thread)
+    // });
+
+    this.userService.addLiveThread(null).then((threadId: string)=>{
+      if(threadId) {
+        this.nav.navigateByUrl(`assistant/${threadId}`);
       }
-      console.log('new thread', thread)
+      // console.log('new thread', threadId)
     })
   }
 
-  setActiveThread(thread: Threads){
+  setActiveThread(thread: LiveThread){
     this.chatService.activeThread.set(thread ?? null)
   }
 

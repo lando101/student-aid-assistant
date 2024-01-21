@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { Message } from '../../models/message.model';
 import { CommonModule } from '@angular/common';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
@@ -15,10 +15,11 @@ import { Subscription } from 'rxjs';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { MessageBubbleComponent } from "../message-bubble/message-bubble.component";
 import { UserService } from '../../../core/auth/user.service';
-import { OrderByPipe } from 'ngx-pipes';
+import { NgPipesModule, OrderByPipe } from 'ngx-pipes';
 import { AssistantComponent } from '../../../pages/assistant/assistant.component';
 import { Threads } from '../../models/user_profile.model';
 import { PrettyDatePipe } from '../../../shared/pipes/pretty-date.pipe';
+import { LiveMessage, LiveThread } from '../../models/chat.model';
 @Component({
     selector: 'app-message-list',
     standalone: true,
@@ -56,20 +57,23 @@ import { PrettyDatePipe } from '../../../shared/pipes/pretty-date.pipe';
     // changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './message-list.component.html',
     styleUrl: './message-list.component.sass',
-    imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule, MessageBubbleComponent, PrettyDatePipe]
+    imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule, MessageBubbleComponent, PrettyDatePipe, NgPipesModule]
 })
 export class MessageListComponent implements OnInit, OnChanges {
   @ViewChild('sp') messageList!: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
   @Input() messages: Message[] | null = null;
+  @Input() liveMessages: LiveMessage[] | null = null;
   @Input() thread: Threads | null = null;
+  @Input() liveThread: LiveThread | null = null;
   @Input() threadId: string = '';
   @Input() uid: string  = '';
 
   private userService = inject(UserService);
-  private orderPipe = inject(OrderByPipe)
-  private chatService = inject(AssistantComponent)
+  private orderPipe = inject(OrderByPipe);
+  private chatService = inject(AssistantComponent);
+  private cdr = inject(ChangeDetectorRef)
 
   messageLoading = this.chatService.messageLoading
 
@@ -77,12 +81,12 @@ export class MessageListComponent implements OnInit, OnChanges {
 
   // messages: Message[] | null = null; // messages from open ai
   userMessages: Message[] | null = null; // messages saved to user in firebase
-  mergedMsgs: Message[] | null = null; // messages saved to user in firebase
+  orderedMsgs: LiveMessage[] | null = null; // messages saved to user in firebase
 
   firebaseMessagesLoading: boolean = false;
 
   initialLoad: boolean = true;
-  constructor(){
+  constructor(public orderByPipe: OrderByPipe){
 
   }
   ngOnInit(): void {
@@ -90,19 +94,25 @@ export class MessageListComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // if(changes['liveMessages'].currentValue){
+    //   const messages = changes['liveMessages'].currentValue;
+    //   // console.log('live messages changes',changes['liveMessages'].currentValue)
+    //   this.orderedMsgs = this.orderByPipe.transform(messages, 'time_stamp');
+    //   this.cdr.detectChanges();
 
+    // }
   }
 
   getMessageContainerHeight(): number {
     const element = this.messagesContainer.nativeElement;
     const height = element.offsetHeight; // This gives the height of the element
-    // console.log('new height', height)
+    // // console.log('new height', height)
     return height;
   }
 
   // ngOnChanges(changes: SimpleChanges): void {
   //   // when new messages come in scroll bottom
-  //   // console.log('changes', changes)
+  //   // // console.log('changes', changes)
   //   if(this.messageList){
   //     this.messageList.scrollTop(this.getMessageContainerHeight());
   //   }

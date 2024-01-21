@@ -51,7 +51,7 @@ export class LiveChatComponent implements OnInit, OnDestroy {
             this.enabled = true;
           }
         }
-        console.log(this.chatHistory)
+        // console.log(this.chatHistory)
       }
     });
   }
@@ -64,11 +64,11 @@ export class LiveChatComponent implements OnInit, OnDestroy {
     } else {
       this.chatHistory?.push({role: 'user', content: this.userInput})
     }
-    console.log(this.chatHistory)
+    // console.log(this.chatHistory)
 
     this.chatService.sendMessage(this.chatHistory); // send to api
 
-    
+
     this.chatHistory?.push({role: 'assistant', content: ''}); // add slot for assistant response
     this.userInput = '';
 

@@ -9,6 +9,7 @@ import { UserService } from '../../core/auth/user.service';
 import { AssistantRun } from '../models/assistantrun.model';
 import { Threads, UserProfile } from '../models/user_profile.model';
 import { Router } from '@angular/router';
+import { LiveThread } from '../models/chat.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class AssistantService {
 
   public _thread: BehaviorSubject<any> = new BehaviorSubject<Thread | null>(null);
   public $thread: Observable<any> = this._thread.asObservable();
-  public activeThread: WritableSignal<Threads | null> = signal(null)
+  public activeThread: WritableSignal<LiveThread | null> = signal(null)
   public initThreadMsg: WritableSignal<string | null> = signal(null)
 
 
@@ -139,14 +140,14 @@ export class AssistantService {
       const url = `${this.apiUrl}/runassistant/${thread_id}`;
       const run = await firstValueFrom(this.http.post<AssistantRun>(url, {instructions}));
 
-      console.log('run', run);
+      // console.log('run', run);
 
       if (run) {
         // Call the new polling function and wait for it to complete
         await this.pollRunStatusUntilCompleted(run);
 
         // Once polling is complete, list messages
-        console.log('Polling complete, listing messages.');
+        // console.log('Polling complete, listing messages.');
         await this.listMessages(thread_id);
       }
 
@@ -158,7 +159,7 @@ export class AssistantService {
 
   // 5) check run status
   async checkRunStatus(run: AssistantRun): Promise<any>{
-    console.log('checking run status')
+    // console.log('checking run status')
     const url = `${this.apiUrl}/retrieve-run/${run.thread_id}/${run.id}`;
     try {
       const runStatus = await firstValueFrom(
@@ -176,7 +177,7 @@ export class AssistantService {
       const intervalId = setInterval(async () => {
         try {
           const runStatus = await this.checkRunStatus(run);
-          console.log('Polling status:', runStatus.status);
+          // console.log('Polling status:', runStatus.status);
 
           if (runStatus.status === 'completed') {
             clearInterval(intervalId);
@@ -218,10 +219,10 @@ export class AssistantService {
       // Wrap the Observable in a Promise
       const response = await firstValueFrom(this.http.get(url)).then(()=>{
         this.userService.removeThread(threadId).then((data: any)=>{
-          console.log('updated user profile', this.userService.userThreads())
+          // console.log('updated user profile', this.userService.userThreads())
           const threads = this.userService.userThreads();
           const activeThreadDeleted = threads?.find((thread)=>thread.thread_id === threadId);
-          // console.log('active thread present', activeThreadDeleted)
+          // // console.log('active thread present', activeThreadDeleted)
           if(threads?.length === 0 || threads === null || threads === undefined) {
             this.router.navigateByUrl('assistant');
           }

@@ -5,6 +5,7 @@ import { NgIconComponent } from '@ng-icons/core';
 import { MarkdownPipe } from "../../../shared/pipes/markdown.pipe";
 import { UserService } from '../../../core/auth/user.service';
 import { AssistantService } from '../../services/assistant.service';
+import { LiveMessage } from '../../models/chat.model';
 
 @Component({
     selector: 'app-message-bubble',
@@ -15,6 +16,8 @@ import { AssistantService } from '../../services/assistant.service';
 })
 export class MessageBubbleComponent implements OnInit, OnChanges {
   @Input() message!: Message;
+  @Input() liveMessage!: LiveMessage | null;
+
   chatService = inject(AssistantService)
 
   constructor(private userService: UserService) {
@@ -30,9 +33,11 @@ export class MessageBubbleComponent implements OnInit, OnChanges {
   }
 
   likeMessage(liked: 1 | 2) {
-    this.message.liked = liked;
-    this.userService.updateMessage(this.message.thread_id!, this.message.id!, 'liked', liked)
+    try {
+      this.liveMessage!.liked = liked;
+      this.userService.updateLiveMessage(this.liveMessage!.thread_id!, this.liveMessage!.id!, 'liked', liked)
+    } catch (error) {
+      throw error
+    }
   }
-
-
 }

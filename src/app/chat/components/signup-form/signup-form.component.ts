@@ -50,7 +50,7 @@ export class SignupFormComponent {
   }
 
   onSubmit(): void {
-    console.log(this.signupForm.value);
+    // console.log(this.signupForm.value);
 
     const email: string = this.signupForm.get('email')!.value.trim();
     const password: string = this.signupForm.get('password')!.value.trim();
@@ -66,9 +66,9 @@ export class SignupFormComponent {
 
 
     if (this.signupForm.valid) {
-      console.log(this.signupForm.value);
+      // console.log(this.signupForm.value);
       // createUserWithEmailAndPassword(this.auth, email, password).then((data)=> {
-      //   console.log('signup', data);
+      //   // console.log('signup', data);
       //   this.uid = data.user.uid
       //   this.userService.createUserProfile(this.uid, email).then(()=>{
       //     this.userService.updateUser(this.uid ?? '', 'first_name', firstName)
@@ -76,7 +76,7 @@ export class SignupFormComponent {
       //       this.userService.updateUser(this.uid ?? '', 'last_name', lastName)
       //     })
       //   })
-      //   // console.log('email', this.auth.currentUser?.email);
+      //   // // console.log('email', this.auth.currentUser?.email);
       // }).catch(error => {
       //   alert('error creating account')
       // })

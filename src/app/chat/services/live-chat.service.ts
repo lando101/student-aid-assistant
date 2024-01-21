@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Chat } from '../components/live-chat/live-chat.component';
+import { OpenAIMesg } from '../models/chat.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +21,9 @@ export class LiveChatService {
     this.webSocket = new WebSocket('ws://localhost:3000/api/chat');
 
     this.webSocket.onmessage = (event) => {
-      // console.log('event', event.data)
+      // // console.log('event', event.data)
       // this.messagesSubject.next(event.data);
-      console.log('WebSocket message event:', event.data);
+      // console.log('WebSocket message event:', event.data);
 
       try {
         // Parse the JSON string to an object
@@ -40,15 +41,15 @@ export class LiveChatService {
     };
 
     this.webSocket.onopen = () => {
-      console.log('WebSocket connection established');
+      // console.log('WebSocket connection established');
     };
 
     this.webSocket.onclose = () => {
-      console.log('WebSocket connection closed');
+      // console.log('WebSocket connection closed');
     };
   }
 
-  sendMessage(message: Chat[]): void {
+  sendMessage(message: OpenAIMesg[]): void {
     if (this.webSocket && this.webSocket.readyState === WebSocket.OPEN) {
       const messageObject = { role: "user", content: message };
       this.webSocket.send(JSON.stringify(message));

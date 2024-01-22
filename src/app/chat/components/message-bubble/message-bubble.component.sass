@@ -1,12 +1,12 @@
 
 .liked
-  @apply opacity-100 #{!important}
+  @apply opacity-100 drop-shadow-md #{!important}
   ng-icon
     ::ng-deep svg
       @apply fill-neutral-800 text-neutral-800 #{!important}
 
 .disliked
-  @apply opacity-100 #{!important}
+  @apply opacity-100 drop-shadow-md #{!important}
   ng-icon
     ::ng-deep svg
       @apply fill-neutral-800 text-neutral-800 #{!important}
@@ -15,13 +15,18 @@
   width: 100%
 
 .assistant-message
-  @apply rounded-tl-none bg-neutral-50 dark:text-neutral-200 dark:bg-neutral-800 dark:border-neutral-700 shadow-sm shadow-neutral-200 dark:shadow-neutral-950
+  @apply rounded-tl-none bg-neutral-50 dark:text-neutral-200 dark:bg-neutral-800 dark:border-neutral-700 shadow-sm shadow-neutral-300 dark:shadow-neutral-950
   min-height: 72px
   min-width: 240px
 
 
+// .user-message
+//   @apply rounded-tr-none bg-lime-200 dark:bg-neutral-900 text-black shadow-sm shadow-lime-800 dark:shadow-neutral-950
+//   // min-height: 72px
+//   // min-width: 240px
+
 .user-message
-  @apply rounded-tr-none bg-blue-600 dark:bg-neutral-900 text-neutral-200 shadow-sm shadow-blue-300 dark:shadow-neutral-950
+  @apply rounded-tr-none bg-indigo-600 dark:bg-neutral-900 text-white shadow-sm shadow-indigo-900 dark:shadow-neutral-950
   // min-height: 72px
   // min-width: 240px
 

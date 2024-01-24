@@ -9,9 +9,10 @@
   </div>
   <section class="flex-col items-center hidden lg:flex">
     <div class="text-center mb-3 w-full">
-      <h6 class="font-bold text-gray-800 dark:text-neutral-300 text-lg">A few recommendations</h6>
+      <h6 class="font-bold text-gray-700 dark:text-neutral-300 text-lg">Choose an assistant</h6>
+      <!-- <p class="text-sm text-gray-800 font-semibold">Select an assistant below</p> -->
     </div>
-    <div class="flex flex-col gap-2 max-w-3xl text-base">
+    <!-- <div class="flex flex-col gap-2 max-w-3xl text-base">
       <button class="prompt-button flex gap-4 items-start">
         <div class="number">1</div>
         <div class="courier-text text-left">What are the different types of student aid available, and how do they
@@ -35,8 +36,12 @@
         <div class="courier-text text-left">How is the Expected Family Contribution (EFC) calculated, and how does it
           affect the amount of aid I am eligible for?</div>
       </button>
+    </div> -->
+    <div class="flex gap-4 px-1">
+      @for (assistant of assistants; track $index) {
+        <app-assistant-card [assistant]="assistant" [activeAssistant]="selectedAssistant" (assistantRef)="setId($event)"></app-assistant-card>
+      }
     </div>
-
   </section>
 </div>
 

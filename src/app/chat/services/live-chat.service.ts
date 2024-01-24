@@ -1,5 +1,5 @@
 
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Chat } from '../components/live-chat/live-chat.component';
 import { OpenAIMesg } from '../models/chat.model';
@@ -11,6 +11,7 @@ export class LiveChatService {
   private webSocket: WebSocket | undefined;
   private messagesSubject: Subject<string>;
   public messages$: Observable<any>;
+  public messagesLoading = signal(false);
 
   constructor() {
     this.messagesSubject = new Subject<any>();

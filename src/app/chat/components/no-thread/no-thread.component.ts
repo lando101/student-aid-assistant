@@ -7,6 +7,9 @@ import { NgxTypedJsComponent, NgxTypedJsModule } from 'ngx-typed-js';
 import { NgIconComponent } from '@ng-icons/core';
 import { Thread } from '../../models/thread.model';
 import { Router } from '@angular/router';
+import { Assistant } from '../../models/assistant.model';
+import { LiveChatService } from '../../services/live-chat.service';
+import { UserService } from '../../../core/auth/user.service';
 
 @Component({
     selector: 'app-no-thread',
@@ -17,7 +20,9 @@ import { Router } from '@angular/router';
 })
 export class NoThreadComponent implements OnInit {
   chatService = inject(AssistantService)
+  userService = inject(UserService)
   placeholders: string[] = []
+  assistant: Assistant | null = null;
   @ViewChild('typed') typed!: NgxTypedJsComponent;
   @ViewChild('inputbox') inputBox!: ElementRef;
 
@@ -46,6 +51,18 @@ export class NoThreadComponent implements OnInit {
           this.chatService.initThreadMsg.set(message)
           this.nav.navigateByUrl(url);
         }
+      })
+    }
+  }
+
+  createLiveThread(message: string) {
+    if(message) {
+      this.userService.addLiveThread(null, this.assistant?.id ?? 'gen_stdnt_aid').then((threadId: string)=>{
+        setTimeout(() => {
+          const url = `assistant/${threadId}`;
+          this.chatService.initThreadMsg.set(message)
+          this.nav.navigateByUrl(url);
+        }, 150);
       })
     }
   }

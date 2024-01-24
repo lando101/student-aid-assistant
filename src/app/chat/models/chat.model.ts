@@ -9,6 +9,7 @@ export interface LiveThread {
   user_feedback: string | null;
   last_message: string | null;
   thread_length: number | null;
+  assistant_type?: string | null;
   uid: string | null;
   created: boolean | null;
   deleted: boolean | null;

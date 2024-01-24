@@ -10,13 +10,13 @@
      </span>
       <ul class="flex-nowrap gap-4 -mb-1 hidden md:flex">
         <li class="nav-item">
-          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" [routerLink]="'/assistant'" [routerLinkActive]="'active'">Assistant</a>
+          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" (click)="navigate('/assistant')" [routerLinkActive]="'active'">Assistant</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" [routerLink]="'/about'" routerLinkActive="active">About</a>
+          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" (click)="navigate('/about')" routerLinkActive="active">About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" [routerLink]="'/contact'" routerLinkActive="active">Contact</a>
+          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" (click)="navigate('/contact')" routerLinkActive="active">Contact</a>
         </li>
       </ul>
     </div>
@@ -82,9 +82,9 @@
         <div class="flex flex-col">
           <p class="font-bold dark:text-neutral-500">Navigation</p>
           <div class=" flex flex-col gap-3">
-            <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" [routerLink]="'/home'" [routerLinkActive]="'active'">Assistant</a>
-            <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" [routerLink]="'/about'" routerLinkActive="active">About</a>
-            <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" [routerLink]="'/contact'" routerLinkActive="active">Contact</a>
+            <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" (click)="navigate('/assistant')" [routerLinkActive]="'active'">Assistant</a>
+            <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" (click)="navigate('/about')" routerLinkActive="active">About</a>
+            <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold" (click)="navigate('/contact')" routerLinkActive="active">Contact</a>
           </div>
         </div>
         <div>
@@ -103,3 +103,16 @@
     </div>
   </div>
 </p-sidebar>
+
+<p-toast #toast position="top-center" [life]="7000" [hideTransformOptions]="'translateY(-200px)'" [showTransformOptions]="'translateY(-200px)'" [preventOpenDuplicates]="true">
+  <ng-template pTemplate="headless" let-closeFn="closeFn">
+    <div role="alert" class="d-alert shadow-lg bg-white">
+      <span class="d-loading d-loading-dots d-loading-md"></span>
+      <div>
+        <div class="font-bold text-base">Assistant responding!</div>
+        <div class="text-xs">One sec while the assistant finishes.</div>
+      </div>
+      <button class="d-btn d-btn-sm bg-neutral-900 hover:bg-neutral-800 text-white" (click)="close()">Dismiss</button>
+    </div>
+  </ng-template >
+</p-toast>

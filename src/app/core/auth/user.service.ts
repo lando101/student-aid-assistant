@@ -158,7 +158,7 @@ export class UserService {
 // EVERYTHING BELOW IS FOR OPENAI CHAT
 
   // add threads to user profile
-  async addLiveThread(thread: LiveThread | null) {
+  async addLiveThread(thread: LiveThread | null, assistant_type?: string | null) {
     const docRef = await addDoc(collection(this.firestore, 'users', this.user.uid, 'live_threads'), {
       thread_name: 'new thread',
       creation_date: new Date().toISOString(),
@@ -167,7 +167,8 @@ export class UserService {
       thread_length: 0,
       last_message: null,
       model: null,
-      user_feedback: null
+      user_feedback: null,
+      assistant_type: assistant_type ? assistant_type : null
     })
 
     const id = docRef.id;

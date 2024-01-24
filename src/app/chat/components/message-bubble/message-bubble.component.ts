@@ -5,7 +5,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { MarkdownPipe } from "../../../shared/pipes/markdown.pipe";
 import { UserService } from '../../../core/auth/user.service';
 import { AssistantService } from '../../services/assistant.service';
-import { LiveMessage } from '../../models/chat.model';
+import { LiveMessage, LiveThread } from '../../models/chat.model';
 import { FormsModule } from '@angular/forms';
 import { featherCheckCircle } from '@ng-icons/feather-icons';
 
@@ -24,6 +24,7 @@ import { featherCheckCircle } from '@ng-icons/feather-icons';
 export class MessageBubbleComponent implements OnInit, OnChanges {
   @Input() message!: Message;
   @Input() liveMessage!: LiveMessage | null;
+  @Input() thread: LiveThread | null = null;
   @ViewChild('textArea') textArea: ElementRef | null = null
 
   isPanelOpen: boolean = false;

@@ -1,6 +1,27 @@
 <div *ngIf="liveMessage && liveMessage.message" class="flex flex-col" [ngClass]="{'items-end': liveMessage.role !== 'assistant'}">
   <div class="flex gap-1 items-center capitalize drop-shadow-md shadow-gray-200 font-bold dark:text-neutral-400 mb-1">
-    <ng-icon *ngIf="liveMessage.role === 'assistant'" class="ml-1 " [size]="'20px'" name="cssBot"></ng-icon>{{liveMessage.role === 'assistant' ? 'aid assistant': 'you'}}
+    @if (liveMessage.role === 'assistant') {
+      <div class="flex gap-1 items-center">
+        @if (thread?.assistant_type === 'gen_stdnt_aid') {
+          <img class="w-7 h-7" src="../assets/images/books.webp">
+          General Aid Assistant
+        }
+        @else if (thread?.assistant_type === 'fafsa') {
+          <img class="w-7 h-7" src="../assets/images/form.webp">
+          FAFSA Assistant
+        } @else if (thread?.assistant_type === 'college_explorer') {
+          <img class="w-7 h-7" src="../assets/images/school_house.webp">
+          College Explorer Assistant
+        } @else if (thread?.assistant_type === 'loan_forg') {
+          <img class="w-7 h-7" src="../assets/images/loans_2.webp">
+          Loans Assistant
+        }
+      </div>
+    } @else {
+      You
+    }
+    <!-- <ng-icon *ngIf="liveMessage.role === 'assistant'" class="ml-1 " [size]="'20px'" name="cssBot"></ng-icon>
+    {{liveMessage.role === 'assistant' ? 'aid assistant': 'you'}} -->
   </div>
   <div class="message-width ml-7 flex gap-2">
     <div>

@@ -20,6 +20,7 @@ import { AssistantComponent } from '../../../pages/assistant/assistant.component
 import { Threads } from '../../models/user_profile.model';
 import { PrettyDatePipe } from '../../../shared/pipes/pretty-date.pipe';
 import { LiveMessage, LiveThread } from '../../models/chat.model';
+import { LiveChatService } from '../../services/live-chat.service';
 @Component({
     selector: 'app-message-list',
     standalone: true,
@@ -72,10 +73,10 @@ export class MessageListComponent implements OnInit, OnChanges {
 
   private userService = inject(UserService);
   private orderPipe = inject(OrderByPipe);
-  private chatService = inject(AssistantComponent);
+  private chatService = inject(LiveChatService);
   private cdr = inject(ChangeDetectorRef)
 
-  messageLoading = this.chatService.messageLoading
+  messageLoading = this.chatService.messagesLoading;
 
   private messagesSubscription!: Subscription;
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CredentialsService } from '../../../core/auth/credentials.service';
 import { Router, RouterModule } from '@angular/router';
@@ -20,25 +20,32 @@ import { AuthenticationService } from '../../../core/authentication/authenticati
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { LiveChatService } from '../../../chat/services/live-chat.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, SplitButtonModule, RatingModule, FormsModule, SelectButtonModule, NgIconComponent, MenuModule, SidebarModule, MatMenuModule, MatButtonModule, MatIconModule ],
+  providers: [MessageService],
+  imports: [CommonModule, RouterModule, ButtonModule, SplitButtonModule, RatingModule, FormsModule, SelectButtonModule, NgIconComponent, MenuModule, SidebarModule, MatMenuModule, MatButtonModule, MatIconModule, ToastModule ],
   viewProviders: [provideIcons({ cssSun, cssMoon, cssMenu })],
   templateUrl: './header.component.html',
   styleUrl: './header.component.sass'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   stateOptions: any[] = [{label: '', value: 'off'}, {label: 'On', value: 'on'}];
   items: MenuItem[] | undefined;
   sidebarVisible: boolean = false;
+  messageService = inject(MessageService)
+  chatService = inject(LiveChatService)
 
   theme: string = 'light';
   currentUser: User | null = null;
   value!: number;
+  messageLoading = this.chatService.messagesLoading;
 
-  constructor(private auth: AuthService, private userService: UserService, private themeService: ThemeService, private authService: AuthenticationService) {
+  constructor(private nav: Router, private auth: AuthService, private userService: UserService, private themeService: ThemeService, private authService: AuthenticationService) {
     // this.userService.$user.subscribe((user)=>{
     //   this.currentUser = user;
     //   // // console.log('header', this.currentUser)
@@ -100,11 +107,32 @@ export class HeaderComponent {
   ];
   }
 
+  ngOnInit(): void {
+
+  }
+
   toggleTheme(){
     // if(this.theme === 'dark'){
     //   this.themeService.setTheme('dark')
     // }
     this.themeService.setTheme(this.theme === 'light' ? 'dark':'light')
+  }
+
+  navigate(url?: string){
+    if(!this.messageLoading()) {
+      if(url){
+        // this.chatService.activeThread.set(thread ?? null)
+        this.nav.navigateByUrl(url)
+      } else {
+        this.nav.navigateByUrl('/assistant')
+      }
+    } else {
+      this.messageService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
+    }
+  }
+
+  close() {
+    this.messageService.clear();
   }
 
   logOut(){

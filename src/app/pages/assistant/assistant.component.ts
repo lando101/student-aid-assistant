@@ -31,11 +31,16 @@ import { Message } from '../../chat/models/message.model';
 import { DeleteDialogComponent } from '../../chat/components/dialogs/delete-dialog/delete-dialog.component';
 import { Thread } from '../../chat/models/thread.model';
 import { LiveThread } from '../../chat/models/chat.model';
+import { LiveChatService } from '../../chat/services/live-chat.service';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+
+
 
 @Component({
   selector: 'app-assistant',
   standalone: true,
-  providers: [HttpClientModule, OrderByPipe],
+  providers: [HttpClientModule, OrderByPipe, MessageService],
   animations: [
     trigger('listAnimationTest', [
         transition('* => *', [
@@ -128,7 +133,8 @@ import { LiveThread } from '../../chat/models/chat.model';
     SelectButtonModule,
     FormsModule,
     NgPipesModule,
-    NgxTypedJsModule
+    NgxTypedJsModule,
+    ToastModule,
   ],
   templateUrl: './assistant.component.html',
   styleUrl: './assistant.component.sass'
@@ -138,9 +144,11 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('drawer') drawer!: MatDrawer;
 
   chatService = inject(AssistantService);
+  liveChatService = inject(LiveChatService);
   userService = inject(UserService);
   router = inject(ActivatedRoute);
   dialog = inject(MatDialog);
+  messagingService = inject(MessageService);
   resizeSubscription: Subscription = new Subscription();
 
   threads: Threads[] = [];
@@ -156,7 +164,8 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
   stateOptions: any[] = [{label: 'Recent', value: 'last_updated'}, {label: 'Oldest', value: '-last_updated'}];
   value: string = 'last_updated';
 
-  messageLoading: Signal<boolean> = computed(()=>this.chatService.messageLoading());
+  // messageLoading: Signal<boolean> = computed(()=>this.chatService.messageLoading());
+  messagesLoading = this.liveChatService.messagesLoading
 
   constructor(private nav: Router){
 
@@ -252,6 +261,23 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // navCancelled(): void {
+  //     const dialogRef = this.dialog.open(DeleteDialogComponent, {
+  //       data: {
+  //         thread_name: thread.thread_name,
+  //         thread_id: thread.thread_id,
+  //         creation_date: thread.creation_date,
+  //       },
+  //     });
+
+  //     dialogRef.afterClosed().subscribe((result: boolean) => {
+  //       // // console.log('The dialog was closed');
+  //       if (result === true) {
+  //         this.deleteThread(thread.thread_id ?? '');
+  //       }
+  //     });
+  // }
+
   private setupResizeListener() {
     const element = this.body;
 
@@ -321,8 +347,21 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
-  setActiveThread(thread: LiveThread){
-    this.chatService.activeThread.set(thread ?? null)
+  setActiveThread(thread?: LiveThread){
+    if(!this.messagesLoading()) {
+      if(thread){
+        this.chatService.activeThread.set(thread ?? null)
+        this.nav.navigateByUrl(`/assistant/${thread.thread_id}`)
+      } else {
+        this.nav.navigateByUrl('/assistant')
+      }
+    } else {
+      this.messagingService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
+    }
+  }
+
+  close() {
+    this.messagingService.clear();
   }
 
   ngOnDestroy(): void {

@@ -77,6 +77,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
   firebaseMessagesLoading: boolean = false;
   $messages!: Subscription;
   messagesLoading: boolean = true;
+  $messageLoading = this.liveChatService.messagesLoading
 
   placeholders: string[] = []
 
@@ -144,6 +145,8 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
                       this.userService.updateLiveThread(this.activeLiveThread!.thread_id!, 'thread_length', (this.liveMsgs ? this.liveMsgs!.length : 0))
                     })
                   }
+                }).finally(()=>{
+                  this.liveChatService.messagesLoading.set(false);
                 });
               }
             }
@@ -164,6 +167,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     setTimeout(() => {
       if(initMsg) {
         this.createLiveMessage(initMsg);
+        this.initMsg.set(null)
       }
     }, 2000);
   }
@@ -199,6 +203,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
 
   // create live message
   createLiveMessage(content: string){
+    this.liveChatService.messagesLoading.set(true);
     this.chatbox!.nativeElement.value = ''
     const message: LiveMessage = {
       id: null,

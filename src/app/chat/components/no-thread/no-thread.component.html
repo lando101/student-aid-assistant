@@ -1,13 +1,13 @@
 <!-- <p>no-thread works!</p> -->
 <div class="h-full">
   <div class="flex prompt-container w-full relative justify-center items-center">
-    <app-example-prompts></app-example-prompts>
+    <app-example-prompts (assistantOutput)="assistant = $event"></app-example-prompts>
   </div>
 </div>
 <!-- <app-loader></app-loader> -->
 <div>
     <div class="flex items-center gap-2 pb-3 absolute bottom-16 w-full animate__fadeInUp animate__animated animate__faster animate__delay-1s">
-      <app-prompts-carousel class="w-full" (searchString)="createNewThread($event)" (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
+      <app-prompts-carousel class="w-full" (searchString)="createLiveThread($event)" (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
     </div>
 </div>
 <div class="flex items-center gap-2 pb-3 absolute bottom-0 w-full prompt-box">
@@ -18,7 +18,7 @@
       class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full"
       #inputbox type="text">
   </ngx-typed-js>
-  <button (click)="createNewThread(inputbox.value)" class="d-btn d-btn-circle bg-indigo-600 hover:bg-indigo-700 text-neutral-100 border-0">
+  <button (click)="createLiveThread(inputbox.value)" class="d-btn d-btn-circle bg-indigo-600 hover:bg-indigo-700 text-neutral-100 border-0">
     <ng-icon [size]="'24px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
   </button>
 </div>

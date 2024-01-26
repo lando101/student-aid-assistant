@@ -33,6 +33,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LiveMessage, LiveThread, OpenAIMesg } from '../../models/chat.model';
 import { LiveChatService } from '../../services/live-chat.service';
 import { ChatCompletionResponse } from '../../models/chatcompletion.model';
+import { QuestionsCarouselComponent } from "../questions-carousel/questions-carousel.component";
 
 @Component({
     selector: 'app-thread-window',
@@ -40,7 +41,7 @@ import { ChatCompletionResponse } from '../../models/chatcompletion.model';
     templateUrl: './thread-window.component.html',
     styleUrl: './thread-window.component.sass',
     providers: [OrderByPipe],
-    imports: [CommonModule, NgIconComponent, MatIconModule, MessageListComponent, NgxTypedJsModule, LoaderComponent, ExamplePromptsComponent, PromptsCarouselComponent, NgPipesModule]
+    imports: [CommonModule, NgIconComponent, MatIconModule, MessageListComponent, NgxTypedJsModule, LoaderComponent, ExamplePromptsComponent, PromptsCarouselComponent, NgPipesModule, QuestionsCarouselComponent]
 })
 export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy{
   @ViewChild('chatbox') chatbox: ElementRef | null = null;
@@ -57,6 +58,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
   activeThread: Threads | null = null
   activeLiveThread: LiveThread | null = null
   private liveMesgSub!: Subscription;
+  questions: string[] | null = null;
 
   initMsg = this.chatService.initThreadMsg
   // initMsg = true
@@ -138,6 +140,10 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
 
                 let assistant_message = this.liveMsgs![this.liveMsgs!.length - 1]
 
+                // let questions = this.extractQuestions(this.chatHistory[this.chatHistory.length - 1].content);
+                // this.generateQuestions(this.chatHistory[this.chatHistory.length - 1].content)
+                // console.log('QUESTIONS', questions)
+
                 this.userService.addLiveMessage(assistant_message, false).then(()=>{
                   if(this.activeLiveThread?.thread_id && assistant_message.message){
                     this.userService.updateLiveThread(this.activeLiveThread?.thread_id, 'last_message', assistant_message.message)
@@ -178,6 +184,30 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
 
   imgLoaded(){
     this.showImg = true;
+  }
+
+//   extractQuestions(text: string): string[] {
+//     const questionsStartIndex = text.indexOf("Follow-up questions:");
+//     if (questionsStartIndex === -1) {
+//         return [];
+//     }
+
+//     const questionsText = text.substring(questionsStartIndex);
+//     const questionLines = questionsText.split('\n');
+
+//     return questionLines
+//         .slice(1) // Skip the "Follow-up questions:" line
+//         .map(line => line.trim())
+//         .filter(line => line.endsWith('?'));
+// }
+
+  generateQuestions() {
+    const lastMessage = this.chatHistory![this.chatHistory!.length - 1].content;
+
+    this.liveChatService.generateQuestions(lastMessage).then((questions)=>{
+      console.log('questions', JSON.parse(questions))
+      this.questions = JSON.parse(questions)
+    })
   }
 
   openDialog(thread: LiveThread | null): void {
@@ -233,7 +263,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
         this.chatHistory = this.chatHistory!.slice(-30);
     }
       console.log('chat history', this.chatHistory)
-      this.liveChatService.sendMessage(this.chatHistory!); // then sending message to open ai
+      this.liveChatService.sendMessage(this.chatHistory!, this.activeLiveThread?.assistant_type); // then sending message to open ai
       this.chatHistory!.push({role: 'assistant', content: ''}); // add slot for assistant response
       this.liveMsgs!.push({
         id: null,
@@ -289,6 +319,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
     this.threadId = null;
     this.init = true;
     this.showImg = false
+    this.questions = null;
     // this.$route.unsubscribe();
     this.liveChatService.disconnect();
     this.userSubscription.unsubscribe();

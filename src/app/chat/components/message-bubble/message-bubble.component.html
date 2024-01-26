@@ -39,7 +39,6 @@
           <p class="mb-0 text-gray-500 dark:text-neutral-600 font-bold text-xs py-2 w-full text-end">{{(liveMessage.time_stamp) | date:'short'}}</p>
         </div>
       </div>
-
       <div>
         <div *ngIf="isPanelOpen" [ngClass]="{'fade-out-bck': aniamte}" class="flex flex-col gap-3 feedback-container fade-in-fwd">
           <div class="flex flex-col gap-2">
@@ -51,9 +50,7 @@
             <button [disabled]="textArea.value.length === 0 || textArea.value === null" [ngClass]="{'bg-gray-400 hover:bg-gray-400 !cursor-not-allowed': textArea.value.length === 0}" class="d-btn bg-blue-600 max-w-48 text-white border-none hover:bg-blue-700 w-full" (click)="submitFeedback()">Submit</button>
             <button class="d-btn bg-gray-300 text-black max-w-40 border-none hover:bg-gray-400" (click)="closePanel()">Dimiss</button>
           </div>
-
       </div>
-
       <p *ngIf="showThankYouMessage" [ngClass]="{'text-fade-out-bck': aniamteThanks}" class="text-fade-in-fwd text-sm text-gray-700 font-medium flex gap-1 items-center">
         <ng-icon class="text-emerald-600" [strokeWidth]="3" name="featherCheckCircle"></ng-icon>
         Thanks for your feedback!

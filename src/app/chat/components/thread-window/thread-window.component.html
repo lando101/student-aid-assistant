@@ -1,10 +1,10 @@
 <div class="h-full">
   <div class="flex absolute gap-3 w-full top-0 backdrop-blur-xl z-10 bg-gradient-to-b from-gray-200 to-[#e5e7eba8] dark:from-neutral-950 dark:to-[#0a0a0a82]">
     <div class="w-full flex justify-center">
-      <div class="flex justify-between items-center w-full flex-wrap max-w-screen-lg pb-4 border-b border-gray-300 dark:border-neutral-800">
+      <div class="flex justify-between items-center w-full flex-wrap max-w-screen-lg pb-2 border-b border-gray-300 dark:border-neutral-800">
         <div class="flex items-center gap-3">
           <div class="hidden md:block">
-            <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-1">THREAD ID</p>
+            <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-0">THREAD ID</p>
             <div
               class="text-sm text-gray-700 dark:text-neutral-400 font-semibold uppercase mb-0 flex items-center gap-2 ">
               <div class="truncate w-36">{{activeLiveThread?.thread_id}}</div>
@@ -33,7 +33,7 @@
         <div class="flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg scroller-messages">
           @if (!messagesLoading) {
             @if (liveMsgs?.length ?? 0 > 0) {
-              <app-message-list class="animate_up" [liveMessages]="liveMsgs" [liveThread]="activeLiveThread"></app-message-list>
+              <app-message-list (generateQuestions)="generateQuestions()" [questions]="questions" class="animate_up" [liveMessages]="liveMsgs" [liveThread]="activeLiveThread"></app-message-list>
             } @else {
               <!-- <div class="mt-28">no messages</div> -->
             <div class="w-full flex flex-col justify-center items-center h-full -mt-44">
@@ -76,24 +76,38 @@
     </div>
   }
 
+
 </div>
 
-<div class="flex items-center gap-2 pb-3 absolute bottom-0 w-full prompt-box px-2 md:px-0">
-  <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
-    [showCursor]="false" [strings]="placeholders">
-    <!-- <input #chatbox [disabled]="messageLoading"
-      [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'"
-      class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full shadow-sm shadow-neutral-300"
-      #inputbox type="text"> -->
-      <input #chatbox [disabled]="messageLoading"
-      [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'"
-      class="typing h-12 px-3 border-none font-medium dark:placeholder-neutral-600 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full shadow-sm !shadow-neutral-100"
-      #inputbox type="text">
-  </ngx-typed-js>
-  @if ($messageLoading()) {
-    <span class="d-loading d-loading-dots d-loading-md absolute right-20"></span>
-  }
-  <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" (click)="createLiveMessage(inputbox.value)" class="d-btn d-btn-circle bg-indigo-600 hover:bg-indigo-700 text-neutral-100 border-0 !shadow-md !shadow-indigo-300">
-    <ng-icon [size]="'24px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
-  </button>
+<div class="flex flex-col items-center pb-3 absolute bottom-0 w-full prompt-box px-2 md:px-0">
+  <!-- <div class="flex items-center gap-2 pb-3 w-full animate__fadeInUp animate__animated animate__faster animate__delay-1s">
+    <app-questions-carousel class="w-full" [questions]="questions"></app-questions-carousel>
+  </div> -->
+  <div class="flex items-center gap-2 w-full">
+    @if (questions) {
+      @if(questions.length > 0){
+
+      }
+    }
+
+
+    <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
+      [showCursor]="false" [strings]="placeholders">
+      <!-- <input #chatbox [disabled]="messageLoading"
+        [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'"
+        class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full shadow-sm shadow-neutral-300"
+        #inputbox type="text"> -->
+        <input #chatbox [disabled]="messageLoading"
+        [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'"
+        class="typing h-12 px-3 border-none font-medium dark:placeholder-neutral-600 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full shadow-sm !shadow-neutral-100"
+        #inputbox type="text">
+    </ngx-typed-js>
+    @if ($messageLoading()) {
+      <span class="d-loading d-loading-dots d-loading-md absolute right-20"></span>
+    }
+    <button [disabled]="messageLoading" [ngClass]="{'bg-gray-500': messageLoading}" (click)="createLiveMessage(inputbox.value)" class="d-btn d-btn-circle bg-indigo-600 hover:bg-indigo-700 text-neutral-100 border-0 !shadow-md !shadow-indigo-300">
+      <ng-icon [size]="'24px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
+    </button>
+  </div>
 </div>
+

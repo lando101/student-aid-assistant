@@ -1,0 +1,75 @@
+<!-- <div class="relative flex justify-center items-center max-w-screen-lg">
+    <div class="absolute w-full bottom-1">
+      <div class="flex w-full justify-between items-center">
+        <div class="flex gap-2 justify-end mb-1 text-neutral-900 dark:text-neutral-300 w-full">
+          <button [disableRipple]="true" [disabled]="owlCar.navData?.prev?.disabled" class="flex items-center justify-center" mat-icon-button (click)="owlCar.prev()">
+            <mat-icon class="!flex items-center justify-center">
+              <ng-icon [size]="'20px'" name="featherArrowLeft"></ng-icon>
+            </mat-icon>
+          </button>
+          <button [disableRipple]="true" [disabled]="owlCar.navData?.next?.disabled" class="flex items-center justify-center" mat-icon-button (click)="owlCar.next()">
+            <mat-icon class="!flex items-center justify-center">
+              <ng-icon [size]="'20px'" name="featherArrowRight"></ng-icon>
+            </mat-icon>
+          </button>
+        </div>
+      </div>
+      <div *ngIf="!owlCar.navData?.next?.disabled" class="right-guard"></div>
+      <div *ngIf="!owlCar.navData?.prev?.disabled" class="left-guard"></div>
+
+
+      <div #container class="overflow-hidden">
+        <owl-carousel-o (dragging)="dragging = $event.dragging" [options]="customOptions" #owlCar>
+          <ng-container *ngFor="let question of questionss">
+            <ng-template [width]="(question!.length * 7.4) + 24" carouselSlide>
+              <div class="mb-2 h-9">
+                <button [disabled]="dragging" (mouseenter)="promptHover(question!)" (mouseleave)="promptHover('')" (click)="usePrompt(question)" class="prompt-button h-full">
+                  <div class="text-left flex flex-col items-start justify-between h-100 py-0">
+                    <p class="mb-0 text-sm font-semibold flex justify-start items-center h-full truncate">{{ question }}</p>
+                  </div>
+                </button>
+              </div>
+            </ng-template>
+          </ng-container>
+        </owl-carousel-o>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="relative flex justify-center items-center max-w-screen-lg">
+    <!-- <p class="text-sm font-medium dark:text-neutral-500 mb-1 text-center">Try out a common question</p> -->
+      <div class="w-full flex">
+        <div #container class="overflow-hidden">
+          <owl-carousel-o (dragging)="dragging = $event.dragging" [options]="customOptions" #owlCar>
+            <ng-container *ngFor="let question of questionss">
+              <ng-template [width]="(question!.length * 7.4) + 24" carouselSlide>
+                <div class="mb-2 h-9">
+                  <button [disabled]="dragging" (mouseenter)="promptHover(question!)" (mouseleave)="promptHover('')" (click)="usePrompt(question)" class="prompt-button h-full">
+                    <div class="text-left flex flex-col items-start justify-between h-100 py-0">
+                      <!-- <p class="mb-0 text-xs font-semibold opacity-65">{{ prompt.title }}</p> -->
+                      <p class="mb-0 text-sm font-semibold flex justify-start items-center h-full truncate">{{ question }}</p>
+                    </div>
+                  </button>
+                </div>
+              </ng-template>
+            </ng-container>
+          </owl-carousel-o>
+        </div>
+        <!-- <div class="flex justify-between items-center">
+          <div class="flex gap-2 justify-end mb-1 text-neutral-900 dark:text-neutral-300 w-full">
+            <button [disableRipple]="true" [disabled]="owlCar.navData?.prev?.disabled" class="flex items-center justify-center" mat-icon-button (click)="owlCar.prev()">
+              <mat-icon class="!flex items-center justify-center">
+                <ng-icon [size]="'20px'" name="featherArrowLeft"></ng-icon>
+              </mat-icon>
+            </button>
+            <button [disableRipple]="true" [disabled]="owlCar.navData?.next?.disabled" class="flex items-center justify-center" mat-icon-button (click)="owlCar.next()">
+              <mat-icon class="!flex items-center justify-center">
+                <ng-icon [size]="'20px'" name="featherArrowRight"></ng-icon>
+              </mat-icon>
+            </button>
+          </div>
+        </div> -->
+        <div *ngIf="!owlCar.navData?.next?.disabled" class="right-guard"></div>
+        <div *ngIf="!owlCar.navData?.prev?.disabled" class="left-guard"></div>
+      </div>
+    </div>

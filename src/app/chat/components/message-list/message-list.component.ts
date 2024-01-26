@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { Message } from '../../models/message.model';
 import { CommonModule } from '@angular/common';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { cssInfo, cssBot, cssUser } from '@ng-icons/css.gg';
-import { featherThumbsUp, featherThumbsDown } from '@ng-icons/feather-icons';
+import { featherThumbsUp, featherThumbsDown, featherPlayCircle } from '@ng-icons/feather-icons';
 
 import { trigger, style, transition, animate, query, stagger, keyframes } from '@angular/animations';
 
@@ -21,11 +21,12 @@ import { Threads } from '../../models/user_profile.model';
 import { PrettyDatePipe } from '../../../shared/pipes/pretty-date.pipe';
 import { LiveMessage, LiveThread } from '../../models/chat.model';
 import { LiveChatService } from '../../services/live-chat.service';
+
 @Component({
     selector: 'app-message-list',
     standalone: true,
     providers: [OrderByPipe],
-    viewProviders: [provideIcons({ cssInfo, cssBot, cssUser, featherThumbsUp, featherThumbsDown })],
+    viewProviders: [provideIcons({ cssInfo, cssBot, cssUser, featherThumbsUp, featherThumbsDown, featherPlayCircle })],
     animations: [
         trigger('listAnimation', [
             transition('* => *', [
@@ -64,12 +65,14 @@ export class MessageListComponent implements OnInit, OnChanges {
   @ViewChild('sp') messageList!: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
+  @Output() generateQuestions = new EventEmitter<boolean>();
   @Input() messages: Message[] | null = null;
   @Input() liveMessages: LiveMessage[] | null = null;
   @Input() thread: Threads | null = null;
   @Input() liveThread: LiveThread | null = null;
   @Input() threadId: string = '';
   @Input() uid: string  = '';
+  @Input() questions: string[] | null = null;
 
   private userService = inject(UserService);
   private orderPipe = inject(OrderByPipe);
@@ -77,6 +80,8 @@ export class MessageListComponent implements OnInit, OnChanges {
   private cdr = inject(ChangeDetectorRef)
 
   messageLoading = this.chatService.messagesLoading;
+  questionsLoading: boolean = false;
+  questionsLoadingAnimated: boolean = false;
 
   private messagesSubscription!: Subscription;
 
@@ -95,21 +100,14 @@ export class MessageListComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes['liveMessages'].currentValue);
-
-    // const messages = changes['liveMessages'].currentValue;
-    // if(messages){
-    //   setTimeout(() => {
-    //     this.initialLoad = false;
-    //   }, 500);
-    // }
-    // if(changes['liveMessages'].currentValue){
-    //   const messages = changes['liveMessages'].currentValue;
-    //   // console.log('live messages changes',changes['liveMessages'].currentValue)
-    //   this.orderedMsgs = this.orderByPipe.transform(messages, 'time_stamp');
-    //   this.cdr.detectChanges();
-
-    // }
+    console.log(changes['questions'].currentValue);
+    const questions = changes['questions'].currentValue;
+    this.questionsLoadingAnimated = false;
+    if(questions){
+      setTimeout(() => {
+        this.questionsLoading = false;
+      }, 1000);
+    }
   }
 
   getMessageContainerHeight(): number {
@@ -126,6 +124,39 @@ export class MessageListComponent implements OnInit, OnChanges {
   //     this.messageList.scrollTop(this.getMessageContainerHeight());
   //   }
   // }
+
+  toggleLoading(){
+    this.questionsLoading = !this.questionsLoading;
+    this.questionsLoadingAnimated = !this.questionsLoadingAnimated;
+    setTimeout(() => {
+      this.questionsLoadingAnimated = !this.questionsLoadingAnimated;
+    }, 3000);
+
+    setTimeout(() => {
+      this.questionsLoading = !this.questionsLoading;
+    }, 4000);
+  }
+
+  qsLoading(){
+    if(this.questionsLoading === false){
+      this.questionsLoading = true;
+      this.questionsLoadingAnimated = true;
+    } else if(this.questionsLoading === true){
+      setTimeout(() => {
+        this.questionsLoadingAnimated = false;
+      }, 1000);
+
+      setTimeout(() => {
+        this.questionsLoading = false;
+      }, 4000);
+    }
+  }
+
+  getQuestions() {
+    this.generateQuestions.emit(true)
+    this.questionsLoading = true;
+    this.questionsLoadingAnimated = true;
+  }
 
   ngOnDestroy(): void {
     if (this.messagesSubscription) {

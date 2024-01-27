@@ -1,7 +1,7 @@
 <div *ngIf="liveMessage && liveMessage.message" class="flex flex-col" [ngClass]="{'items-end': liveMessage.role !== 'assistant'}">
-  <div class="flex gap-1 items-center capitalize drop-shadow-md shadow-gray-200 font-bold dark:text-neutral-400 mb-1">
+  <div class="flex gap-1 items-center capitalize drop-shadow-md shadow-gray-200 font-bold dark:text-neutral-400 mb-2">
     @if (liveMessage.role === 'assistant') {
-      <div class="flex gap-1 items-center">
+      <div class="flex gap-1 items-end">
         @if (thread?.assistant_type === 'gen_stdnt_aid') {
           <img class="w-7 h-7" src="../assets/images/books.webp">
           General Aid Assistant

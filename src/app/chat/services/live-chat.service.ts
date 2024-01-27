@@ -114,6 +114,25 @@ export class LiveChatService {
     }
   }
 
+  async generateTitle(content: string): Promise<any> {
+    const url = `${this.apiUrl}/generate-title`;
+
+    try {
+      const response = await firstValueFrom(
+        this.http.post<any>(url, { text: content }) // Send content as an object
+      );
+
+      console.log(response); // Log the response
+
+      // Assuming the response is an object and questions are in a property of this object
+      // Adjust this line based on the actual structure of your response
+      return response.message.content || [];
+    } catch (error) {
+      console.error(error);
+      throw error; // Rethrow the error to be handled by the caller
+    }
+  }
+
     // // 3) add messages to thread
     // async createMessage(thread_id: string, content: string): Promise<any> {
     //   let url = `${this.apiUrl}/createmessage/${thread_id}`;

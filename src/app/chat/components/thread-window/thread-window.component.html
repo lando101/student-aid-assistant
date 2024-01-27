@@ -4,11 +4,11 @@
       <div class="flex justify-between items-center w-full flex-wrap max-w-screen-lg pb-2 border-b border-gray-300 dark:border-neutral-800">
         <div class="flex items-center gap-3">
           <div class="hidden md:block">
-            <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-0">THREAD ID</p>
+            <p class="text-sm text-gray-600 dark:text-neutral-600 font-semibold mb-0">Thread name</p>
             <div
-              class="text-sm text-gray-700 dark:text-neutral-400 font-semibold uppercase mb-0 flex items-center gap-2 ">
-              <div class="truncate w-36">{{activeLiveThread?.thread_id}}</div>
-              <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button>
+              class="text-base text-gray-700 dark:text-neutral-400 font-semibold mb-0 flex items-center gap-2 ">
+              <div class="">{{activeLiveThread?.thread_name}}</div>
+              <!-- <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button> -->
             </div>
           </div>
         </div>
@@ -33,7 +33,7 @@
         <div class="flex flex-col gap-8 justify-between w-full h-full max-w-screen-lg scroller-messages">
           @if (!messagesLoading) {
             @if (liveMsgs?.length ?? 0 > 0) {
-              <app-message-list (generateQuestions)="generateQuestions()" [questions]="questions" class="animate_up" [liveMessages]="liveMsgs" [liveThread]="activeLiveThread"></app-message-list>
+              <app-message-list (selectedQuestion)="createLiveMessage($event)" (generateQuestions)="generateQuestions()" [questions]="questions" class="animate_up" [liveMessages]="liveMsgs" [liveThread]="activeLiveThread"></app-message-list>
             } @else {
               <!-- <div class="mt-28">no messages</div> -->
             <div class="w-full flex flex-col justify-center items-center h-full -mt-44">

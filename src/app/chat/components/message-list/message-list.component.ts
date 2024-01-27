@@ -62,10 +62,17 @@ import { LiveChatService } from '../../services/live-chat.service';
     imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule, MessageBubbleComponent, PrettyDatePipe, NgPipesModule]
 })
 export class MessageListComponent implements OnInit, OnChanges {
+  private userService = inject(UserService);
+  private orderPipe = inject(OrderByPipe);
+  private chatService = inject(LiveChatService);
+  private cdr = inject(ChangeDetectorRef)
+  
   @ViewChild('sp') messageList!: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
   @Output() generateQuestions = new EventEmitter<boolean>();
+  @Output() selectedQuestion = new EventEmitter<string>();
+
   @Input() messages: Message[] | null = null;
   @Input() liveMessages: LiveMessage[] | null = null;
   @Input() thread: Threads | null = null;
@@ -73,11 +80,7 @@ export class MessageListComponent implements OnInit, OnChanges {
   @Input() threadId: string = '';
   @Input() uid: string  = '';
   @Input() questions: string[] | null = null;
-
-  private userService = inject(UserService);
-  private orderPipe = inject(OrderByPipe);
-  private chatService = inject(LiveChatService);
-  private cdr = inject(ChangeDetectorRef)
+  
 
   messageLoading = this.chatService.messagesLoading;
   questionsLoading: boolean = false;
@@ -156,6 +159,11 @@ export class MessageListComponent implements OnInit, OnChanges {
     this.generateQuestions.emit(true)
     this.questionsLoading = true;
     this.questionsLoadingAnimated = true;
+  }
+
+  selectQuestion(question: string){
+    this.questions = null;
+    this.selectedQuestion.emit(question);
   }
 
   ngOnDestroy(): void {

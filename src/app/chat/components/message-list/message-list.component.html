@@ -14,7 +14,7 @@
             }
           </div>
           <div class="w-full flex justify-center pb-3">
-            @if (!questionsLoadingAnimated && !questions) {
+            @if (!questionsLoadingAnimated && !questions && !messageLoading()) {
               <button class="d-btn d-btn-md rounded-full fade-in-bottom delay-300" (click)="getQuestions()">
                   <ng-icon class="ml-1" [size]="'20px'" name="featherPlayCircle"></ng-icon>
                   Generate follow-up questions
@@ -24,14 +24,17 @@
                   <span class="d-loading d-loading-spinner w-5 h-5"></span>
                   Generating questions...
               </button>
-            } @else {
+            } @else if(questions) {
               <div class="flex flex-col gap-3 w-full items-center pt-7 fade-in-bottom">
                 <p class="text-xs font-semibold text-gray-700 mb-0">AI recommended questions</p>
-                @for (question of questions; track $index) {
-                  <button class="d-btn d-btn-sm bg-indigo-50 border-2 hover:bg-indigo-100 hover:border-indigo-400 border-indigo-300 max-w-md h-auto text-left py-2 px-3 leading-5 rounded-2xl">
-                    {{question}}
-                  </button>
-                }
+                <div class="flex flex-wrap gap-3 w-full items-center justify-center">
+                  @for (question of questions; track $index) {
+                    <button (click)="selectQuestion(question)" class="text-center text-nowrap d-btn d-btn-sm bg-indigo-50 border-2 hover:bg-indigo-100 hover:border-indigo-400 border-indigo-300 h-auto py-2 px-3 leading-5 rounded-2xl">
+                      {{question}}
+                    </button>
+                  }
+                </div>
+                
               </div>
             }
           </div>

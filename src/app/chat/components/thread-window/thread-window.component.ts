@@ -138,7 +138,15 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
                 this.liveMsgs![this.liveMsgs!.length - 1].animate = false; // letting animation finish
 
 
-                let assistant_message = this.liveMsgs![this.liveMsgs!.length - 1]
+                let assistant_message = this.liveMsgs![this.liveMsgs!.length - 1];
+
+                if(this.activeLiveThread?.thread_name === 'new thread' || this.activeLiveThread?.thread_name === null) {
+                  this.liveChatService.generateTitle(assistant_message.message ?? '').then((data: any)=>{
+                    if(this.activeLiveThread?.thread_id){
+                      this.userService.updateLiveThread(this.activeLiveThread?.thread_id, 'thread_name', JSON.parse(data))
+                    }
+                  })
+                }
 
                 // let questions = this.extractQuestions(this.chatHistory[this.chatHistory.length - 1].content);
                 // this.generateQuestions(this.chatHistory[this.chatHistory.length - 1].content)

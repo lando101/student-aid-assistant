@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { cssAirplane, cssTrashEmpty, cssCopy } from '@ng-icons/css.gg';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { AssistantCardComponent } from "../assistant-card/assistant-card.component";
 import { Assistant } from '../../models/assistant.model';
+import { LiveChatService } from '../../services/live-chat.service';
 
 @Component({
     selector: 'app-example-prompts',
@@ -14,9 +15,9 @@ import { Assistant } from '../../models/assistant.model';
     styleUrl: './example-prompts.component.sass',
     imports: [NgIconComponent, NgxTypedJsModule, CommonModule, AssistantCardComponent]
 })
-export class ExamplePromptsComponent implements OnInit {
+export class ExamplePromptsComponent implements OnInit, OnDestroy {
   @Output() assistantOutput = new EventEmitter<Assistant>();
-
+  liveChatService = inject(LiveChatService);
   typingAnimation = false;
   selectedAssistant: string | null = null;
 
@@ -52,11 +53,18 @@ export class ExamplePromptsComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-
   }
   setId(event: Assistant){
     console.log('event received', event)
     this.selectedAssistant = event.id;
-    this.assistantOutput.emit(event)
+    this.assistantOutput.emit(event);
+    if(event.id){
+      this.liveChatService.category.set(event.id);
+    }
   }
+
+  ngOnDestroy(): void {
+    this.liveChatService.category.set(null)
+  }
+
 }

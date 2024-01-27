@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { featherArrowLeft, featherArrowRight } from '@ng-icons/feather-icons';
 // import { CarouselModule } from 'primeng/carousel';
@@ -9,6 +9,8 @@ import { Subscription, debounceTime, fromEvent } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { LiveChatService } from '../../services/live-chat.service';
+import { FilterByPipe, NgPipesModule } from 'ngx-pipes';
 
 
 export interface Product {
@@ -29,6 +31,8 @@ export interface Prompt {
   title?: string;
   prompt?: string;
   description?: string;
+  assistant?: string;
+  width?: number;
 }
 @Component({
   selector: 'app-prompts-carousel',
@@ -39,7 +43,8 @@ export interface Prompt {
         featherArrowLeft
     }),
 ],
-  imports: [CarouselModule, CommonModule, NgIconComponent, MatButtonModule, MatIconModule],
+  providers: [FilterByPipe],
+  imports: [CarouselModule, CommonModule, NgIconComponent, MatButtonModule, MatIconModule, NgPipesModule],
   templateUrl: './prompts-carousel.component.html',
   styleUrl: './prompts-carousel.component.sass'
 })
@@ -52,6 +57,10 @@ export class PromptsCarouselComponent implements OnInit, AfterViewInit, OnDestro
 @Output() hoverString = new EventEmitter<string>();
 @Output() searchString = new EventEmitter<string>();
 
+
+liveChatService = inject(LiveChatService);
+category = this.liveChatService.category;
+
 dragging: boolean = false;
 private resizeSubscription!: Subscription;
 width!: string;
@@ -60,40 +69,90 @@ init: boolean = false;
 prompts: Prompt[]= [
   {
     id: '1',
-    title: 'Applying for aid',
+    title: 'General Student Aid',
     prompt: 'How do I apply for student aid?',
-    description: ''
+    description: '',
+    assistant: 'gen_stdnt_aid',
+    width: 273
   },
   {
     id: '2',
-    title: 'Aid amount',
+    title: 'General Student Aid',
     prompt: 'How much financial aid can I get?',
-    description: ''
+    description: '',
+    assistant: 'gen_stdnt_aid',
+    width: 281
   },
   {
     id: '3',
     title: 'FAFSA',
     prompt: 'What is the FAFSA and why is it important?',
-    description: ''
+    description: '',
+    assistant: 'fafsa'
   },
   {
     id: '4',
-    title: 'Repaying aid',
+    title: 'Loans & Forgiveness',
     prompt: 'Do I need to repay student aid?',
-    description: ''
+    description: '',
+    assistant: 'loan_forg'
   },
   {
     id: '5',
-    title: 'Aid amount',
+    title: 'General Student Aid',
     prompt: "How does my family's income affect my aid?",
-    description: ''
+    description: '',
+    assistant: 'gen_stdnt_aid'
   },
   {
     id: '6',
-    title: 'Aid eligibility',
+    title: 'General Student Aid',
     prompt: "How do I maintain eligibility for student aid?",
-    description: ''
-  }
+    description: '',
+    assistant: 'gen_stdnt_aid'
+  },
+  {
+    id: '7',
+    title: 'College Explorer',
+    prompt: "What schools can I get into?",
+    description: '',
+    assistant: 'college_explorer'
+  },
+  {
+    id: '8',
+    title: 'Loans & Forgiveness',
+    prompt: "Am I eligible for forgiveness?",
+    description: '',
+    assistant: 'loan_forg'
+  },
+  {
+    id: '9',
+    title: 'General Student Aid',
+    prompt: "When do I have to pay my loans back?",
+    description: '',
+    assistant: 'gen_stdnt_aid'
+  },
+  {
+    id: '10',
+    title: 'FAFSA',
+    prompt: "When should I complete the FAFSA?",
+    description: '',
+    assistant: 'fafsa'
+  },
+  {
+    id: '11',
+    title: 'College Explorer',
+    prompt: "What is dorm life like?",
+    description: '',
+    assistant: 'college_explorer'
+  },
+  {
+    id: '12',
+    title: 'College Explorer',
+    prompt: "How should I prepare for the SAT?",
+    description: '',
+    assistant: 'college_explorer'
+  },
 ]
 
 customOptions: OwlOptions = {
@@ -106,6 +165,7 @@ customOptions: OwlOptions = {
   animateIn: 'animate__animated animate__backInDown',
   autoWidth: true,
   nav: true,
+  margin: 10,
   navSpeed: 500,
   navText: ['<', '>'],
 }

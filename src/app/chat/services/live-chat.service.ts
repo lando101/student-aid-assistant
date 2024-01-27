@@ -1,5 +1,5 @@
 
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, WritableSignal, inject, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable, Subject, firstValueFrom, tap } from 'rxjs';
 import { Chat } from '../components/live-chat/live-chat.component';
@@ -15,6 +15,7 @@ export class LiveChatService {
   private messagesSubject: Subject<string>;
   public messages$: Observable<any>;
   public messagesLoading = signal(false);
+  public category: WritableSignal<string | null> = signal(null)
   http = inject(HttpClient);
 
   constructor() {

@@ -1,6 +1,6 @@
 
 <button class="w-full h-full d-btn  bg-gray-50 p-3 border-2 border-solid border-gray-50 shadow-md shadow-gray-300 hover:bg-white hover:border-gray-50 hover:scale-[.98] rounded-2xl" [ngClass]="{'bg-white': activeAssistant === assistant?.id, 'opacity-65 scale-90': (activeAssistant !== assistant?.id) && (activeAssistant !== null)}" (click)="select()">
-    <div class="d-card max-w-60 rounded-lg  flex flex-col gap-4 justify-between items-center h-full">
+    <div class="d-card max-w-60 rounded-lg  flex flex-col gap-4 items-center h-full">
       <img class="w-full max-w-24 drop-shadow-lg" [src]="assistant?.img ?? ''" priority>
       <div class="text-center">
         <div class="font-black text-black text-lg drop-shadow-md">{{assistant?.title}}</div>

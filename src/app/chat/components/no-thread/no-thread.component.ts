@@ -21,7 +21,7 @@ import { UserService } from '../../../core/auth/user.service';
 export class NoThreadComponent implements OnInit {
   chatService = inject(AssistantService)
   userService = inject(UserService)
-  placeholders: string[] = []
+  placeholders: string[] = ['']
   assistant: Assistant | null = null;
   @ViewChild('typed') typed!: NgxTypedJsComponent;
   @ViewChild('inputbox') inputBox!: ElementRef;
@@ -36,10 +36,10 @@ export class NoThreadComponent implements OnInit {
 
   hoverUpdate(placeholder: string){
     const inputValue = this.inputBox.nativeElement.value;
-    if(!inputValue){
+
       this.placeholders = [placeholder]
       this.typed.doReset()
-    }
+
   }
 
   createNewThread(message: string){

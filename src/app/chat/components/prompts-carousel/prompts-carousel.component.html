@@ -3,7 +3,7 @@
   <div class="absolute w-full bottom-3">
     <div class="flex w-full justify-between items-center">
       <p class="font-semibold text-gray-700 dark:text-neutral-600 mb-0">Try out a prompt</p>
-      <div class="flex gap-2 justify-end mb-1 text-neutral-900 dark:text-neutral-300">
+      <div *ngIf="owlCar.initialized" class="flex gap-2 justify-end mb-1 text-neutral-900 dark:text-neutral-300">
         <button [disableRipple]="true" [disabled]="owlCar.navData?.prev?.disabled" class="flex items-center justify-center" mat-icon-button (click)="owlCar.prev()">
           <mat-icon class="!flex items-center justify-center">
             <ng-icon [size]="'20px'" name="featherArrowLeft"></ng-icon>
@@ -22,10 +22,10 @@
 
     <div #container class="overflow-hidden">
       <owl-carousel-o (dragging)="dragging = $event.dragging" [options]="customOptions" #owlCar>
-        <ng-container *ngFor="let prompt of prompts">
-          <ng-template [width]="prompt.prompt!.length * 8.2" carouselSlide [id]="prompt.id!" []>
+        <ng-container *ngFor="let prompt of prompts | filterBy: ['assistant']: category()">
+          <ng-template [width]="(prompt.prompt!.length * 7.4)+24" carouselSlide [id]="prompt.id!">
             <div class="mb-2 h-16">
-              <button [disabled]="dragging" (mouseenter)="promptHover(prompt.prompt!)" (mouseleave)="promptHover('')" (click)="usePrompt(prompt.prompt!)" class="prompt-button h-full">
+              <button [disabled]="dragging" (mouseenter)="promptHover(prompt.prompt!)" (mouseleave)="promptHover('')" (click)="usePrompt(prompt.prompt!)" class="prompt-button h-full w-full animate__fadeInUp animate__animated animate__faster">
                 <div class="text-left flex flex-col items-start justify-between h-100 py-1">
                   <p class="mb-0 text-xs font-semibold opacity-65">{{ prompt.title }}</p>
                   <p class="mb-0 text-sm font-semibold flex justify-start items-center h-full truncate">{{ prompt.prompt }}</p>

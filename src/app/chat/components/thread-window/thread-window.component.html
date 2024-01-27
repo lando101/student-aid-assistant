@@ -6,8 +6,8 @@
           <div class="hidden md:block">
             <p class="text-sm text-gray-600 dark:text-neutral-600 font-semibold mb-0">Thread name</p>
             <div
-              class="text-base text-gray-700 dark:text-neutral-400 font-semibold mb-0 flex items-center gap-2 ">
-              <div class="">{{activeLiveThread?.thread_name}}</div>
+              class="text-lg text-neutral-800 dark:text-neutral-400 font-bold mb-0 flex items-center gap-2 ">
+              <div class="h-7 " [ngClass]="{'fade-in': activeLiveThread?.thread_name}">{{activeLiveThread?.thread_name}}</div>
               <!-- <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button> -->
             </div>
           </div>
@@ -94,11 +94,11 @@
     <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
       [showCursor]="false" [strings]="placeholders">
       <!-- <input #chatbox [disabled]="messageLoading"
-        [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'"
+        [placeholder]="messageLoading ? 'Assistant is responding...':'Ask a question'"
         class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full shadow-sm shadow-neutral-300"
         #inputbox type="text"> -->
         <input #chatbox [disabled]="messageLoading"
-        [placeholder]="messageLoading ? 'Assistant is responding...':'Enter a prompt here...'"
+        [placeholder]="messageLoading ? 'Assistant is responding':'Ask a question'"
         class="typing h-12 px-3 border-none font-medium dark:placeholder-neutral-600 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full shadow-sm !shadow-neutral-100"
         #inputbox type="text">
     </ngx-typed-js>

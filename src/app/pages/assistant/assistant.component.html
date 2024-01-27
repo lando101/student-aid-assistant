@@ -56,7 +56,7 @@
                   </div>
                   <div class="flex h-10 max-w-52 text-xs font-bold">
                     @if (thread.last_message) {
-                      <div class="message-text">{{thread.last_message}}</div>
+                      <div class="message-text" [innerHTML]="thread.last_message! | markdown">{{thread.last_message}}</div>
                     } @else {
                       <div class="message-text">New Thread</div>
                     }

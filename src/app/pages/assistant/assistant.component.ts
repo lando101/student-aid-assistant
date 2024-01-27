@@ -34,6 +34,7 @@ import { LiveThread } from '../../chat/models/chat.model';
 import { LiveChatService } from '../../chat/services/live-chat.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { MarkdownPipe } from '../../shared/pipes/markdown.pipe';
 
 
 
@@ -135,6 +136,7 @@ import { ToastModule } from 'primeng/toast';
     NgPipesModule,
     NgxTypedJsModule,
     ToastModule,
+    MarkdownPipe
   ],
   templateUrl: './assistant.component.html',
   styleUrl: './assistant.component.sass'
@@ -356,7 +358,7 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
         this.nav.navigateByUrl('/assistant')
       }
     } else {
-      this.messagingService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
+      // this.messagingService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
     }
   }
 

@@ -1,17 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { Auth, authState } from '@angular/fire/auth';
 import { Observable, take, map, tap } from 'rxjs';
 import { CredentialsService } from './auth/credentials.service';
 import { AuthService } from './auth/auth.service';
 import { AuthenticationService } from './authentication/authentication.service';
+import { LiveChatService } from '../chat/services/live-chat.service';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate{
+  private liveChatService = inject(LiveChatService)
+  // messagingService = inject();
 
   private authenticated: boolean = false;
+  messagesLoading = this.liveChatService.messagesLoading
 
   constructor(private router: Router, private auth: Auth, private credentialService: CredentialsService, private authService: AuthenticationService) {
      this.authService.$currentUser.subscribe((user)=>{
@@ -37,12 +42,23 @@ export class AuthGuard implements CanActivate{
     //   return false
     // }
     const currentUser = this.authenticated;
-    if (currentUser) {
+    if (currentUser && !this.messagesLoading()) {
       return true;
+    } else if (currentUser && this.messagesLoading()){
+      // this.messageService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
+
+      return false
     } else {
       this.router.navigate(['/auth']);
       return false
     }
+
+    // if (currentUser) {
+    //   return true;
+    // } else {
+    //   this.router.navigate(['/auth']);
+    //   return false
+    // }
 
     // if(this.auth.currentUser?.uid){
     //   return true;

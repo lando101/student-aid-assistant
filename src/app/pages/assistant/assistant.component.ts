@@ -35,6 +35,7 @@ import { LiveChatService } from '../../chat/services/live-chat.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { MarkdownPipe } from '../../shared/pipes/markdown.pipe';
+import { AlertService } from '../../chat/services/alert.service';
 
 
 
@@ -151,6 +152,7 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
   router = inject(ActivatedRoute);
   dialog = inject(MatDialog);
   messagingService = inject(MessageService);
+  alertService = inject(AlertService);
   resizeSubscription: Subscription = new Subscription();
 
   threads: Threads[] = [];
@@ -158,6 +160,7 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
   threadsLoading: boolean = true;
   userProfile!: UserProfile;
   activeThreadId: string | null = null;
+  alertActive: boolean = false;
 
   width!: string;
   widthValue: number = 0;
@@ -206,6 +209,10 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
     let url = ev.url;
     // console.log('active thread id', url)
   });
+
+  this.alertService.alertSubject.subscribe((alert)=>{
+    this.alertActive = alert
+  })
   }
 
   ngAfterViewInit(): void {
@@ -350,17 +357,30 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setActiveThread(thread?: LiveThread){
-    if(!this.messagesLoading()) {
-      if(thread){
-        this.chatService.activeThread.set(thread ?? null)
-        this.nav.navigateByUrl(`/assistant/${thread.thread_id}`)
+
+      if(this.alertActive){
+      this.messagingService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
       } else {
-        this.nav.navigateByUrl('/assistant')
+        if(thread){
+          this.chatService.activeThread.set(thread ?? null)
+          // this.nav.navigateByUrl(`/assistant/${thread.thread_id}`)
+        } else {
+          this.chatService.activeThread.set(null)
+          // this.nav.navigateByUrl('/assistant')
+        }
       }
-    } else {
-      // this.messagingService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
-    }
   }
+
+    // if(!this.messagesLoading()) {
+    //   if(thread){
+    //     this.chatService.activeThread.set(thread ?? null)
+    //     this.nav.navigateByUrl(`/assistant/${thread.thread_id}`)
+    //   } else {
+    //     this.nav.navigateByUrl('/assistant')
+    //   }
+    // } else {
+    //   this.messagingService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
+    // }
 
   close() {
     this.messagingService.clear();

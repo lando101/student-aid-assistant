@@ -14,8 +14,8 @@ export const routes: Routes = [
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'assistant', component: AssistantComponent, canActivate: [AuthGuard], children: [
-    {path: ':threadId', component: ThreadWindowComponent },
-    {path: '', component: NoThreadComponent }
+    {path: ':threadId', component: ThreadWindowComponent, canActivate: [AuthGuard] },
+    {path: '', component: NoThreadComponent, canActivate: [AuthGuard] }
   ] },
   { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
   { path: 'auth', component: AuthComponent },

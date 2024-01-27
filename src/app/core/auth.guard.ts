@@ -7,13 +7,14 @@ import { AuthService } from './auth/auth.service';
 import { AuthenticationService } from './authentication/authentication.service';
 import { LiveChatService } from '../chat/services/live-chat.service';
 import { MessageService } from 'primeng/api';
+import { AlertService } from '../chat/services/alert.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate{
   private liveChatService = inject(LiveChatService)
-  // messagingService = inject();
+  alertService = inject(AlertService);
 
   private authenticated: boolean = false;
   messagesLoading = this.liveChatService.messagesLoading
@@ -41,11 +42,16 @@ export class AuthGuard implements CanActivate{
     //   this.router.navigate(['/auth']);
     //   return false
     // }
+    // setTimeout(() => {
+    //   this.messagesLoading.set(true)
+    // }, 3000);
     const currentUser = this.authenticated;
     if (currentUser && !this.messagesLoading()) {
+      this.alertService.alertSubject.next(false)
       return true;
-    } else if (currentUser && this.messagesLoading()){
+    } else if (currentUser && (this.messagesLoading()===true)){
       // this.messageService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
+      this.alertService.alertSubject.next(true)
 
       return false
     } else {

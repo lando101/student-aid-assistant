@@ -7,7 +7,7 @@
         <div class="flex justify-between items-center">
           <!-- <p class="text-neutral-800 dark:text-neutral-400 font-black mb-0">Threads ({{userProfile.threads?.length}})</p> -->
           <p class="text-neutral-800 text-2xl dark:text-neutral-300 font-black mb-0">Threads</p>
-          <button class="flex items-center justify-center " mat-icon-button (click)="setActiveThread()">
+          <button class="flex items-center justify-center " mat-icon-button (click)="setActiveThread()" [routerLink]="'/assistant'">
             <mat-icon class="!flex items-center justify-center dark:text-neutral-300">
               <ng-icon class="drop-shadow-md" [size]="'18px'" name="featherEdit"></ng-icon>
             </mat-icon>
@@ -26,7 +26,7 @@
         @if (!this.threadsLoading && liveThreads.length > 0) {
           <div class="mx-0 overflow-visible" [ngClass]="{'shrink-thread': thread.deleted === true, 'my-3': !thread.deleted}" *ngFor="let thread of liveThreads | orderBy: value">
             <div
-              [ngClass]="{'thread-button-active': activeThreadId === thread.thread_id, 'thread-button': activeThreadId !== thread.thread_id, 'slide-out-blurred-left': thread.deleted === true}" routerLinkActive="thread-button-active">
+              [ngClass]="{'thread-button-active': activeThreadId === thread.thread_id, 'thread-button': activeThreadId !== thread.thread_id, 'slide-out-blurred-left': thread.deleted === true}" [routerLink]="'/assistant/'+thread.thread_id" routerLinkActive="thread-button-active">
               <button class="flex gap-2 text-left pl-3 py-2 w-full" (click)="setActiveThread(thread)" >
                 <!-- <div class="thread-id">{{thread.thread_id}}</div> -->
                 <div class="flex justify-center items-center h-full">

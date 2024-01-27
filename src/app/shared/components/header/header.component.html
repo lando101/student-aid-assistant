@@ -10,13 +10,13 @@
      </span>
       <ul class="flex-nowrap gap-4 -mb-1 hidden md:flex">
         <li class="nav-item">
-          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold cursor-pointer" (click)="navigate('/assistant')" [routerLinkActive]="'active'">Assistant</a>
+          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold cursor-pointer" (click)="navigate('/assistant')" [routerLink]="'/assistant'" [routerLinkActive]="'active'">Assistant</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold cursor-pointer" (click)="navigate('/about')" routerLinkActive="active">About</a>
+          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold cursor-pointer" (click)="navigate('/about')" [routerLink]="'/about'" routerLinkActive="active">About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold cursor-pointer" (click)="navigate('/contact')" routerLinkActive="active">Contact</a>
+          <a class="nav-link dark:text-neutral-200 opacity-70 !font-bold cursor-pointer" (click)="navigate('/contact')" [routerLink]="'/contact'" routerLinkActive="active">Contact</a>
         </li>
       </ul>
     </div>

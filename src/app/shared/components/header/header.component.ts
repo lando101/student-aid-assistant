@@ -23,6 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { LiveChatService } from '../../../chat/services/live-chat.service';
+import { AlertService } from '../../../chat/services/alert.service';
 
 @Component({
   selector: 'app-header',
@@ -34,6 +35,9 @@ import { LiveChatService } from '../../../chat/services/live-chat.service';
   styleUrl: './header.component.sass'
 })
 export class HeaderComponent implements OnInit {
+
+  alertService = inject(AlertService);
+
   stateOptions: any[] = [{label: '', value: 'off'}, {label: 'On', value: 'on'}];
   items: MenuItem[] | undefined;
   sidebarVisible: boolean = false;
@@ -119,16 +123,24 @@ export class HeaderComponent implements OnInit {
   }
 
   navigate(url?: string){
-    if(!this.messageLoading()) {
-      if(url){
-        // this.chatService.activeThread.set(thread ?? null)
-        this.nav.navigateByUrl(url)
-      } else {
-        this.nav.navigateByUrl('/assistant')
-      }
-    } else {
+    // if(!this.messageLoading()) {
+    //   if(url){
+    //     // this.chatService.activeThread.set(thread ?? null)
+    //     this.nav.navigateByUrl(url)
+    //   } else {
+    //     this.nav.navigateByUrl('/assistant')
+    //   }
+    // } else {
+    //   this.messageService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
+    // }
+
+    const alertSub = this.alertService.alert$.subscribe((alert)=>{
+      if(alert){
       this.messageService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
-    }
+      }
+    })
+
+    alertSub.unsubscribe();
   }
 
   close() {

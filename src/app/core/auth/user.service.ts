@@ -193,6 +193,19 @@ export class UserService {
     })
   }
 
+  // add threads to user profile
+  async updateLiveThreadTuning(thread: LiveThread) {
+    const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', thread.thread_id!);
+
+    await updateDoc(docRef, {
+      response_complexity: thread.response_complexity,
+      response_length: thread.response_length,
+      tone: thread.tone,
+      assistant_type: thread.assistant_type,
+      last_updated: new Date().toISOString()
+    })
+  }
+
   async removeLiveThread(thread_id: string | null) {
     const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', thread_id!);
 

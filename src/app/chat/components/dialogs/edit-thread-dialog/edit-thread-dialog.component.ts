@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import {
   MatDialogTitle,
   MatDialogContent,
@@ -20,6 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Assistant } from '../../../models/assistant.model';
 import { DropdownModule } from 'primeng/dropdown';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../../../core/auth/user.service';
 
 export interface Options {
   id: string,
@@ -49,6 +50,7 @@ export interface Options {
 export class EditThreadDialogComponent implements OnInit {
   thread: LiveThread | null = null;
   threadRef: LiveThread | null = null;
+  userService = inject(UserService);
 
   assistants: Assistant[] = [
     {
@@ -88,7 +90,7 @@ export class EditThreadDialogComponent implements OnInit {
   ]
 
   lengthBtns: Options[] = [
-    {id: 'very_short', label: 'Very Short'},
+    // {id: 'very_short', label: 'Very Short'},
     {id: 'short', label: 'Short'},
     {id: 'medium', label: 'Medium (Default)'},
     {id: 'long', label: 'Long'},
@@ -120,6 +122,14 @@ export class EditThreadDialogComponent implements OnInit {
   setAssistant(assistant: Assistant) {
     this.assistant = assistant;
     this.threadRef!.assistant_type = assistant.id;
+  }
+
+  updateThread(){
+    if(this.threadRef) {
+      this.userService.updateLiveThreadTuning(this.threadRef).then(()=>{
+        this.dialogRef.close();
+      });
+    }
   }
 
 }

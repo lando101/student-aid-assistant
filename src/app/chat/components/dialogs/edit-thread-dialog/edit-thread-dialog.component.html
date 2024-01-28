@@ -57,7 +57,7 @@
         </div>
         <div>
           <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Response Length</p>
-          <div class="grid grid-cols-4 gap-2">
+          <div class="grid grid-cols-3 gap-3">
             <!-- {{ dateConversion(data.creation_date)}} -->
             @for (btn of lengthBtns; track $index) {
               <button (click)="threadRef!.response_length = btn.id" [ngClass]="{'d-btn-neutral': btn.id === threadRef!.response_length}" class="d-btn">{{btn.label}}</button>
@@ -66,7 +66,7 @@
         </div>
         <div>
           <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Tone</p>
-          <div class="grid grid-cols-3 gap-2">
+          <div class="grid grid-cols-3 gap-3">
             <!-- {{ dateConversion(data.creation_date)}} -->
             @for (btn of toneBtns; track $index) {
               <button (click)="threadRef!.tone = btn.id" [ngClass]="{'d-btn-neutral': btn.id === threadRef!.tone}" class="d-btn">{{btn.label}}</button>
@@ -77,7 +77,7 @@
         </div>
         <div>
           <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Response Complexity</p>
-          <div class="grid grid-cols-3 gap-2">
+          <div class="grid grid-cols-3 gap-3">
             <!-- {{ dateConversion(data.creation_date)}} -->
             @for (btn of complexityhBtns; track $index) {
               <button (click)="threadRef!.response_complexity = btn.id" [ngClass]="{'d-btn-neutral': btn.id === threadRef!.response_complexity}" class="d-btn">{{btn.label}}</button>
@@ -96,12 +96,12 @@
         </div>
       </div>
       <div class="flex gap-4 items-center">
-        <button [disabled]="
+        <button (click)="updateThread()" [disabled]="
           thread?.response_complexity === threadRef?.response_complexity &&
           thread?.response_length === threadRef?.response_length &&
           thread?.tone === threadRef?.tone &&
           thread?.assistant_type === threadRef?.assistant_type
-          " class="action-btn d-btn-wide" [mat-dialog-close]="true" cdkFocusInitial>
+          " class="action-btn d-btn-wide" cdkFocusInitial>
           <!-- <ng-icon [size]="'18px'" name="cssTrashEmpty" class="mb-1"></ng-icon> -->
           Update Settings
         </button>

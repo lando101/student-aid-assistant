@@ -297,7 +297,7 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
         this.chatHistory = this.chatHistory!.slice(-30);
     }
       console.log('chat history', this.chatHistory)
-      this.liveChatService.sendMessage(this.chatHistory!, this.activeLiveThread?.assistant_type); // then sending message to open ai
+      this.liveChatService.sendMessage(this.chatHistory!, this.activeLiveThread!); // then sending message to open ai
       this.chatHistory!.push({role: 'assistant', content: ''}); // add slot for assistant response
       this.liveMsgs!.push({
         id: null,

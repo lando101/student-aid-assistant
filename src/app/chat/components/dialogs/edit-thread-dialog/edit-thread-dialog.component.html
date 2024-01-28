@@ -1,0 +1,112 @@
+<!-- <h1 mat-dialog-title>Hi {{data.thread_id}}</h1>
+<p>{{data.thread_name}}</p>
+<p>{{data.creation_date}}</p>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Keep Thread</button>
+  <button class="delete-button flex items-center gap-1 px-3" [mat-dialog-close]="true" cdkFocusInitial>
+    <ng-icon [size]="'18px'" name="cssTrashEmpty" class="mb-1"></ng-icon>
+    Delete Thread
+  </button>
+</div> -->
+<div class="p-3 flex flex-col gap-3 min-w-[650px]">
+  <!-- <div role="alert" class="d-alert d-alert-warning">
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+    <span class="font-semibold">Thread will be permanently deleted.</span>
+  </div> -->
+  <div class="h-full">
+    <div class="px-3 pb-3 pt-0 flex flex-col justify-between gap-6 h-full">
+      <div class="flex flex-col gap-4 py-2">
+        <div class="border-b border-b-neutral-200 w-full pb-2">
+          <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-2">{{data.thread_name}}</p>
+          <div class="font-bold text-xl flex gap-2 items-center">
+            <ng-icon [name]="'featherSliders'"></ng-icon>
+            Settings
+          </div>
+        </div>
+        <div>
+          <div>
+            <p class="text-sm text-gray-600 dark:text-neutral-600 font-semibold mb-1">Assistant</p>
+
+            <div class="d-dropdown w-full">
+              <div tabindex="0" role="button" class="d-btn w-full m-1 justify-between">
+                <div class="flex items-center gap-1">
+                  <img [src]="assistant!.img" class="w-5">
+                  {{assistant?.name}}
+                </div>
+                <div>
+                  <ng-icon [size]="'16px'" [name]="'featherChevronDown'"></ng-icon>
+                </div>
+              </div>
+              <ul tabindex="0" class="d-dropdown-content z-[1] d-menu p-2 shadow bg-base-100 rounded-box w-full">
+                @for (ass of assistants; track $index) {
+                <li><a (click)="assistant=ass">
+                  <div class="flex flex-col gap-1">
+                    <div class="flex gap-1 text-sm font-semibold">
+                      <img [src]="ass.img" class="w-5">
+                      {{ass.name}}
+                    </div>
+                    <div class="text-xs text-neutral-700">{{ass.desc}}</div>
+                  </div>
+                </a>
+              </li>
+
+                }
+              </ul>
+            </div>
+          </div>
+
+        </div>
+        <div>
+          <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Response Length</p>
+          <div class="grid grid-cols-4 gap-2">
+            <!-- {{ dateConversion(data.creation_date)}} -->
+            <button class="d-btn">Very Short</button>
+            <button class="d-btn">Short</button>
+            <button class="d-btn">Medium (Default)</button>
+            <button class="d-btn">Long</button>
+
+          </div>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Tone</p>
+          <div class="grid grid-cols-3 gap-2">
+            <!-- {{ dateConversion(data.creation_date)}} -->
+            <button class="d-btn">Happy</button>
+            <button class="d-btn">Neutral (Default)</button>
+            <button class="d-btn">Serious</button>
+            <!-- <button class="d-btn">Angry</button> -->
+
+          </div>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Response Complexity</p>
+          <div class="grid grid-cols-3 gap-2">
+            <!-- {{ dateConversion(data.creation_date)}} -->
+            <button class="d-btn">5 year old</button>
+            <button class="d-btn">Adult (Default)</button>
+            <button class="d-btn">Simpleton</button>
+            <!-- <button class="d-btn">Angry</button> -->
+
+          </div>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Model</p>
+          <span>ChatGPT 4</span>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Generate Question Model</p>
+          <span>ChatGPT 3.5 Turbo</span>
+        </div>
+      </div>
+      <div class="flex gap-4 items-center">
+        <button class="action-btn d-btn-wide" [mat-dialog-close]="true" cdkFocusInitial>
+          <!-- <ng-icon [size]="'18px'" name="cssTrashEmpty" class="mb-1"></ng-icon> -->
+          Update Settings
+        </button>
+        <button class="d-btn d-btn-ghost d-btn-md"  (click)="onNoClick()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+

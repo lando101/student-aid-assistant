@@ -10,13 +10,14 @@ import { Router } from '@angular/router';
 import { Assistant } from '../../models/assistant.model';
 import { LiveChatService } from '../../services/live-chat.service';
 import { UserService } from '../../../core/auth/user.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-no-thread',
     standalone: true,
     templateUrl: './no-thread.component.html',
     styleUrl: './no-thread.component.sass',
-    imports: [LoaderComponent, ExamplePromptsComponent, PromptsCarouselComponent, NgxTypedJsModule, NgIconComponent]
+    imports: [LoaderComponent, ExamplePromptsComponent, PromptsCarouselComponent, NgxTypedJsModule, NgIconComponent, MatTooltipModule]
 })
 export class NoThreadComponent implements OnInit {
   chatService = inject(AssistantService)

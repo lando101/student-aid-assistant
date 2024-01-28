@@ -11,7 +11,7 @@
 <div class="p-3 flex flex-col gap-3">
   <div role="alert" class="d-alert d-alert-warning">
     <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-    <span>Thread will be permanently deleted.</span>
+    <span class="font-semibold">Thread will be permanently deleted.</span>
   </div>
   <div class="px-3 pb-3 pt-0 flex flex-col gap-6">
     <div class="flex flex-col gap-3 py-2">
@@ -33,11 +33,11 @@
       </div>
     </div>
     <div class="flex gap-4 items-center">
-      <button mat-button [disableRipple]="true" class="rounded-none py-4 hover:rounded-none"  (click)="onNoClick()">Keep Thread</button>
-      <button class="delete-button flex items-center gap-1 px-3" [mat-dialog-close]="true" cdkFocusInitial>
+      <button class="d-btn d-btn-wide d-btn-error text-white" [mat-dialog-close]="true" cdkFocusInitial>
         <ng-icon [size]="'18px'" name="cssTrashEmpty" class="mb-1"></ng-icon>
         Delete Thread
       </button>
+      <button class="d-btn d-btn-ghost d-btn-md"  (click)="onNoClick()">Keep Thread</button>
     </div>
   </div>
 </div>

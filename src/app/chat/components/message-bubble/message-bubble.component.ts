@@ -8,6 +8,7 @@ import { AssistantService } from '../../services/assistant.service';
 import { LiveMessage, LiveThread } from '../../models/chat.model';
 import { FormsModule } from '@angular/forms';
 import { featherCheckCircle } from '@ng-icons/feather-icons';
+import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-message-bubble',
@@ -19,7 +20,7 @@ import { featherCheckCircle } from '@ng-icons/feather-icons';
   ],
     templateUrl: './message-bubble.component.html',
     styleUrl: './message-bubble.component.sass',
-    imports: [CommonModule, NgIconComponent, MarkdownPipe, FormsModule, NgIconComponent]
+    imports: [CommonModule, NgIconComponent, MarkdownPipe, FormsModule, NgIconComponent, MatTooltipModule]
 })
 export class MessageBubbleComponent implements OnInit, OnChanges {
   @Input() message!: Message;

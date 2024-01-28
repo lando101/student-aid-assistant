@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
-import { NgIconComponent } from '@ng-icons/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { Router } from 'express';
 import { Subscription, map } from 'rxjs';
 import { MessageListComponent } from '../message-list/message-list.component';
@@ -34,6 +34,10 @@ import { LiveMessage, LiveThread, OpenAIMesg } from '../../models/chat.model';
 import { LiveChatService } from '../../services/live-chat.service';
 import { ChatCompletionResponse } from '../../models/chatcompletion.model';
 import { QuestionsCarouselComponent } from "../questions-carousel/questions-carousel.component";
+import {  featherShare, featherSliders, featherTrash } from '@ng-icons/feather-icons';
+import { MatButtonModule } from '@angular/material/button';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { EditThreadDialogComponent } from '../dialogs/edit-thread-dialog/edit-thread-dialog.component';
 
 @Component({
     selector: 'app-thread-window',
@@ -41,7 +45,14 @@ import { QuestionsCarouselComponent } from "../questions-carousel/questions-caro
     templateUrl: './thread-window.component.html',
     styleUrl: './thread-window.component.sass',
     providers: [OrderByPipe],
-    imports: [CommonModule, NgIconComponent, MatIconModule, MessageListComponent, NgxTypedJsModule, LoaderComponent, ExamplePromptsComponent, PromptsCarouselComponent, NgPipesModule, QuestionsCarouselComponent]
+    viewProviders: [
+      provideIcons({
+        featherShare,
+        featherTrash,
+        featherSliders
+      }),
+  ],
+    imports: [CommonModule, MatTooltipModule, NgIconComponent, MatButtonModule, MatIconModule, MessageListComponent, NgxTypedJsModule, LoaderComponent, ExamplePromptsComponent, PromptsCarouselComponent, NgPipesModule, QuestionsCarouselComponent]
 })
 export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy{
   @ViewChild('chatbox') chatbox: ElementRef | null = null;
@@ -216,6 +227,21 @@ export class ThreadWindowComponent implements OnInit, AfterViewInit, OnChanges, 
       console.log('questions', JSON.parse(questions))
       this.questions = JSON.parse(questions)
     })
+  }
+
+  updateSettings(thread: LiveThread | null) {
+    if(thread){
+      const dialogRef = this.dialog.open(EditThreadDialogComponent, {
+        data: thread
+      });
+
+      dialogRef.afterClosed().subscribe((result: boolean) => {
+        // // console.log('The dialog was closed');
+        if (result === true) {
+          this.deleteThread(thread.thread_id ?? '');
+        }
+      });
+    }
   }
 
   openDialog(thread: LiveThread | null): void {

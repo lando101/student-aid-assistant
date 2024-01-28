@@ -19,7 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 // ng icons
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee, cssAdd, cssMenu, cssMoreVertical, cssPen, cssPlayButtonO } from '@ng-icons/css.gg';
-import { featherClock, featherEdit, featherTrash, featherPlusSquare, featherSend } from '@ng-icons/feather-icons';
+import { featherClock, featherEdit, featherTrash, featherPlusSquare, featherSend, featherShare } from '@ng-icons/feather-icons';
 import { iconoirTrash } from '@ng-icons/iconoir';
 import { CommonModule } from '@angular/common';
 import { TimeagoPipe } from '../../shared/pipes/timeago.pipe';
@@ -36,6 +36,7 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { MarkdownPipe } from '../../shared/pipes/markdown.pipe';
 import { AlertService } from '../../chat/services/alert.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 
@@ -115,7 +116,7 @@ import { AlertService } from '../../chat/services/alert.service';
         featherTrash,
         featherPlusSquare,
         featherSend,
-        iconoirTrash
+        iconoirTrash,
     }),
 ],
   imports: [
@@ -137,7 +138,8 @@ import { AlertService } from '../../chat/services/alert.service';
     NgPipesModule,
     NgxTypedJsModule,
     ToastModule,
-    MarkdownPipe
+    MarkdownPipe,
+    MatTooltipModule
   ],
   templateUrl: './assistant.component.html',
   styleUrl: './assistant.component.sass'

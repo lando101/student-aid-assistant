@@ -6,6 +6,9 @@ export interface LiveThread {
   creation_date: string | Date | null;
   last_updated: string | Date | null;
   model: string | null;
+  tone: string | null;
+  response_length: string | null;
+  response_complexity: string | null;
   user_feedback: string | null;
   last_message: string | null;
   thread_length: number | null;

@@ -20,7 +20,7 @@
           <p class="text-xs text-gray-600 dark:text-neutral-600 font-semibold mb-2">{{data.thread_name}}</p>
           <div class="font-bold text-xl flex gap-2 items-center">
             <ng-icon [name]="'featherSliders'"></ng-icon>
-            Settings
+            Thread Tuning
           </div>
         </div>
         <div>
@@ -39,7 +39,7 @@
               </div>
               <ul tabindex="0" class="d-dropdown-content z-[1] d-menu p-2 shadow bg-base-100 rounded-box w-full">
                 @for (ass of assistants; track $index) {
-                <li><a (click)="assistant=ass">
+                <li><a (click)="setAssistant(ass)">
                   <div class="flex flex-col gap-1">
                     <div class="flex gap-1 text-sm font-semibold">
                       <img [src]="ass.img" class="w-5">
@@ -49,7 +49,6 @@
                   </div>
                 </a>
               </li>
-
                 }
               </ul>
             </div>
@@ -60,20 +59,18 @@
           <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Response Length</p>
           <div class="grid grid-cols-4 gap-2">
             <!-- {{ dateConversion(data.creation_date)}} -->
-            <button class="d-btn">Very Short</button>
-            <button class="d-btn">Short</button>
-            <button class="d-btn">Medium (Default)</button>
-            <button class="d-btn">Long</button>
-
+            @for (btn of lengthBtns; track $index) {
+              <button (click)="threadRef!.response_length = btn.id" [ngClass]="{'d-btn-neutral': btn.id === threadRef!.response_length}" class="d-btn">{{btn.label}}</button>
+            }
           </div>
         </div>
         <div>
           <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Tone</p>
           <div class="grid grid-cols-3 gap-2">
             <!-- {{ dateConversion(data.creation_date)}} -->
-            <button class="d-btn">Happy</button>
-            <button class="d-btn">Neutral (Default)</button>
-            <button class="d-btn">Serious</button>
+            @for (btn of toneBtns; track $index) {
+              <button (click)="threadRef!.tone = btn.id" [ngClass]="{'d-btn-neutral': btn.id === threadRef!.tone}" class="d-btn">{{btn.label}}</button>
+            }
             <!-- <button class="d-btn">Angry</button> -->
 
           </div>
@@ -82,9 +79,9 @@
           <p class="text-sm text-gray-600 dark:text-neutral-600 font-bold mb-2">Response Complexity</p>
           <div class="grid grid-cols-3 gap-2">
             <!-- {{ dateConversion(data.creation_date)}} -->
-            <button class="d-btn">5 year old</button>
-            <button class="d-btn">Adult (Default)</button>
-            <button class="d-btn">Simpleton</button>
+            @for (btn of complexityhBtns; track $index) {
+              <button (click)="threadRef!.response_complexity = btn.id" [ngClass]="{'d-btn-neutral': btn.id === threadRef!.response_complexity}" class="d-btn">{{btn.label}}</button>
+            }
             <!-- <button class="d-btn">Angry</button> -->
 
           </div>
@@ -99,11 +96,16 @@
         </div>
       </div>
       <div class="flex gap-4 items-center">
-        <button class="action-btn d-btn-wide" [mat-dialog-close]="true" cdkFocusInitial>
+        <button [disabled]="
+          thread?.response_complexity === threadRef?.response_complexity &&
+          thread?.response_length === threadRef?.response_length &&
+          thread?.tone === threadRef?.tone &&
+          thread?.assistant_type === threadRef?.assistant_type
+          " class="action-btn d-btn-wide" [mat-dialog-close]="true" cdkFocusInitial>
           <!-- <ng-icon [size]="'18px'" name="cssTrashEmpty" class="mb-1"></ng-icon> -->
           Update Settings
         </button>
-        <button class="d-btn d-btn-ghost d-btn-md"  (click)="onNoClick()">Cancel</button>
+        <button class="d-btn d-btn-ghost d-btn-md" (click)="onNoClick()">Cancel</button>
       </div>
     </div>
   </div>

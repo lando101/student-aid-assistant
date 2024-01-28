@@ -19,6 +19,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Assistant } from '../../../models/assistant.model';
 import { DropdownModule } from 'primeng/dropdown';
+import { CommonModule } from '@angular/common';
+
+export interface Options {
+  id: string,
+  label: string,
+}
 
 @Component({
   selector: 'app-edit-thread-dialog',
@@ -33,13 +39,17 @@ import { DropdownModule } from 'primeng/dropdown';
     MatDialogActions,
     MatDialogClose,
     NgIconComponent,
-    DropdownModule
+    DropdownModule,
+    CommonModule
   ],
   templateUrl: './edit-thread-dialog.component.html',
   styleUrl: './edit-thread-dialog.component.sass',
   viewProviders: [provideIcons({ cssTrashEmpty, featherChevronDown, featherSliders })],
 })
 export class EditThreadDialogComponent implements OnInit {
+  thread: LiveThread | null = null;
+  threadRef: LiveThread | null = null;
+
   assistants: Assistant[] = [
     {
       name: 'General Student Aid',
@@ -71,6 +81,25 @@ export class EditThreadDialogComponent implements OnInit {
     },
   ];
 
+  toneBtns: Options[] = [
+    {id: 'happy', label: 'Happy'},
+    {id: 'neutral', label: 'Neutral (Default)'},
+    {id: 'serious', label: 'Serious'}
+  ]
+
+  lengthBtns: Options[] = [
+    {id: 'very_short', label: 'Very Short'},
+    {id: 'short', label: 'Short'},
+    {id: 'medium', label: 'Medium (Default)'},
+    {id: 'long', label: 'Long'},
+  ]
+
+  complexityhBtns: Options[] = [
+    {id: 'child', label: '5 Year Old'},
+    {id: 'adult', label: 'Adult (Default)'},
+    {id: 'expert', label: 'Expert'},
+  ]
+
   assistant: Assistant | null = null
 
   constructor(
@@ -80,10 +109,17 @@ export class EditThreadDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.assistant = this.assistants.find((ass)=>ass.id === this.data.assistant_type) ?? null;
+    this.thread = JSON.parse(JSON.stringify(this.data));
+    this.threadRef = JSON.parse(JSON.stringify(this.data));
   }
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  setAssistant(assistant: Assistant) {
+    this.assistant = assistant;
+    this.threadRef!.assistant_type = assistant.id;
   }
 
 }

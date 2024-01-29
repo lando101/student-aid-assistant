@@ -19,7 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 // ng icons
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { cssAirplane, cssTrashEmpty, cssCopy, cssPathTrim, cssCoffee, cssAdd, cssMenu, cssMoreVertical, cssPen, cssPlayButtonO } from '@ng-icons/css.gg';
-import { featherClock, featherEdit, featherTrash, featherPlusSquare, featherSend, featherShare } from '@ng-icons/feather-icons';
+import { featherClock, featherEdit, featherTrash, featherPlusSquare, featherSend, featherShare, featherX } from '@ng-icons/feather-icons';
 import { iconoirTrash } from '@ng-icons/iconoir';
 import { CommonModule } from '@angular/common';
 import { TimeagoPipe } from '../../shared/pipes/timeago.pipe';
@@ -117,6 +117,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         featherPlusSquare,
         featherSend,
         iconoirTrash,
+        featherX
     }),
 ],
   imports: [
@@ -369,6 +370,9 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           this.chatService.activeThread.set(null)
           // this.nav.navigateByUrl('/assistant')
+        }
+        if(this.widthValue < 641){
+          this.drawer.close()
         }
       }
   }

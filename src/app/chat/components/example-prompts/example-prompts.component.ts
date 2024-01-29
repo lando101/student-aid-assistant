@@ -48,7 +48,7 @@ export class ExamplePromptsComponent implements OnInit, OnDestroy {
       id: 'loan_forg',
       img: '../assets/images/loans_2.webp',
       title: 'Loans & Forgiveness',
-      desc: 'Gets answers to your loan and forgiveness questions.'
+      desc: 'Best for loan and debt forgiveness questions.'
     },
   ];
 

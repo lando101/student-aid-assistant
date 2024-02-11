@@ -1,6 +1,6 @@
 <div *ngIf="liveMessages?.length ?? 0 > 0" class="relative">
     <div class="w-full scroller flex-col-reverse">
-      <div id="messagesContainer" #messagesContainer class="flex flex-col gap-0 pr-5 w-full message-container">
+      <div id="messagesContainer" #messagesContainer class="flex flex-col gap-0 pl-5 md:pl-0 pr-5 w-full message-container">
         <div class="w-full text-center text-sm text-gray-500 font-medium mb-7">Created {{liveThread?.creation_date?.toString() ?? '' | prettytime }}</div>
           <div *ngFor="let message of liveMessages, let i = index" [ngClass]="{'items-end': message.role !== 'assistant'}" class="message" >
             @if (message.role === 'user') {
@@ -34,7 +34,7 @@
                     </button>
                   }
                 </div>
-                
+
               </div>
             }
           </div>

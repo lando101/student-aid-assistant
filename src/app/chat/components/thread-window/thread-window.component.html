@@ -3,16 +3,16 @@
     <div class="w-full flex justify-center">
       <div class="flex justify-between items-center w-full flex-wrap max-w-screen-lg pb-2 border-b border-gray-300 dark:border-neutral-800">
         <div class="flex items-center gap-3">
-          <div class="hidden md:block">
-            <p class="text-sm text-gray-600 dark:text-neutral-600 font-semibold mb-0">Thread name</p>
+          <div class="ml-14 md:ml-0">
+            <p class="text-sm text-gray-600  dark:text-neutral-600 font-semibold mb-0">Thread name</p>
             <div
-              class="text-lg text-neutral-800 dark:text-neutral-400 font-bold mb-0 flex items-center gap-2 ">
-              <div class="h-7 " [ngClass]="{'fade-in': activeLiveThread?.thread_name}">{{activeLiveThread?.thread_name}}</div>
+              class="text-lg text-neutral-800  dark:text-neutral-400 font-bold mb-0 flex items-center gap-2 ">
+              <div class="h-7 truncate w-52 md:w-auto" [ngClass]="{'fade-in': activeLiveThread?.thread_name}">{{activeLiveThread?.thread_name}}</div>
               <!-- <button class="icon-button"><ng-icon [size]="'24px'" name="cssPathTrim"></ng-icon></button> -->
             </div>
           </div>
         </div>
-        <div class="flex items-center gap-1 justify-between md:justify-end pr-3 lg:pr-0">
+        <div class="flex items-center gap-0 sm:gap-1 justify-between md:justify-end pr-3 lg:pr-0">
           <!-- <button (click)="createLiveThread()"> new live thread</button> -->
           <button [matTooltipShowDelay]="500" matTooltip="Share" (click)="openDialog(activeLiveThread)" mat-icon-button class="flex items-center justify-center" mat-icon-button>
             <mat-icon class="!flex items-center justify-center dark:text-neutral-300">

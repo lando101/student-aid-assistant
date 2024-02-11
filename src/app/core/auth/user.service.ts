@@ -197,7 +197,7 @@ export class UserService {
   async updateLiveThreadTuning(thread: LiveThread) {
     const docRef = doc(this.firestore, 'users', this.user.uid, 'live_threads', thread.thread_id!);
 
-    await updateDoc(docRef, {
+    return await updateDoc(docRef, {
       response_complexity: thread.response_complexity,
       response_length: thread.response_length,
       tone: thread.tone,

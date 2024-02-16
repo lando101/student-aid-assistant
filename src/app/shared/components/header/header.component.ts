@@ -24,13 +24,15 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { LiveChatService } from '../../../chat/services/live-chat.service';
 import { AlertService } from '../../../chat/services/alert.service';
+import { UserProfile } from '../../../chat/models/user_profile.model';
+import { featherSettings } from '@ng-icons/feather-icons';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   providers: [MessageService],
   imports: [CommonModule, RouterModule, ButtonModule, SplitButtonModule, RatingModule, FormsModule, SelectButtonModule, NgIconComponent, MenuModule, SidebarModule, MatMenuModule, MatButtonModule, MatIconModule, ToastModule ],
-  viewProviders: [provideIcons({ cssSun, cssMoon, cssMenu })],
+  viewProviders: [provideIcons({ cssSun, cssMoon, cssMenu, featherSettings })],
   templateUrl: './header.component.html',
   styleUrl: './header.component.sass'
 })
@@ -46,6 +48,7 @@ export class HeaderComponent implements OnInit {
 
   theme: string = 'light';
   currentUser: User | null = null;
+  userProfile: UserProfile | null = null;
   value!: number;
   messageLoading = this.chatService.messagesLoading;
 
@@ -54,6 +57,14 @@ export class HeaderComponent implements OnInit {
     //   this.currentUser = user;
     //   // // console.log('header', this.currentUser)
     // });
+
+    this.userService.$userProfile.subscribe((profile)=>{
+      if(profile){
+        this.userProfile = profile
+      } else {
+        this.userProfile = null;
+      }
+    })
 
     this.authService.$currentUser.subscribe((user)=>{
       // console.log('header user', user)

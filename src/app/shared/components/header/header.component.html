@@ -22,12 +22,12 @@
     </div>
     <div>
       <div class="hidden md:flex gap-4 items-center">
-        <div>
+        <!-- <div>
           <button class="primary-button border-2 border-neutral-900 capitalize flex items-center gap-2" (click)="toggleTheme()">
             <ng-icon *ngIf="theme === 'light';else dark" [size]="'18px'" name="cssSun"></ng-icon>
             {{theme}}
           </button>
-        </div>
+        </div> -->
 
           <!-- <div tabindex="0" role="button" class="d-btn m-1">Click</div> -->
           <!-- <button [matMenuTriggerFor]="menu" tabindex="0" role="button" class="d-avatar d-placeholder">
@@ -65,17 +65,17 @@
               <div class="py-4 border-b border-gray-200 flex flex-col gap-3">
                 <div class="flex justify-between items-center w-full">
                   <div class="font-semibold text-black text-base flex items-center gap-1">
-                    <ng-icon name="featherSettings" size="14"></ng-icon>
+                    <ng-icon name="featherSettings" size="16"></ng-icon>
                     Account Settings
                   </div>
-                  <button class="d-btn d-btn-sm">View</button>
+                  <button class="d-btn d-btn-sm" [routerLink]="'settings'">View</button>
                 </div>
                 <div class="flex justify-between items-center w-full">
                   <div class="font-semibold text-black text-base flex items-center gap-1">
-                    <ng-icon name="featherSettings" size="14"></ng-icon>
+                    <ng-icon name="cssMoon" size="16"></ng-icon>
                     Dark Mode
                   </div>
-                  <input type="checkbox" class="d-toggle" checked />
+                  <input type="checkbox" class="d-toggle" (click)="toggleTheme()" [checked]="theme === 'light' ? false:true" />
                 </div>
               </div>
               <div class="mt-3">

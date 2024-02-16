@@ -8,6 +8,7 @@ import { SignupComponent } from './pages/signup/signup.component';
 import { AssistantComponent } from './pages/assistant/assistant.component';
 import { ThreadWindowComponent } from './chat/components/thread-window/thread-window.component';
 import { NoThreadComponent } from './chat/components/no-thread/no-thread.component';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 
 export const routes: Routes = [
@@ -18,6 +19,7 @@ export const routes: Routes = [
     {path: '', component: NoThreadComponent, canActivate: [AuthGuard] }
   ] },
   { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
   { path: 'auth', component: AuthComponent },
   { path: 'sign-up', component: SignupComponent }
 ];

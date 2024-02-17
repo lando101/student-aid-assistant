@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { Injectable, OnInit, inject } from '@angular/core';
-import { Auth, User, UserCredential, createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, User, UserCredential, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateEmail, updatePassword } from '@angular/fire/auth';
 import { BehaviorSubject, Observable, from, map, of } from 'rxjs';
 import { StorageService } from '../../chat/services/storage.service';
 import {  } from 'firebase/firestore';
@@ -73,6 +73,24 @@ export class AuthenticationService {
       } else {
         return null
       }
+    })
+  }
+
+  // update user's password
+  async updateUserPassword(newPassword: string) {
+    return await updatePassword(this.auth.currentUser!, newPassword).then((data)=>{
+      return data
+    }).catch((error)=>{
+      return error
+    })
+  }
+
+  // update user's email
+  async updateUserEmail(newEmail: string) {
+    return await updateEmail(this.auth.currentUser!, newEmail).then((data)=>{
+      return data
+    }).catch((error)=>{
+      return error
     })
   }
 

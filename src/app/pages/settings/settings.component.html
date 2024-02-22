@@ -66,22 +66,76 @@
 
     <section class="w-full d-card bg-white shadow-xl p-6">
       <h2 class="font-bold text-xl">Change Password</h2>
-      <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
+      <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-3" autocomplete="off">
         <div class="flex flex-col gap-3">
           <div>
             <label class="d-form-control w-full">
               <div class="d-label">
                 <span class="label-text font-semibold text-neutral-700" for="oldPassword">Old Password</span>
               </div>
-              <input type="password" id="oldPassword" formControlName="oldPassword" class="d-input d-input-bordered w-full">
+              <p-password type="password" id="oldPassword" formControlName="oldPassword" inputStyleClass="d-input d-input-bordered w-full" class="ng-invalid ng-dirty w-full" [feedback]="false" [toggleMask]="true"></p-password>
+
+              <!-- <input type="password" id="oldPassword" formControlName="oldPassword" class="d-input d-input-bordered w-full"> -->
             </label>
           </div>
-          <div>
+          <div class="w-full">
             <label class="d-form-control w-full">
               <div class="d-label">
                 <span class="label-text font-semibold text-neutral-700" for="newPassword">New Password</span>
               </div>
-              <input type="password" id="newPassword" formControlName="newPassword" class="d-input d-input-bordered w-full">
+              <!-- <input type="password" id="newPassword" formControlName="newPassword" class="d-input d-input-bordered w-full"> -->
+              <p-password [(ngModel)]="newPasswordStr" (ngModelChange)="passwordReqs(newPassword.value!)" #newPassword type="password" id="newPassword" autocomplete="false" inputStyleClass="d-input d-input-bordered w-full" formControlName="newPassword" class="ng-invalid ng-dirty w-full" [toggleMask]="true">
+                <ng-template pTemplate="header">
+                  <h6>Password Strength</h6>
+              </ng-template>
+              <ng-template pTemplate="footer">
+                  <!-- <p-divider></p-divider> -->
+                  <div class="mt-2">
+                    <mat-divider></mat-divider>
+                    <p class="mt-2 text-sm mb-1">Requirements</p>
+                    <ul class="pl-2 ml-2 mt-0 text-sm" style="line-height: 1.5">
+                        <li>
+                          @if(!reqs.hasLowerCase) {
+                            <ng-icon name="featherXCircle"></ng-icon>
+                          } @else {
+                            <ng-icon name="featherCheckCircle" class="text-green-700"></ng-icon>
+                          }
+                           At least one lowercase</li>
+                        <li>
+                          @if(!reqs.hasUpperCase) {
+                            <ng-icon name="featherXCircle"></ng-icon>
+                          } @else {
+                            <ng-icon name="featherCheckCircle" class="text-green-700"></ng-icon>
+                          }
+                          At least one uppercase</li>
+                        <li>
+                          @if(!reqs.hasNumeric) {
+                            <ng-icon name="featherXCircle"></ng-icon>
+                          } @else {
+                            <ng-icon name="featherCheckCircle" class="text-green-700"></ng-icon>
+                          } At least one numeric</li>
+                        <li>
+                          @if(!reqs.hasMinLength) {
+                            <ng-icon name="featherXCircle"></ng-icon>
+                          } @else {
+                            <ng-icon name="featherCheckCircle" class="text-green-700"></ng-icon>
+                          } Minimum 8 characters</li>
+                        <!-- <li>At least one lowercase</li>
+                        <li>At least one uppercase</li>
+                        <li>At least one numeric</li>
+                        <li>Minimum 8 characters</li> -->
+                    </ul>
+                  </div>
+
+              </ng-template>
+              </p-password>
+              @if (passwordForm) {
+                @if (passwordForm.get('newPassword')?.errors?.['passwordStrength'] && passwordForm.get('newPassword')?.dirty) {
+                  <div class="text-sm mt-2 text-red-600">
+                    Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 8 characters long.
+                  </div>
+                }
+              }
             </label>
           </div>
           <div>
@@ -89,7 +143,15 @@
               <div class="d-label">
                 <span class="label-text font-semibold text-neutral-700" for="confirmPassword">Confirm New Password</span>
               </div>
-              <input type="password" id="confirmPassword" formControlName="confirmPassword" class="d-input d-input-bordered w-full">
+              <p-password #confirmPassowrd id="confirmPassword" formControlName="confirmPassword" [disabled]="true" inputStyleClass="d-input d-input-bordered w-full" class="ng-invalid ng-dirty w-full" [feedback]="false"></p-password>
+              @if (passwordForm) {
+                @if (passwordForm.errors?.['passwordsDontMatch'] && passwordForm.get('confirmPassword')?.dirty) {
+                  <div class="text-sm mt-2 text-red-600">
+                    Passwords don't match.
+                  </div>
+                }
+              }
+              <!-- <input type="password" id="confirmPassword" formControlName="confirmPassword" class="d-input d-input-bordered w-full"> -->
             </label>
           </div>
         </div>

@@ -5,11 +5,28 @@ import { User } from 'firebase/auth';
 import { Subscription } from 'rxjs';
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule, ValidationErrors, FormBuilder, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { PasswordModule } from 'primeng/password';
+import { MatDividerModule } from '@angular/material/divider';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { featherCheckCircle, featherXCircle } from '@ng-icons/feather-icons';
+
+export interface Reqs {
+  hasUpperCase: boolean;
+  hasLowerCase: boolean;
+  hasNumeric: boolean;
+  hasMinLength: boolean;
+}
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, PasswordModule, MatDividerModule, NgIconComponent],
+  viewProviders: [
+    provideIcons({
+        featherCheckCircle,
+        featherXCircle
+    }),
+],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.sass'
 })
@@ -23,6 +40,13 @@ export class SettingsComponent implements OnInit {
   user!: User;
   userProfile!: UserProfile;
   passwordForm!: FormGroup;
+
+  hasUpperCase: boolean = false;
+  hasLowerCase: boolean = false;
+  hasNumeric: boolean = false;
+  hasMinLength: boolean = false;
+  newPasswordStr: string = '';
+  reqs!: Reqs;
 
   userForm = new FormGroup({
     firstName: new FormControl('', Validators.required),
@@ -46,7 +70,7 @@ export class SettingsComponent implements OnInit {
 
     this.passwordForm = new FormGroup({
       oldPassword: new FormControl('', [Validators.required]),
-      newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      newPassword: new FormControl('', [Validators.required, this.passwordStrengthValidator]),
       confirmPassword: new FormControl('', [Validators.required])
     }, { validators: this.passwordsMatchValidator }); //
   }
@@ -66,6 +90,50 @@ export class SettingsComponent implements OnInit {
     const confirmPassword = control.get('confirmPassword')?.value;
 
     return newPassword && confirmPassword && newPassword === confirmPassword ? null : { passwordsDontMatch: true };
+  }
+
+  passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+    const value: string = control.value || '';
+    const errors: ValidationErrors = {};
+
+    const hasUpperCase = /[A-Z]+/.test(value);
+    const hasLowerCase = /[a-z]+/.test(value);
+    const hasNumeric = /[0-9]+/.test(value);
+    const hasMinLength = value.length >= 8;
+
+    const passwordValid = hasUpperCase && hasLowerCase && hasNumeric && hasMinLength;
+
+    if (!/[a-z]+/.test(value)) {
+      errors['lowercase'] = 'Password must contain at least one lowercase letter';
+    }
+    if (!/[A-Z]+/.test(value)) {
+      errors['uppercase'] = 'Password must contain at least one uppercase letter';
+    }
+    if (!/[0-9]+/.test(value)) {
+      errors['numeric'] = 'Password must contain at least one numeric character';
+    }
+    if (value.length < 8) {
+      errors['minLength'] = 'Password must be at least 8 characters long';
+    }
+    if (!passwordValid) {
+      errors['passwordStrength'] = 'Passwords do not match';
+    }
+
+    return Object.keys(errors).length ? errors : null;
+
+    // return !passwordValid ? { passwordStrength: true } : null;
+  }
+
+  passwordReqs(password: string) {
+    let reqs: Reqs = {
+      hasUpperCase: /[A-Z]+/.test(password),
+      hasLowerCase: /[a-z]+/.test(password),
+      hasNumeric: /[0-9]+/.test(password),
+      hasMinLength: password.length >= 8
+    }
+
+    this.reqs = reqs;
+    // return reqs
   }
 
   onSubmit() {

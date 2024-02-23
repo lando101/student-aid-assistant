@@ -9,6 +9,10 @@ import { PasswordModule } from 'primeng/password';
 import { MatDividerModule } from '@angular/material/divider';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { featherCheckCircle, featherXCircle } from '@ng-icons/feather-icons';
+import { AuthenticationService } from '../../core/authentication/authentication.service';
+import { AlertService } from '../../chat/services/alert.service';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 export interface Reqs {
   hasUpperCase: boolean;
@@ -20,7 +24,8 @@ export interface Reqs {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, PasswordModule, MatDividerModule, NgIconComponent],
+  providers: [MessageService],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, PasswordModule, MatDividerModule, NgIconComponent, ToastModule],
   viewProviders: [
     provideIcons({
         featherCheckCircle,
@@ -32,7 +37,10 @@ export interface Reqs {
 })
 export class SettingsComponent implements OnInit {
   userService = inject(UserService);
+  authService = inject(AuthenticationService)
   formBuilder = inject(FormBuilder)
+  alertService = inject(AlertService);
+  messageService = inject(MessageService)
 
   userSub!: Subscription;
   profileSub!: Subscription;
@@ -138,6 +146,26 @@ export class SettingsComponent implements OnInit {
 
   onSubmit() {
     console.log(this.userForm.value);
+  }
+
+  updatePassword(){
+    const oldPassword = this.passwordForm.get('oldPassword')?.value;
+    const newPassword = this.passwordForm.get('newPassword')?.value;
+
+    if(this.userProfile.email){
+      this.authService.emailLogin(this.userProfile.email, oldPassword).then((user)=>{
+        if(user){
+          this.authService.updateUserPassword(newPassword).then((data)=>{
+            this.messageService.add({ severity: 'custom', summary: 'Info', detail: 'Password updated!' });
+            this.passwordForm.reset();
+          })
+        }
+      })
+    }
+  }
+
+  close() {
+    this.messageService.clear();
   }
 
   ngOnDestroy() {

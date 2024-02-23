@@ -54,6 +54,8 @@ export class AuthenticationService {
       } else {
         return null
       }
+    }).catch((error) => {
+      return null;
     })
   }
 

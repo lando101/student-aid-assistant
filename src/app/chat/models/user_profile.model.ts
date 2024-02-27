@@ -9,6 +9,7 @@ export interface UserProfile {
   last_login: string | null,
   threads: Threads[] | null,
   live_threads: LiveThread[] | null,
+  role: string | null,
   uid: string | null,
 }
 

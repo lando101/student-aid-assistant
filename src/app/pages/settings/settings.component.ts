@@ -3,7 +3,7 @@ import { UserService } from '../../core/auth/user.service';
 import { UserProfile } from '../../chat/models/user_profile.model';
 import { User } from 'firebase/auth';
 import { Subscription } from 'rxjs';
-import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule, ValidationErrors, FormBuilder, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule, ValidationErrors, FormBuilder, AbstractControl, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PasswordModule } from 'primeng/password';
 import { MatDividerModule } from '@angular/material/divider';
@@ -13,6 +13,7 @@ import { AuthenticationService } from '../../core/authentication/authentication.
 import { AlertService } from '../../chat/services/alert.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { AccountSettingsComponent } from "../../chat/components/account-settings/account-settings.component";
 
 export interface Reqs {
   hasUpperCase: boolean;
@@ -22,18 +23,18 @@ export interface Reqs {
 }
 
 @Component({
-  selector: 'app-settings',
-  standalone: true,
-  providers: [MessageService],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, PasswordModule, MatDividerModule, NgIconComponent, ToastModule],
-  viewProviders: [
-    provideIcons({
-        featherCheckCircle,
-        featherXCircle
-    }),
-],
-  templateUrl: './settings.component.html',
-  styleUrl: './settings.component.sass'
+    selector: 'app-settings',
+    standalone: true,
+    providers: [MessageService],
+    viewProviders: [
+        provideIcons({
+            featherCheckCircle,
+            featherXCircle
+        }),
+    ],
+    templateUrl: './settings.component.html',
+    styleUrl: './settings.component.sass',
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, PasswordModule, MatDividerModule, NgIconComponent, ToastModule, AccountSettingsComponent]
 })
 export class SettingsComponent implements OnInit {
   userService = inject(UserService);
@@ -48,6 +49,13 @@ export class SettingsComponent implements OnInit {
   user!: User;
   userProfile!: UserProfile;
   passwordForm!: FormGroup;
+  userForm!: FormGroup;
+  userFormInitital = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    role: ''
+  };
 
   hasUpperCase: boolean = false;
   hasLowerCase: boolean = false;
@@ -56,15 +64,6 @@ export class SettingsComponent implements OnInit {
   newPasswordStr: string = '';
   reqs!: Reqs;
 
-  userForm = new FormGroup({
-    firstName: new FormControl('', Validators.required),
-    lastName: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    role: new FormControl('', Validators.required)
-  });
-
-
-
   ngOnInit(): void {
     this.userSub = this.userService.$user.subscribe((user: User) => {
       this.user = user;
@@ -72,9 +71,23 @@ export class SettingsComponent implements OnInit {
 
     this.profileSub = this.userService.$userProfile.subscribe((profile: UserProfile) => {
       this.userProfile = profile;
+      console.log('profile', profile)
+
+      this.userFormInitital = {
+        firstName: profile.first_name ?? '',
+        lastName: profile.last_name ?? '',
+        email: profile.email ?? '',
+        role: profile.role ?? ''
+      }
     });
 
 
+    this.userForm = new FormGroup({
+      firstName: new FormControl('', Validators.required),
+      lastName: new FormControl('', Validators.required),
+      email: new FormControl({value:'', disabled: true}, [Validators.required, Validators.email]),
+      role: new FormControl('', Validators.required)
+    }, { validators: this.checkIfFormChanged(this.userFormInitital) });
 
     this.passwordForm = new FormGroup({
       oldPassword: new FormControl('', [Validators.required]),
@@ -84,12 +97,29 @@ export class SettingsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    console.log(this.userProfile)
     this.userForm.patchValue({
       firstName: this.userProfile.first_name,
       lastName: this.userProfile.last_name,
       email: this.userProfile.email,
-    // role: user.role
+      role: this.userProfile.role
     })
+
+    console.log(this.userForm)
+  }
+
+  checkIfFormChanged(initialValues: any): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const group = control as FormGroup; // Cast AbstractControl to FormGroup
+      let isChanged = false;
+      Object.keys(group.controls).forEach(key => {
+        const currentControl = group.get(key);
+        if (currentControl && initialValues[key] !== currentControl.value) {
+          isChanged = true;
+        }
+      });
+      return !isChanged ? { 'unchanged': true } : null;
+    };
   }
 
   passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -144,8 +174,46 @@ export class SettingsComponent implements OnInit {
     // return reqs
   }
 
-  onSubmit() {
+  updateAccount() {
     console.log(this.userForm.value);
+    const firstName = this.userForm.get('firstName')?.value;
+    const lastName = this.userForm.get('lastName')?.value;
+    const role = this.userForm.get('role')?.value;
+    let userProfile: UserProfile;
+
+    if(firstName && lastName && role){
+      userProfile = {
+        email: this.userProfile.email,
+        first_name: firstName,
+        last_name: lastName,
+        image: null,
+        last_login: null,
+        role: role,
+        threads: null,
+        live_threads: null,
+        uid: this.userProfile.uid
+      }
+    this.userService.updateUser(userProfile.uid!, null, null, userProfile).then((profile)=>{
+      console.log('profile', profile)
+
+      this.userForm.reset();
+      this.userForm = new FormGroup({
+        firstName: new FormControl('', Validators.required),
+        lastName: new FormControl('', Validators.required),
+        email: new FormControl({value:'', disabled: true}, [Validators.required, Validators.email]),
+        role: new FormControl('', Validators.required)
+      }, { validators: this.checkIfFormChanged(this.userFormInitital) });
+
+       this.userForm.patchValue({
+          firstName: this.userProfile.first_name,
+          lastName: this.userProfile.last_name,
+          email: this.userProfile.email,
+          role: this.userProfile.role
+        });
+
+        this.messageService.add({ severity: 'custom', summary: 'Info', detail: 'Password updated!' });
+    })
+    }
   }
 
   updatePassword(){

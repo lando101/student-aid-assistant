@@ -1,0 +1,46 @@
+<h2 class="font-bold text-xl">Account Settings</h2>
+<form [formGroup]="userForm" (ngSubmit)="updateAccount()" class="flex flex-col gap-3">
+  <div class="md:grid flex flex-col grid-cols-2 gap-3">
+    <div>
+      <label class="d-form-control w-full">
+        <div class="d-label">
+          <span class="label-text font-semibold text-neutral-700" for="firstName">First Name</span>
+        </div>
+        <input type="text" id="firstName" formControlName="firstName" class="d-input d-input-bordered w-full">
+      </label>
+    </div>
+    <div>
+      <label class="d-form-control w-full">
+        <div class="d-label">
+          <span class="label-text font-semibold text-neutral-700" for="firstName">Last Name</span>
+        </div>
+        <input type="text" id="lastName" formControlName="lastName" class="d-input d-input-bordered w-full">
+      </label>
+    </div>
+    <div>
+      <label class="d-form-control w-full">
+        <div class="d-label">
+          <span class="label-text font-semibold text-neutral-700" for="email">Email</span>
+        </div>
+        <input type="text" [disabled]="true" id="email" formControlName="email" class="d-input d-input-bordered w-full">
+      </label>
+    </div>
+  </div>
+  <div>
+    <label class="d-form-control w-full max-w-xs">
+      <div class="d-label" for="role">
+        <span class="label-text font-semibold text-neutral-700">Role</span>
+      </div>
+      <select class="d-select d-select-bordered" id="role" formControlName="role">
+        <option value="hs-student">High School Student</option>
+        <option value="undergrad">Under Graduate</option>
+        <option value="grad">Graduate</option>
+        <option value="parent">Parent</option>
+        <option value="other">Other</option>
+      </select>
+    </label>
+  </div>
+  <div>
+    <button class="d-btn d-btn-primary" type="submit" [disabled]="!userForm.valid">Save Changes</button>
+  </div>
+</form>

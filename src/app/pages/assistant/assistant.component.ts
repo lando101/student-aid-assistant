@@ -187,14 +187,16 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
         this.threadsLoading = true;
         if(this.userProfile.live_threads){
           console.log('threads before merge', this.userProfile.live_threads)
+          console.log('going to load threads')
+
           this.updateThreads(this.liveThreads, this.userProfile.live_threads)
         }
-
         const threads = userProfile.live_threads ?? [];
         let activeThread: LiveThread | null = this.chatService.activeThread()
         let activeThreadPresent: any;
         if(activeThread){
           activeThreadPresent = threads.find((thread: LiveThread) => { return thread.thread_id === activeThread?.thread_id; });
+
           if(!activeThreadPresent){
             this.nav.navigateByUrl('/assistant')
           }

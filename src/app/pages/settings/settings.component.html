@@ -15,8 +15,9 @@
       </div>
     </section>
     <section class="w-full d-card bg-white shadow-xl p-6">
-      <h2 class="font-bold text-xl">Account Settings</h2>
-      <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
+      <app-account-settings></app-account-settings>
+      <!-- <h2 class="font-bold text-xl">Account Settings</h2>
+      <form [formGroup]="userForm" (ngSubmit)="updateAccount()" class="flex flex-col gap-3">
         <div class="md:grid flex flex-col grid-cols-2 gap-3">
           <div>
             <label class="d-form-control w-full">
@@ -39,7 +40,7 @@
               <div class="d-label">
                 <span class="label-text font-semibold text-neutral-700" for="email">Email</span>
               </div>
-              <input type="text" id="email" formControlName="email" class="d-input d-input-bordered w-full">
+              <input type="text" [disabled]="true" id="email" formControlName="email" class="d-input d-input-bordered w-full">
             </label>
           </div>
         </div>
@@ -48,8 +49,7 @@
             <div class="d-label" for="role">
               <span class="label-text font-semibold text-neutral-700">Role</span>
             </div>
-            <select class="d-select d-select-bordered" formControlName="role">
-              <option disabled selected>Pick one</option>
+            <select class="d-select d-select-bordered" id="role" formControlName="role">
               <option value="hs-student">High School Student</option>
               <option value="undergrad">Under Graduate</option>
               <option value="grad">Graduate</option>
@@ -61,7 +61,7 @@
         <div>
           <button class="d-btn d-btn-primary" type="submit" [disabled]="!userForm.valid">Save Changes</button>
         </div>
-      </form>
+      </form> -->
     </section>
 
     <section class="w-full d-card bg-white shadow-xl p-6">

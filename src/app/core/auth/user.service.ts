@@ -67,8 +67,16 @@ export class UserService {
       const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
       // console.log(source, " data: ", doc.data());
       if(doc.data()){
-        this._userProfile.next(doc.data())
-        this.userProfile = doc.data() as UserProfile;
+        let profile: UserProfile = doc.data() as UserProfile;
+        if(this.userProfile?.live_threads){
+          profile.live_threads = this.userProfile.live_threads
+        } else {
+          profile.live_threads = [];
+        }
+
+        this.userProfile = profile;
+        this._userProfile.next(profile)
+        this.storageService.setItem(this.userProfileKey, JSON.stringify(this.userProfile));
       } else {
         // this._userProfile.next(this.createUserProfile())
       }
@@ -119,6 +127,7 @@ export class UserService {
         last_name: lastName,
         image: '',
         last_login: '',
+        role: '',
         uid: uid || this.user.uid
       });
 
@@ -309,12 +318,24 @@ export class UserService {
 
   //  async getMessages()
 
-   async updateUser(user_id: string, key: string, value: string): Promise<any> {
+   async updateUser(user_id: string, value?: string | null, key?: string | null, user?: UserProfile ): Promise<any> {
     if(user_id){
       const docRef = doc(this.firestore, 'users', user_id);
-      return await updateDoc(docRef, {
-        [key]: value
-      })
+      if(key){
+        return await updateDoc(docRef, {
+          [key]: value
+        })
+      } else if (user) {
+        return await updateDoc(docRef, {
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          image: null,
+          last_login: null,
+          role: user.role
+        })
+      }
+
     } else {
       return 'error'
     }

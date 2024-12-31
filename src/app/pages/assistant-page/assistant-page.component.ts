@@ -142,10 +142,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MarkdownPipe,
     MatTooltipModule
   ],
-  templateUrl: './assistant.component.html',
-  styleUrl: './assistant.component.sass'
+  templateUrl: './assistant-page.component.html',
+  styleUrl: './assistant-page.component.sass'
 })
-export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AssistantPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('drawer') drawer!: MatDrawer;
 

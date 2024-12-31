@@ -9,14 +9,13 @@ import { featherThumbsUp, featherThumbsDown, featherPlayCircle } from '@ng-icons
 
 import { trigger, style, transition, animate, query, stagger, keyframes } from '@angular/animations';
 
-import { ChatService } from '../../services/chat.service';
 import { MarkdownPipe } from '../../../shared/pipes/markdown.pipe';
 import { Subscription } from 'rxjs';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 import { MessageBubbleComponent } from "../message-bubble/message-bubble.component";
 import { UserService } from '../../../core/auth/user.service';
 import { NgPipesModule, OrderByPipe } from 'ngx-pipes';
-import { AssistantComponent } from '../../../pages/assistant/assistant.component';
+import { AssistantPageComponent } from '../../../pages/assistant-page/assistant-page.component';
 import { Threads } from '../../models/user_profile.model';
 import { PrettyDatePipe } from '../../../shared/pipes/pretty-date.pipe';
 import { LiveMessage, LiveThread } from '../../models/chat.model';

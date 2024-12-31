@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChatWindowComponent } from './chat-window.component';
+import { ThreadContainerComponent } from './thread-container.component';
 
-describe('ChatWindowComponent', () => {
-  let component: ChatWindowComponent;
-  let fixture: ComponentFixture<ChatWindowComponent>;
+describe('ThreadContainerComponent', () => {
+  let component: ThreadContainerComponent;
+  let fixture: ComponentFixture<ThreadContainerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChatWindowComponent]
+      imports: [ThreadContainerComponent]
     })
     .compileComponents();
-    
-    fixture = TestBed.createComponent(ChatWindowComponent);
+
+    fixture = TestBed.createComponent(ThreadContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

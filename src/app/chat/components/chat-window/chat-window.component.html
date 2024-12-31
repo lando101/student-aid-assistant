@@ -108,7 +108,7 @@
               </div>
               <div class="w-full absolute bottom-0 message-footer prompt-box flex justify-center">
                 <div class="max-w-screen-lg w-full">
-                  <app-prompts-carousel *ngIf="messages?.length === 0" (searchString)="createMessage($event)" (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
+                  <!-- <app-prompts-carousel *ngIf="messages?.length === 0" (searchString)="createMessage($event)" (hoverString)="hoverUpdate($event)"></app-prompts-carousel> -->
                   <div class="flex items-center gap-2 pb-3">
                     <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
                       [showCursor]="false" [strings]="placeholders">

@@ -306,44 +306,75 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  // this is how the threads animate properly :: add and remove thread from array based on updates
-  updateThreads(oldArray: LiveThread[], newArray: LiveThread[]) {
-    // Creating a map of thread IDs for easy lookup
-    if (oldArray.length !== newArray.length) {
-      const oldThreadMap = new Map(
-        oldArray.map((thread) => [thread.thread_id, thread])
-      );
+  // // this is how the threads animate properly :: add and remove thread from array based on updates
+  // updateThreads(oldArray: LiveThread[], newArray: LiveThread[]) {
+  //   // Creating a map of thread IDs for easy lookup
+  //   if (oldArray.length !== newArray.length) {
+  //     const oldThreadMap = new Map(
+  //       oldArray.map((thread) => [thread.thread_id, thread])
+  //     );
 
-      // Add new threads to the old array
-      newArray.forEach((thread) => {
-        if (!oldThreadMap.has(thread.thread_id)) {
-          oldArray.push(thread);
-        }
-      });
+  //     // Add new threads to the old array
+  //     newArray.forEach((thread) => {
+  //       if (!oldThreadMap.has(thread.thread_id)) {
+  //         oldArray.push(thread);
+  //       }
+  //     });
 
-      // Filter out deleted threads from the old array
-      this.liveThreads = oldArray.filter((thread) =>
-        newArray.some((newThread) => newThread.thread_id === thread.thread_id)
-      );
-    } else if (oldArray.length === newArray.length) {
-      newArray.forEach((arrayItem) => {
-        const index = this.liveThreads.findIndex(
-          (thread) => thread.thread_id === arrayItem.thread_id
-        );
-        // // console.log('new content', this.threads[index].last_message_content)
+  //     // Filter out deleted threads from the old array
+  //     this.liveThreads = oldArray.filter((thread) =>
+  //       newArray.some((newThread) => newThread.thread_id === thread.thread_id)
+  //     );
+  //   } else if (oldArray.length === newArray.length) {
+  //     newArray.forEach((arrayItem) => {
+  //       const index = this.liveThreads.findIndex(
+  //         (thread) => thread.thread_id === arrayItem.thread_id
+  //       );
+  //       // // console.log('new content', this.threads[index].last_message_content)
 
-        if (index >= 0) {
-          // console.log('new content', this.threads[index].last_message_content);
-          this.liveThreads[index].last_message = arrayItem.last_message;
-          this.liveThreads[index].last_updated = arrayItem.last_updated;
-          this.liveThreads[index].thread_name = arrayItem.thread_name;
-        }
-        //  // console.log('match index', index)
-      });
-    }
-    console.log('threads', this.liveThreads)
+  //       if (index >= 0) {
+  //         // console.log('new content', this.threads[index].last_message_content);
+  //         this.liveThreads[index].last_message = arrayItem.last_message;
+  //         this.liveThreads[index].last_updated = arrayItem.last_updated;
+  //         this.liveThreads[index].thread_name = arrayItem.thread_name;
+  //       }
+  //       //  // console.log('match index', index)
+  //     });
+  //   }
+  //   console.log('threads', this.liveThreads)
+  //   this.threadsLoading = false;
+  // }
+  updateThreads(oldArray: LiveThread[], newArray: LiveThread[]): void {
+    // Create a map of the new threads for efficient lookup
+    const newThreadMap = new Map(newArray.map(thread => [thread.thread_id, thread]));
+
+    // Create a new liveThreads array with updated data
+    const updatedThreads: LiveThread[] = [];
+
+    // Update existing threads or remove them if they're not in the new array
+    oldArray.forEach(thread => {
+      const updatedThread = newThreadMap.get(thread.thread_id);
+      if (updatedThread) {
+        // Update the thread with new data
+        updatedThreads.push({
+          ...thread,
+          ...updatedThread,
+        });
+        // Remove processed thread from the map
+        newThreadMap.delete(thread.thread_id);
+      }
+    });
+
+    // Add any remaining threads from the new array (these are new threads)
+    newThreadMap.forEach(thread => updatedThreads.push(thread));
+
+    // Assign the new threads to the liveThreads array
+    this.liveThreads = updatedThreads;
+
+    console.log('Updated Threads:', this.liveThreads);
     this.threadsLoading = false;
   }
+
 
   createNewThread(){
     // this.chatService.createThread().then((thread: Thread)=>{
@@ -367,7 +398,7 @@ export class AssistantComponent implements OnInit, AfterViewInit, OnDestroy {
       this.messagingService.add({ severity: 'custom', summary: 'Info', detail: 'An assistant is responding' });
       } else {
         if(thread){
-          this.chatService.activeThread.set(thread ?? null)
+          this.chatService.activeThread.set(thread)
           // this.nav.navigateByUrl(`/assistant/${thread.thread_id}`)
         } else {
           this.chatService.activeThread.set(null)

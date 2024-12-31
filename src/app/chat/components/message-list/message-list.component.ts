@@ -66,7 +66,7 @@ export class MessageListComponent implements OnInit, OnChanges {
   private orderPipe = inject(OrderByPipe);
   private chatService = inject(LiveChatService);
   private cdr = inject(ChangeDetectorRef)
-  
+
   @ViewChild('sp') messageList!: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
@@ -80,7 +80,7 @@ export class MessageListComponent implements OnInit, OnChanges {
   @Input() threadId: string = '';
   @Input() uid: string  = '';
   @Input() questions: string[] | null = null;
-  
+
 
   messageLoading = this.chatService.messagesLoading;
   questionsLoading: boolean = false;
@@ -103,13 +103,19 @@ export class MessageListComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes['questions'].currentValue);
-    const questions = changes['questions'].currentValue;
-    this.questionsLoadingAnimated = false;
-    if(questions){
-      setTimeout(() => {
-        this.questionsLoading = false;
-      }, 1000);
+    // Check if 'questions' exists in the changes object
+    if (changes['questions'] && changes['questions'].currentValue !== undefined) {
+      console.log(changes['questions'].currentValue || null);
+      const questions = changes['questions'].currentValue;
+      this.questionsLoadingAnimated = false;
+
+      if (questions) {
+        setTimeout(() => {
+          this.questionsLoading = false;
+        }, 1000);
+      }
+    } else {
+      console.log('No changes to questions or it is undefined.');
     }
   }
 

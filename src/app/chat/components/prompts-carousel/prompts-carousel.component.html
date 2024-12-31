@@ -1,3 +1,4 @@
+
 <div class="relative flex justify-center items-center max-w-screen-lg">
 <!-- <p class="text-sm font-medium dark:text-neutral-500 mb-1 text-center">Try out a common question</p> -->
   <div class="absolute w-full bottom-3">
@@ -16,9 +17,8 @@
         </button>
       </div>
     </div>
-    <div *ngIf="!owlCar.navData?.next?.disabled" class="right-guard"></div>
-    <div *ngIf="!owlCar.navData?.prev?.disabled" class="left-guard"></div>
-
+      <div *ngIf="!owlCar.navData?.next?.disabled" class="right-guard"></div>
+      <div *ngIf="!owlCar.navData?.prev?.disabled" class="left-guard"></div>
 
     <div #container class="overflow-hidden">
       <owl-carousel-o (dragging)="dragging = $event.dragging" [options]="customOptions" #owlCar>

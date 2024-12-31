@@ -447,7 +447,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnDestroy {
       try {
         this.userService.updateThread(newMessages[0].thread_id!, 'last_message_content', newMessages[0].content[0].text.value)
         this.userService.addMessages(newMessages[0].thread_id!, newMessages[0]).then(()=>{ // adding messages to user in firestore
-          this.userService.addMessages(newMessages[1].thread_id!, newMessages[1]);
+          // this.userService.addMessages(newMessages[1].thread_id!, newMessages[1]);
         });
       } catch (error) {
 

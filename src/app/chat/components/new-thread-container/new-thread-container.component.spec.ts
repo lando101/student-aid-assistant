@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NoThreadComponent } from './no-thread.component';
+import { NewThreadContainerComponent } from './new-thread-container.component';
 
 describe('NoThreadComponent', () => {
-  let component: NoThreadComponent;
-  let fixture: ComponentFixture<NoThreadComponent>;
+  let component: NewThreadContainerComponent;
+  let fixture: ComponentFixture<NewThreadContainerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NoThreadComponent]
+      imports: [NewThreadContainerComponent]
     })
     .compileComponents();
-    
-    fixture = TestBed.createComponent(NoThreadComponent);
+
+    fixture = TestBed.createComponent(NewThreadContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

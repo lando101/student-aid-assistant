@@ -15,7 +15,7 @@ import { NgxTypedJsModule } from 'ngx-typed-js';
 import { MessageBubbleComponent } from "../message-bubble/message-bubble.component";
 import { UserService } from '../../../core/auth/user.service';
 import { NgPipesModule, OrderByPipe } from 'ngx-pipes';
-import { AssistantPageComponent } from '../../../pages/assistant-page/assistant-page.component';
+import { NgScrollbar, NgScrollbarModule } from 'ngx-scrollbar';
 import { Threads } from '../../models/user_profile.model';
 import { PrettyDatePipe } from '../../../shared/pipes/pretty-date.pipe';
 import { LiveMessage, LiveThread } from '../../models/chat.model';
@@ -58,16 +58,18 @@ import { LiveChatService } from '../../services/live-chat.service';
     // changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './message-list.component.html',
     styleUrl: './message-list.component.sass',
-    imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule, MessageBubbleComponent, PrettyDatePipe, NgPipesModule]
+    imports: [CommonModule, ScrollPanelModule, NgIconComponent, MarkdownPipe, NgxTypedJsModule, MessageBubbleComponent, PrettyDatePipe, NgPipesModule, NgScrollbarModule]
 })
 export class MessageListComponent implements OnInit, OnChanges {
-  private userService = inject(UserService);
-  private orderPipe = inject(OrderByPipe);
+  // private userService = inject(UserService);
+  // private orderPipe = inject(OrderByPipe);
   private chatService = inject(LiveChatService);
-  private cdr = inject(ChangeDetectorRef)
+  // private cdr = inject(ChangeDetectorRef)
 
   @ViewChild('sp') messageList!: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
+
+  @ViewChild('scrollbar') scrollbar!: NgScrollbar;
 
   @Output() generateQuestions = new EventEmitter<boolean>();
   @Output() selectedQuestion = new EventEmitter<string>();
@@ -98,7 +100,6 @@ export class MessageListComponent implements OnInit, OnChanges {
 
   }
   ngOnInit(): void {
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -116,6 +117,10 @@ export class MessageListComponent implements OnInit, OnChanges {
     } else {
       console.log('No changes to questions or it is undefined.');
     }
+  }
+
+  scrollBottom() {
+    this.scrollbar.scrollTo({ bottom: 0 });
   }
 
   getMessageContainerHeight(): number {

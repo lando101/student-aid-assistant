@@ -12,15 +12,16 @@ import { UserService } from '../../../core/auth/user.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 
+// shown when creating a new thread
 
 @Component({
-    selector: 'app-no-thread',
+    selector: 'app-new-thread-container',
     standalone: true,
-    templateUrl: './no-thread.component.html',
-    styleUrl: './no-thread.component.sass',
+    templateUrl: './new-thread-container.component.html',
+    styleUrl: './new-thread-container.component.sass',
     imports: [ExamplePromptsComponent, PromptsCarouselComponent, NgxTypedJsModule, NgIconComponent, MatTooltipModule, InputTextareaModule ]
 })
-export class NoThreadComponent implements OnInit {
+export class NewThreadContainerComponent implements OnInit {
   chatService = inject(AssistantService)
   userService = inject(UserService)
   placeholders: string[] = ['']

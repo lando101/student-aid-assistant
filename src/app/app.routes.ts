@@ -7,7 +7,7 @@ import { AuthComponent } from './pages/auth/auth.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { AssistantPageComponent } from './pages/assistant-page/assistant-page.component';
 import { ThreadContainerComponent } from './chat/components/thread-container/thread-container.component';
-import { NoThreadComponent } from './chat/components/no-thread/no-thread.component';
+import { NewThreadContainerComponent } from './chat/components/new-thread-container/new-thread-container.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 
 
@@ -16,7 +16,7 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'assistant', component: AssistantPageComponent, canActivate: [AuthGuard], children: [
     {path: ':threadId', component: ThreadContainerComponent, canActivate: [AuthGuard] },
-    {path: '', component: NoThreadComponent, canActivate: [AuthGuard] }
+    {path: '', component: NewThreadContainerComponent, canActivate: [AuthGuard] }
   ] },
   { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },

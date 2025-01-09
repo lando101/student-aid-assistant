@@ -8,6 +8,7 @@ import { provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { initializeApp } from 'firebase/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 
 import {
@@ -36,6 +37,7 @@ export const appConfig: ApplicationConfig = {
         provideMessaging(() => getMessaging()),
         providePerformance(() => getPerformance()),
         provideStorage(() => getStorage()),
+        importProvidersFrom(NgScrollbarModule)
     ], provideAnimations(),
     // {
     //   provide: AutoAnimateModule

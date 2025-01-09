@@ -27,7 +27,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideClientHydration(), provideHttpClient(withFetch()), provideAnimations(),
-    importProvidersFrom([
+    [
         provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
         provideAnalytics(() => getAnalytics()),
         provideAuth(() => getAuth()),
@@ -36,9 +36,40 @@ export const appConfig: ApplicationConfig = {
         provideMessaging(() => getMessaging()),
         providePerformance(() => getPerformance()),
         provideStorage(() => getStorage()),
-    ]), provideAnimations(),
+    ], provideAnimations(),
     // {
     //   provide: AutoAnimateModule
     // },
   ],
 };
+
+
+// import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+// import { provideHttpClient, withFetch } from '@angular/common/http';
+// import { provideRouter } from '@angular/router';
+// import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+// import { provideAnalytics, getAnalytics } from '@angular/fire/analytics';
+// import { provideAuth, getAuth } from '@angular/fire/auth';
+// import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+// import { provideFunctions, getFunctions } from '@angular/fire/functions';
+// import { provideMessaging, getMessaging } from '@angular/fire/messaging';
+// import { providePerformance, getPerformance } from '@angular/fire/performance';
+// import { provideStorage, getStorage } from '@angular/fire/storage';
+// import { environment } from '../environments/environment';
+
+// export const appConfig: ApplicationConfig = {
+//   providers: [
+//     // importProvidersFrom(
+//       provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+//       provideAnalytics(() => getAnalytics()),
+//       provideAuth(() => getAuth()),
+//       provideFirestore(() => getFirestore()),
+//       provideFunctions(() => getFunctions()),
+//       provideMessaging(() => getMessaging()),
+//       providePerformance(() => getPerformance()),
+//       provideStorage(() => getStorage()),
+//     // ),
+//     provideHttpClient(withFetch()),
+//     provideRouter([]),
+//   ]
+// };

@@ -1,4 +1,4 @@
-<div *ngIf="liveMessage && liveMessage.message" class="flex flex-col" [ngClass]="{'items-end': liveMessage.role !== 'assistant'}">
+<div *ngIf="liveMessage" class="flex flex-col" [ngClass]="{'items-end': liveMessage.role !== 'assistant'}">
   <div class="flex gap-1 items-center capitalize drop-shadow-md shadow-gray-200 font-bold dark:text-neutral-400 mb-2">
     @if (liveMessage.role === 'assistant') {
       <div class="flex gap-1 items-end">
@@ -26,8 +26,18 @@
   <div class="message-width ml-7 flex gap-2">
     <div class="w-full">
       <div class="inline-block">
-        <div [innerHTML]="liveMessage.message! | markdown" [ngClass]="{'assistant-message':liveMessage.role === 'assistant', 'user-message':liveMessage.role !== 'assistant'}" class="p-6 rounded-xl font-medium"></div>
-        <div class="flex justify-between w-full">
+        <div [ngClass]="{'assistant-message':liveMessage.role === 'assistant', 'user-message':liveMessage.role !== 'assistant'}" class="p-6 rounded-xl font-medium relative flex justify-center items-center">
+          @if(liveMessage.message!.length > 0) {
+            <div [innerHTML]="liveMessage.message! | markdown" ></div>
+          } @else {
+            <div class="w-full flex justify-center items-center">
+              <span class="d-loading d-loading-dots d-loading-md absolute"></span>
+            </div>
+          }
+        </div>
+
+        <!-- <div [innerHTML]="liveMessage.message! | markdown" [ngClass]="{'assistant-message':liveMessage.role === 'assistant', 'user-message':liveMessage.role !== 'assistant'}" class="p-6 rounded-xl font-medium"></div> -->
+        <div class="flex justify-between w-full" [ngClass]="{'hidden': !liveMessage.message}">
           <div class="flex gap-2 pt-1 dark:text-neutral-600" *ngIf="liveMessage.role === 'assistant'">
             <button [matTooltipShowDelay]="500" matTooltip="Like response" [ngClass]="{'liked': liveMessage.liked === 1}" (click)="likeMessage(1)" class="opacity-70 hover:opacity-100">
               <ng-icon class="ml-1" [size]="'16px'" name="featherThumbsUp"></ng-icon>

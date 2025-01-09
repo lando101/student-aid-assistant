@@ -32,6 +32,7 @@ export class LiveChatService {
 
       try {
         // Parse the JSON string to an object
+        console.log('message', event.data)
         const messageObject = JSON.parse(event.data);
 
         // Now, messageObject is a JavaScript object, and you can use it as needed.

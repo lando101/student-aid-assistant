@@ -7,7 +7,7 @@
               <div class="w-100" [ngClass]="{'slide-in-blurred-bottom': message.animate}">
                 <app-message-bubble [thread]="liveThread" [liveMessage]="message ?? null"></app-message-bubble>
               </div>
-            } @else if (message.role === 'assistant' && message.message?.length ?? 0 > 8) {
+            } @else if (message.role === 'assistant' ) {
               <div class="w-100" [ngClass]="{'slide-in-blurred-bottom': message.animate}">
                 <app-message-bubble [thread]="liveThread" [liveMessage]="message ?? null"></app-message-bubble>
               </div>

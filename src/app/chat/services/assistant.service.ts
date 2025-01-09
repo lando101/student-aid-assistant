@@ -11,6 +11,8 @@ import { Threads, UserProfile } from '../models/user_profile.model';
 import { Router } from '@angular/router';
 import { LiveThread } from '../models/chat.model';
 
+/* this file is intended to act as logic to create thread with OpenAI -- not touching firebase*/
+
 @Injectable({
   providedIn: 'root'
 })

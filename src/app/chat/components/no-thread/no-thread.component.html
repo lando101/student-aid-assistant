@@ -5,12 +5,27 @@
   </div>
 </div>
 <!-- <app-loader></app-loader> -->
-<div>
-    <div class="flex items-center gap-2 pb-3 absolute bottom-16 w-full animate__fadeInUp animate__animated animate__faster animate__delay-1s">
-      <app-prompts-carousel class="w-full" (searchString)="createLiveThread($event)" (hoverString)="hoverUpdate($event)"></app-prompts-carousel>
+<div class="absolute bottom-0 w-full px-2 md:px-0 pb-3">
+    <div class="flex items-center gap-2 relative pb-3 -bottom-1 w-full animate__fadeInUp animate__animated animate__faster animate__delay-1s">
+      <app-prompts-carousel class="w-full" (searchString)="createLiveThread($event)"></app-prompts-carousel>
     </div>
+    <div class="flex items-center gap-2 pb-3 relative bottom-0 w-full prompt-box px-2 md:px-0">
+      <textarea #chatbox
+      [placeholder]="'Ask a question'"
+      pInputTextarea
+      [autoResize]="true"
+      class="typing min-h-12 border-none font-medium dark:placeholder-neutral-600 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full shadow-sm !shadow-neutral-100"
+      #inputbox type="text"></textarea>
+    <button [matTooltipShowDelay]="800" matTooltip="Send" (click)="createLiveThread(inputbox.value)" class="d-btn d-btn-circle bg-indigo-600 hover:bg-indigo-700 text-neutral-100 border-0 !shadow-md !shadow-indigo-300">
+      <ng-icon [size]="'22px'" name="featherArrowUp"></ng-icon>
+    </button>
+  </div>
 </div>
-<div class="flex items-center gap-2 pb-3 absolute bottom-0 w-full prompt-box px-2 md:px-0">
+
+
+
+
+
   <!-- <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
     [showCursor]="false" [strings]="placeholders">
     <input #chatbox
@@ -18,17 +33,7 @@
       class="typing h-12 px-3 border border-solid font-medium dark:placeholder-neutral-600 !border-neutral-800 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full"
       #inputbox type="text">
   </ngx-typed-js> -->
-  <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
+  <!-- <ngx-typed-js class="w-full" [shuffle]="true" #typed [startDelay]="650" [typeSpeed]="8"
       [showCursor]="false" [strings]="placeholders">
-        <input #chatbox
-        [placeholder]="'Ask a question'"
-        class="typing h-12 px-3 border-none font-medium dark:placeholder-neutral-600 dark:!border-neutral-600 w-full dark:!text-neutral-200 rounded-full shadow-sm !shadow-neutral-100"
-        #inputbox type="text">
-    </ngx-typed-js>
-  <!-- <button (click)="createLiveThread(inputbox.value)" class="d-btn d-btn-circle bg-indigo-600 hover:bg-indigo-700 text-neutral-100 border-0">
-    <ng-icon [size]="'24px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
-  </button> -->
-  <button [matTooltipShowDelay]="800" matTooltip="Send" (click)="createLiveThread(inputbox.value)" class="d-btn d-btn-circle bg-indigo-600 hover:bg-indigo-700 text-neutral-100 border-0 !shadow-md !shadow-indigo-300">
-    <ng-icon [size]="'22px'" name="featherSend" class="rotate-[315deg] mt-1"></ng-icon>
-  </button>
-</div>
+
+    </ngx-typed-js> -->

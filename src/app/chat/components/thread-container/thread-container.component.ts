@@ -34,7 +34,7 @@ import { LiveMessage, LiveThread, OpenAIMesg } from '../../models/chat.model';
 import { LiveChatService } from '../../services/live-chat.service';
 import { ChatCompletionResponse } from '../../models/chatcompletion.model';
 import { QuestionsCarouselComponent } from "../questions-carousel/questions-carousel.component";
-import {  featherShare, featherSliders, featherTrash } from '@ng-icons/feather-icons';
+import {  featherArrowUp, featherShare, featherSliders, featherTrash } from '@ng-icons/feather-icons';
 import { MatButtonModule } from '@angular/material/button';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { EditThreadDialogComponent } from '../dialogs/edit-thread-dialog/edit-thread-dialog.component';
@@ -49,7 +49,8 @@ import { EditThreadDialogComponent } from '../dialogs/edit-thread-dialog/edit-th
       provideIcons({
         featherShare,
         featherTrash,
-        featherSliders
+        featherSliders,
+        featherArrowUp
       }),
   ],
     imports: [CommonModule, MatTooltipModule, NgIconComponent, MatButtonModule, MatIconModule, MessageListComponent, NgxTypedJsModule, LoaderComponent, ExamplePromptsComponent, PromptsCarouselComponent, NgPipesModule, QuestionsCarouselComponent]
@@ -108,7 +109,7 @@ export class ThreadContainerComponent implements OnInit, AfterViewInit, OnChange
   ngOnInit(): void {
     this.$route = this.route.params.subscribe((params)=>{
       if(this.threadId) {
-        if(this.threadId !== params['threadId']){
+        if(this.threadId !== params['threadId']){ // local thread ID does not match URL thread ID
           this.reset();
           this.threadId = params['threadId'];
           // if(sub){
@@ -124,7 +125,8 @@ export class ThreadContainerComponent implements OnInit, AfterViewInit, OnChange
         this.activeLiveThread = this.userProfile?.live_threads?.find((thread)=>thread.thread_id === this.threadId) ?? null;
         this.chatService.activeThread.set(this.activeLiveThread);
         if(this.activeLiveThread?.thread_id && this.init){
-          this.getLiveMessages(this.activeLiveThread.thread_id)
+          this.getLiveMessages(this.activeLiveThread.thread_id);
+          console.log('getting live messages')
         }
       })
       if(this.threadId && this.userProfile){
@@ -265,7 +267,7 @@ export class ThreadContainerComponent implements OnInit, AfterViewInit, OnChange
     }
   }
 
-  // create live message
+  // create live message -- will update text in a live stream
   createLiveMessage(content: string){
     this.liveChatService.messagesLoading.set(true);
     this.chatbox!.nativeElement.value = ''
@@ -344,51 +346,53 @@ export class ThreadContainerComponent implements OnInit, AfterViewInit, OnChange
     this.typed.doReset()
   }
 
-  // reset(){
-  //   this.messages = null;
-  //   this.liveMsgs = null;
-  //   this.chatHistory = null
-  //   this.userMessages = null;
-  //   this.mergedMsgs = null;
-  //   this.threadId = null;
-  //   this.init = true;
-  //   this.showImg = false
-  //   this.questions = null;
-  //   // this.$route.unsubscribe();
-  //   this.liveChatService.disconnect();
-  //   this.userSubscription.unsubscribe();
-  //   // this.$messages.unsubscribe();
-  //   this.messagesLoading = true;
-  //   if (this.liveMesgSub) {
-  //     this.liveMesgSub.unsubscribe();
-  //   }
-  //  }
-
-  reset(): void {
-  this.activeLiveThread = null;
-  this.threadId = null;
-  this.liveMsgs = null;
-  this.chatHistory = null;
-  this.messages = null;
-  this.userMessages = null;
-  this.mergedMsgs = null;
-  this.init = true;
-  this.showImg = false;
-  this.questions = null;
-
-  if (this.liveMesgSub) {
-    this.liveMesgSub.unsubscribe();
-  }
-  if (this.$route) {
-    this.$route.unsubscribe();
-  }
-  if (this.userSubscription) {
+  reset(){
+    this.messages = null;
+    this.liveMsgs = null;
+    this.chatHistory = null
+    this.userMessages = null;
+    this.mergedMsgs = null;
+    this.threadId = null;
+    this.init = true;
+    this.showImg = false
+    this.questions = null;
+    // this.$route.unsubscribe();
+    this.liveChatService.disconnect();
     this.userSubscription.unsubscribe();
-  }
-  this.liveChatService.disconnect();
-}
+    // this.$messages.unsubscribe();
+    this.messagesLoading = true;
+    if (this.liveMesgSub) {
+      this.liveMesgSub.unsubscribe();
+    }
+
+   }
+
+//   reset(): void {
+//   this.activeLiveThread = null;
+//   this.threadId = null;
+//   this.liveMsgs = null;
+//   this.chatHistory = null;
+//   this.messages = null;
+//   this.userMessages = null;
+//   this.mergedMsgs = null;
+//   this.init = true;
+//   this.showImg = false;
+//   this.questions = null;
+
+//   if (this.liveMesgSub) {
+//     this.liveMesgSub.unsubscribe();
+//   }
+//   if (this.$route) {
+//     this.$route.unsubscribe();
+//   }
+//   if (this.userSubscription) {
+//     this.userSubscription.unsubscribe();
+//   }
+//   this.liveChatService.disconnect();
+// }
 
   ngOnDestroy(): void {
+    this.reset();
     if(this.userSubscription) {
       this.userSubscription.unsubscribe();
     }

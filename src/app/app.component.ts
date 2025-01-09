@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/components/header/header.component';
-import { HttpClientModule } from '@angular/common/http';
+import {} from '@angular/common/http';
 import { HomeComponent } from './pages/home/home.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { CredentialsService } from './core/auth/credentials.service';
